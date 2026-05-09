@@ -356,7 +356,7 @@ const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&form
 // ==================== FUNGSI API ====================
 async function fetchAPI(endpoint) {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}.js`);
+    const res = await fetch(`${API_URL}/${endpoint}`);
     return await res.json();
   } catch { return { success: false, data: [] }; }
 }
