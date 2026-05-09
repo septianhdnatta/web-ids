@@ -229,7 +229,7 @@ const PAGE_SIZE = 200;
 // ==================== FUNGSI API ====================
 async function fetchAPI(endpoint) {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}.js`);
+    const res = await fetch(`${API_URL}/${endpoint}`);
     return await res.json();
   } catch { return { success: false, data: [] }; }
 }
