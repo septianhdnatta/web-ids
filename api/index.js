@@ -26,8 +26,6 @@ export default async function handler(req, res) {
   if (pathname === '/api/sold' && req.method === 'POST') return handleSold(req, res);
   if (pathname === '/api/sold-ids' && req.method === 'GET') return handleGetSoldIds(req, res);
   if (pathname === '/api/update-total' && req.method === 'POST') return handleUpdateTotal(req, res);
-  
-  // UPDATE PROFILE (dengan cover, qris, verified)
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
@@ -205,7 +203,7 @@ async function handleAddIds(req, res) {
   return res.status(200).json({ success: true, message: `Added ${ids.length} IDs` });
 }
 
-// ==================== GET USER'S IDS ====================
+// ==================== GET USER'S IDS (DENGAN SOLD STATUS) ====================
 async function handleMyIds(req, res) {
   const { username } = req.query;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -213,26 +211,28 @@ async function handleMyIds(req, res) {
   const client = await clientPromise;
   const db = client.db('idglitxh');
   
-  // Ambil semua ID dari collection ids_username
-  const userCollection = db.collection(`ids_${username}`);
-  const ids = await userCollection.find({}).toArray();
-  
-  // Ambil sold IDs dari collection sold_username
-  const soldCollection = db.collection(`sold_${username}`);
-  const soldDocs = await soldCollection.find({}).toArray();
-  const soldSet = new Set(soldDocs.map(d => d.id));
-  
-  // Log untuk debugging
-  console.log(`User: ${username}, IDs: ${ids.length}, Sold: ${soldDocs.length}`);
-  console.log('Sold IDs:', soldDocs.map(d => d.id));
-  
-  const result = ids.map(doc => ({
-    id: doc.id,
-    tier: doc.tier,
-    isSold: soldSet.has(doc.id)
-  }));
-
-  return res.status(200).json({ success: true, data: result });
+  try {
+    // Ambil semua ID dari collection ids_username
+    const userCollection = db.collection(`ids_${username}`);
+    const ids = await userCollection.find({}).toArray();
+    
+    // Ambil sold IDs dari collection sold_username
+    const soldCollection = db.collection(`sold_${username}`);
+    const soldDocs = await soldCollection.find({}).toArray();
+    const soldSet = new Set(soldDocs.map(d => d.id));
+    
+    // Gabungkan hasil
+    const result = ids.map(doc => ({
+      id: doc.id,
+      tier: doc.tier || 'unknown',
+      isSold: soldSet.has(doc.id)
+    }));
+    
+    return res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    console.error('Error in handleMyIds:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 }
 
 // ==================== MARK SOLD ====================
@@ -243,51 +243,62 @@ async function handleSold(req, res) {
   const client = await clientPromise;
   const db = client.db('idglitxh');
 
-  for (const id of soldIds) {
-    // Simpan ke sold_ids global
-    await db.collection('sold_ids').updateOne(
-      { id: id },
-      { $set: { id: id, seller: username, soldAt: new Date(), tier: tier } },
-      { upsert: true }
-    );
-    
-    // Simpan ke collection sold_username
-    await db.collection(`sold_${username}`).updateOne(
-      { id: id },
-      { $set: { id: id, tier: tier, soldAt: new Date() } },
-      { upsert: true }
-    );
-  }
-
-  // Hapus dari tier collection
-  if (tier) {
-    const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
-    const tierCollection = db.collection(tierMap[tier]);
+  try {
     for (const id of soldIds) {
-      await tierCollection.deleteOne({ id: id });
+      // Simpan ke sold_ids global
+      await db.collection('sold_ids').updateOne(
+        { id: id },
+        { $set: { id: id, seller: username, soldAt: new Date(), tier: tier } },
+        { upsert: true }
+      );
+      
+      // Simpan ke collection sold_username
+      await db.collection(`sold_${username}`).updateOne(
+        { id: id },
+        { $set: { id: id, tier: tier, soldAt: new Date() } },
+        { upsert: true }
+      );
     }
+
+    // Hapus dari tier collection jika tier ditentukan
+    if (tier && tier !== '') {
+      const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
+      const tierCollection = db.collection(tierMap[tier]);
+      for (const id of soldIds) {
+        await tierCollection.deleteOne({ id: id });
+      }
+    }
+
+    // Hapus dari collection ids_username
+    for (const id of soldIds) {
+      await db.collection(`ids_${username}`).deleteOne({ id: id });
+    }
+
+    // Update soldTotal contributor
+    await db.collection('contributors').updateOne(
+      { username: username },
+      { $inc: { soldTotal: soldIds.length } }
+    );
+
+    return res.status(200).json({ success: true, message: `Marked ${soldIds.length} IDs as sold` });
+  } catch (error) {
+    console.error('Error in handleSold:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
   }
-
-  // Hapus dari collection ids_username
-  for (const id of soldIds) {
-    await db.collection(`ids_${username}`).deleteOne({ id: id });
-  }
-
-  // Update soldTotal contributor
-  await db.collection('contributors').updateOne(
-    { username: username },
-    { $inc: { soldTotal: soldIds.length } }
-  );
-
-  return res.status(200).json({ success: true, message: `Marked ${soldIds.length} IDs as sold` });
 }
 
-// ==================== GET SOLD IDS ====================
+// ==================== GET SOLD IDS (GLOBAL) ====================
 async function handleGetSoldIds(req, res) {
   const client = await clientPromise;
   const db = client.db('idglitxh');
-  const sold = await db.collection('sold_ids').find({}).toArray();
-  return res.status(200).json({ success: true, data: sold });
+  
+  try {
+    const sold = await db.collection('sold_ids').find({}).toArray();
+    return res.status(200).json({ success: true, data: sold });
+  } catch (error) {
+    console.error('Error in handleGetSoldIds:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 }
 
 // ==================== UPDATE TOTAL ====================
@@ -299,7 +310,7 @@ async function handleUpdateTotal(req, res) {
   return res.status(200).json({ success: true });
 }
 
-// ==================== UPDATE PROFILE (dengan cover, qris, verified) ====================
+// ==================== UPDATE PROFILE ====================
 async function handleUpdateProfile(req, res) {
   const { username, name, photo, cover, qris, verified, bio, wa } = req.body;
 
