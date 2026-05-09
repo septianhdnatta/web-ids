@@ -185,7 +185,7 @@ async function doAdminLogin() {
   
   showProgress(true);
   try {
-    const res = await fetch(`${API_URL}/admin-setup.js`, {
+    const res = await fetch(`${API_URL}/admin-setup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password })
@@ -213,7 +213,7 @@ async function doAdminLogin() {
 // ==================== LOAD USERS ====================
 async function loadUsers() {
   try {
-    const res = await fetch(`${API_URL}/contributors.js`);
+    const res = await fetch(`${API_URL}/contributors`);
     const data = await res.json();
     if (!data.success) throw new Error();
     
@@ -256,7 +256,7 @@ async function toggleUserBlock(username, block) {
   
   showProgress(true);
   try {
-    const res = await fetch(`${API_URL}/update-user-status.js`, {
+    const res = await fetch(`${API_URL}/update-user-status`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, active: block })
@@ -280,7 +280,7 @@ async function deleteUser(username) {
   
   showProgress(true);
   try {
-    const res = await fetch(`${API_URL}/delete-user.js`, {
+    const res = await fetch(`${API_URL}/delete-user`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username })
@@ -303,7 +303,7 @@ async function deleteUser(username) {
 // ==================== TAMBAH ID ====================
 async function loadContributorDropdown() {
   try {
-    const res = await fetch(`${API_URL}/contributors.js`);
+    const res = await fetch(`${API_URL}/contributors`);
     const data = await res.json();
     if (data.success) {
       const sel = document.getElementById('idContributor');
