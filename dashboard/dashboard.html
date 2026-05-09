@@ -36,7 +36,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .btn-logout:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
 
 /* MAIN */
-.wrap{max-width:1200px;margin:0 auto;padding:80px 24px 40px}
+.wrap{max-width:1000px;margin:0 auto;padding:80px 24px 40px}
 .page-header{margin-bottom:28px}
 .page-pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border2);padding:.25rem .75rem;border-radius:99px;font-size:.67rem;color:var(--muted2);margin-bottom:14px;font-family:var(--mono)}
 .page-title{font-size:clamp(1.4rem,4vw,1.8rem);font-weight:700;letter-spacing:-1px;color:var(--white);margin-bottom:6px}
@@ -72,29 +72,15 @@ input,textarea,select{
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2)}
 textarea{resize:vertical;min-height:100px}
 
+/* INFO BOX */
+.info-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0;margin-top:1px}
+.info-box span{font-size:.7rem;color:var(--muted2);font-family:var(--mono);line-height:1.6}
+
 /* BUTTON */
 .btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
 .btn-white{background:var(--white);color:#000}
 .btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
-
-/* FEED GRID */
-.feed-grid{display:flex;flex-direction:column;gap:12px}
-.feed-item{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;transition:all .2s}
-.feed-item:hover{background:var(--card);transform:translateX(4px)}
-.feed-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid var(--border2);background:var(--card2);flex-shrink:0}
-.feed-content{flex:1}
-.feed-header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.feed-name{font-size:.85rem;font-weight:600;color:var(--white)}
-.feed-usn{font-size:.65rem;color:var(--muted);font-family:var(--mono)}
-.feed-id{font-family:var(--mono);font-size:.7rem;color:var(--purple);font-weight:500}
-.feed-tier{font-size:.55rem;font-weight:600;padding:.1rem .5rem;border-radius:4px;margin-left:6px}
-.tier-low{background:rgba(107,114,128,.1);color:#9ca3af}
-.tier-medium{background:rgba(59,130,246,.1);color:#60a5fa}
-.tier-high{background:rgba(249,115,22,.1);color:#fb923c}
-.tier-legend{background:rgba(234,179,8,.1);color:#fbbf24}
-.feed-time{font-size:.6rem;color:var(--muted);margin-top:4px}
-.feed-icon{width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,.1);display:flex;align-items:center;justify-content:center}
-.feed-icon svg{width:14px;height:14px;stroke:var(--purple)}
 
 /* ID GRID */
 .id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
@@ -106,6 +92,15 @@ textarea{resize:vertical;min-height:100px}
 .id-actions{display:flex;gap:6px;margin-top:4px}
 .id-btn{background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:.2rem .5rem;font-size:.6rem;cursor:pointer;transition:all .15s;color:var(--muted2)}
 .id-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+
+/* AUTO DETECT RESULT */
+.auto-detect-result{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:12px;margin-top:12px}
+.auto-detect-result .title{font-size:.68rem;color:var(--muted2);margin-bottom:8px}
+.auto-detect-result .tier-row{font-size:.65rem;margin-bottom:4px}
+.auto-detect-result .low{color:#9ca3af}
+.auto-detect-result .medium{color:#60a5fa}
+.auto-detect-result .high{color:#fb923c}
+.auto-detect-result .legend{color:#fbbf24}
 
 /* PROFILE MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all .2s}
@@ -124,6 +119,7 @@ textarea{resize:vertical;min-height:100px}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
+.toast.warn .toast-dot{background:var(--yellow)}
 .toast-dot{width:7px;height:7px;border-radius:50%}
 
 /* PROGRESS */
@@ -156,11 +152,7 @@ textarea{resize:vertical;min-height:100px}
   </div>
 
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-7H9v7H5a2 2 0 0 1-2-2z"/></svg>
-      Home
-    </div>
-    <div class="tab" onclick="switchTab('add')">
+    <div class="tab active" onclick="switchTab('add')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       Tambah ID
     </div>
@@ -174,41 +166,24 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: HOME (FEED AKTIVITAS CONTRIBUTOR LAIN) -->
-  <div class="tab-content active" id="tab-home">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-7H9v7H5a2 2 0 0 1-2-2z"/></svg></div>
-        <div><div class="ph-title">Aktivitas Terbaru</div><div class="ph-sub">ID yang baru ditambahkan oleh semua contributor</div></div>
-      </div>
-      <div class="panel-body" id="feedContainer">
-        <div style="text-align:center;padding:30px;color:var(--muted)">Memuat aktivitas...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: ADD ID -->
-  <div class="tab-content" id="tab-add">
+  <!-- TAB: ADD ID (DENGAN AUTO DETECT) -->
+  <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg></div>
-        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Pilih tier dan masukkan daftar ID</div></div>
+        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Auto detect tier berdasarkan jumlah digit sama berurutan</div></div>
       </div>
       <div class="panel-body">
-        <div class="field">
-          <label>Pilih Tier</label>
-          <select id="addTier">
-            <option value="low">Low — Basic</option>
-            <option value="medium">Medium — Standard</option>
-            <option value="high">High — Premium</option>
-            <option value="legend">Legend — Ultimate</option>
-          </select>
+        <div class="info-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01" y2="16"/></svg>
+          <span>Aturan Auto Detect: 2-4 digit sama → LOW | 5-6 digit sama → MEDIUM | 7-8 digit sama → HIGH | 9-10 digit sama → LEGEND</span>
         </div>
         <div class="field">
           <label>Daftar ID (satu per baris)</label>
-          <textarea id="addIdList" rows="5" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
+          <textarea id="addIdList" rows="6" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
         </div>
-        <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID ke Tier</button>
+        <div id="autoDetectResult" class="auto-detect-result" style="display:none"></div>
+        <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID (Auto Detect)</button>
       </div>
     </div>
   </div>
@@ -244,7 +219,7 @@ textarea{resize:vertical;min-height:100px}
   <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12} y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
       <div class="panel-body" id="myIdsContainer">
@@ -341,47 +316,66 @@ function showProgress(title, sub, show) {
   }
 }
 
-function toast(msg, type = 'ok') {
+function showToast(msg, type = 'ok') {
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ==================== FEED (AKTIVITAS SEMUA CONTRIBUTOR) ====================
-async function loadFeed() {
-  const container = document.getElementById('feedContainer');
-  try {
-    const result = await callAPI('feed', 'GET');
-    if (!result.success || !result.data || result.data.length === 0) {
-      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada aktivitas dari contributor lain.</div>';
-      return;
+// ==================== DETEKSI TIER OTOMATIS ====================
+function detectTierFromID(id) {
+  const idStr = String(id);
+  let maxConsecutive = 1;
+  let currentCount = 1;
+  
+  for (let i = 1; i < idStr.length; i++) {
+    if (idStr[i] === idStr[i-1]) {
+      currentCount++;
+      maxConsecutive = Math.max(maxConsecutive, currentCount);
+    } else {
+      currentCount = 1;
     }
-    
-    container.innerHTML = `
-      <div class="feed-grid">
-        ${result.data.map(item => `
-          <div class="feed-item">
-            <img class="feed-avatar" src="${item.photo || ''}" onerror="this.src=''">
-            <div class="feed-content">
-              <div class="feed-header">
-                <span class="feed-name">${escapeHtml(item.name)}</span>
-                <span class="feed-usn">@${item.username}</span>
-                <span class="feed-id">${item.id}</span>
-                <span class="feed-tier tier-${item.tier}">${item.tier.toUpperCase()}</span>
-              </div>
-              <div class="feed-time">${formatTime(item.addedAt)} • ID baru ditambahkan</div>
-            </div>
-            <div class="feed-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  } catch (error) {
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Gagal memuat aktivitas</div>';
   }
+  
+  if (maxConsecutive >= 9) return 'legend';
+  if (maxConsecutive >= 7) return 'high';
+  if (maxConsecutive >= 5) return 'medium';
+  if (maxConsecutive >= 2) return 'low';
+  return 'low';
+}
+
+// ==================== PREVIEW AUTO DETECT ====================
+function previewAutoDetect() {
+  const raw = document.getElementById('addIdList').value.trim();
+  if (!raw) {
+    document.getElementById('autoDetectResult').style.display = 'none';
+    return;
+  }
+  
+  const ids = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const tierGroups = { low: [], medium: [], high: [], legend: [] };
+  
+  for (const id of ids) {
+    const tier = detectTierFromID(id);
+    tierGroups[tier].push(id);
+  }
+  
+  const resultDiv = document.getElementById('autoDetectResult');
+  const tierIcons = { low: '🔵', medium: '🟢', high: '🟠', legend: '🟣' };
+  const tierNames = { low: 'LOW', medium: 'MEDIUM', high: 'HIGH', legend: 'LEGEND' };
+  const tierClass = { low: 'low', medium: 'medium', high: 'high', legend: 'legend' };
+  
+  let resultHtml = '<div class="title">📊 Hasil Deteksi Otomatis:</div>';
+  
+  for (const [tier, idsList] of Object.entries(tierGroups)) {
+    if (idsList.length > 0) {
+      resultHtml += `<div class="tier-row ${tierClass[tier]}">${tierIcons[tier]} ${tierNames[tier]}: ${idsList.length} ID</div>`;
+    }
+  }
+  
+  resultDiv.innerHTML = resultHtml;
+  resultDiv.style.display = 'block';
 }
 
 // ==================== MY IDs ====================
@@ -416,34 +410,111 @@ async function loadMyIds() {
   }
 }
 
-// ==================== TAMBAH ID ====================
+// ==================== TAMBAH ID (DENGAN DETEKSI OTOMATIS & CEK DUPLIKAT) ====================
+async function checkDuplicateIDsAcrossTiers(newIDs) {
+  const allExistingIDs = new Set();
+  const tiers = ['low', 'medium', 'high', 'legend'];
+  
+  for (const tier of tiers) {
+    try {
+      const result = await callAPI(`ids?tier=${tier}`, 'GET');
+      if (result.success && result.data) {
+        result.data.forEach(id => allExistingIDs.add(String(id)));
+      }
+    } catch(e) {}
+  }
+  
+  const duplicates = [];
+  const uniqueNew = [];
+  for (const id of newIDs) {
+    if (allExistingIDs.has(String(id))) {
+      duplicates.push(id);
+    } else {
+      uniqueNew.push(id);
+    }
+  }
+  
+  return { duplicates, uniqueNew };
+}
+
 async function submitAddIDs() {
-  const tier = document.getElementById('addTier').value;
   const raw = document.getElementById('addIdList').value.trim();
   
-  if (!tier) { toast('Pilih tier', 'err'); return; }
-  if (!raw) { toast('Daftar ID kosong', 'err'); return; }
+  if (!raw) { showToast('Daftar ID kosong', 'err'); return; }
   
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newIDs.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
+  if (newIDs.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
   
-  showProgress('Menyimpan ID...', `Menambahkan ${newIDs.length} ID ke tier ${tier}`, true);
+  showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`, true);
   
-  try {
-    const result = await callAPI('ids', 'POST', { tier, username: currentUser.username, ids: newIDs });
+  const { duplicates, uniqueNew } = await checkDuplicateIDsAcrossTiers(newIDs);
+  
+  if (duplicates.length > 0) {
     showProgress('', '', false);
+    showToast(`⚠️ ${duplicates.length} ID duplikat ditemukan. ID ini TIDAK akan ditambahkan.`, 'warn');
+    if (uniqueNew.length === 0) return;
+    if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) return;
+  }
+  
+  // Grup ID berdasarkan tier hasil deteksi otomatis
+  const idsByTier = { low: [], medium: [], high: [], legend: [] };
+  for (const id of uniqueNew) {
+    const detectedTier = detectTierFromID(id);
+    idsByTier[detectedTier].push(id);
+  }
+  
+  // Tampilkan ringkasan sebelum simpan
+  let summary = '';
+  if (idsByTier.low.length > 0) summary += `\n🔵 Low: ${idsByTier.low.length} ID`;
+  if (idsByTier.medium.length > 0) summary += `\n🟢 Medium: ${idsByTier.medium.length} ID`;
+  if (idsByTier.high.length > 0) summary += `\n🟠 High: ${idsByTier.high.length} ID`;
+  if (idsByTier.legend.length > 0) summary += `\n🟣 Legend: ${idsByTier.legend.length} ID`;
+  
+  if (!confirm(`Deteksi tier otomatis:\n${summary}\n\nLanjutkan menyimpan?`)) {
+    showProgress('', '', false);
+    return;
+  }
+  
+  showProgress('Menyimpan ID...', `Memproses ${uniqueNew.length} ID ke tier masing-masing`, true);
+  
+  let allSuccess = true;
+  let totalAdded = 0;
+  
+  // Update file contributor (gabung semua ID baru)
+  const myIdFile = `my-ids?username=${currentUser.username}`;
+  const { data: myIds } = await callAPI(myIdFile, 'GET');
+  const mergedMy = [...new Set([...(myIds || []), ...uniqueNew])];
+  
+  // Update masing-masing tier file
+  for (const [tier, ids] of Object.entries(idsByTier)) {
+    if (ids.length === 0) continue;
     
-    if (result.success) {
-      toast(`${newIDs.length} ID berhasil ditambahkan!`, 'ok');
-      document.getElementById('addIdList').value = '';
-      await loadMyIds();
-      await loadFeed(); // Refresh feed
-    } else {
-      toast('Gagal menyimpan ID', 'err');
-    }
-  } catch (error) {
-    showProgress('', '', false);
-    toast('Gagal terhubung ke server', 'err');
+    const result = await callAPI('ids', 'POST', { 
+      username: currentUser.username, 
+      tier: tier, 
+      ids: ids 
+    });
+    if (!result.success) allSuccess = false;
+    else totalAdded += ids.length;
+  }
+  
+  // Update total contributor
+  const updatedTotal = (currentUser.total || 0) + uniqueNew.length;
+  await callAPI('update-total', 'POST', { username: currentUser.username, total: updatedTotal });
+  currentUser.total = updatedTotal;
+  localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+  
+  showProgress('', '', false);
+  
+  if (allSuccess) {
+    let msg = `${totalAdded} ID berhasil ditambahkan!`;
+    if (duplicates.length > 0) msg += ` (${duplicates.length} ID duplikat diabaikan)`;
+    showToast(msg, 'ok');
+    document.getElementById('addIdList').value = '';
+    document.getElementById('autoDetectResult').style.display = 'none';
+    await loadMyIds();
+  } else {
+    showToast('Sebagian gagal disimpan', 'err');
   }
 }
 
@@ -452,48 +523,46 @@ async function submitSoldIDs() {
   const raw = document.getElementById('soldIdList').value.trim();
   const tier = document.getElementById('soldTierSelect').value;
   
-  if (!raw) { toast('Daftar ID sold kosong', 'err'); return; }
+  if (!raw) { showToast('Daftar ID sold kosong', 'err'); return; }
   
   const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newSold.length === 0) { toast('Tidak ada ID valid', 'err'); return; }
+  if (newSold.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
   
   showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`, true);
   
-  try {
-    const result = await callAPI('sold', 'POST', { username: currentUser.username, soldIds: newSold, tier });
-    showProgress('', '', false);
-    
-    if (result.success) {
-      toast(`${newSold.length} ID ditandai sold!`, 'ok');
-      document.getElementById('soldIdList').value = '';
-      await loadMyIds();
-      await loadFeed();
-    } else {
-      toast('Gagal menyimpan sold', 'err');
-    }
-  } catch (error) {
-    showProgress('', '', false);
-    toast('Gagal terhubung ke server', 'err');
+  const result = await callAPI('sold', 'POST', { 
+    username: currentUser.username, 
+    soldIds: newSold, 
+    tier: tier || undefined 
+  });
+  
+  showProgress('', '', false);
+  
+  if (result.success) {
+    showToast(`${newSold.length} ID ditandai sold!`, 'ok');
+    document.getElementById('soldIdList').value = '';
+    await loadMyIds();
+  } else {
+    showToast('Gagal menyimpan sold', 'err');
   }
 }
 
 async function markSingleSold(id) {
   showProgress('Processing...', `Menandai ${id} sebagai sold`, true);
   
-  try {
-    const result = await callAPI('sold', 'POST', { username: currentUser.username, soldIds: [id], tier: '' });
-    showProgress('', '', false);
-    
-    if (result.success) {
-      toast(`✅ ${id} ditandai sold`, 'ok');
-      await loadMyIds();
-      await loadFeed();
-    } else {
-      toast('Gagal menandai sold', 'err');
-    }
-  } catch (error) {
-    showProgress('', '', false);
-    toast('Gagal terhubung ke server', 'err');
+  const result = await callAPI('sold', 'POST', { 
+    username: currentUser.username, 
+    soldIds: [id], 
+    tier: '' 
+  });
+  
+  showProgress('', '', false);
+  
+  if (result.success) {
+    showToast(`✅ ${id} ditandai sold`, 'ok');
+    await loadMyIds();
+  } else {
+    showToast('Gagal menandai sold', 'err');
   }
 }
 
@@ -518,74 +587,61 @@ async function saveProfile() {
   const newBio = document.getElementById('editBio').value.trim();
   const newWhatsapp = document.getElementById('editWhatsapp').value.trim();
   
-  if (!newName) { toast('Nama tidak boleh kosong', 'err'); return; }
+  if (!newName) { showToast('Nama tidak boleh kosong', 'err'); return; }
   
   showProgress('Menyimpan profile...', 'Mengupdate data', true);
   
-  try {
-    const result = await callAPI('profile', 'POST', { 
-      username: currentUser.username, 
-      name: newName, 
-      photo: newPhoto, 
-      bio: newBio, 
-      wa: newWhatsapp 
-    });
-    showProgress('', '', false);
+  const result = await callAPI('profile', 'POST', { 
+    username: currentUser.username, 
+    name: newName, 
+    photo: newPhoto, 
+    bio: newBio, 
+    wa: newWhatsapp 
+  });
+  
+  showProgress('', '', false);
+  
+  if (result.success) {
+    currentUser.name = newName;
+    currentUser.photo = newPhoto;
+    currentUser.bio = newBio;
+    currentUser.wa = newWhatsapp;
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
     
-    if (result.success) {
-      currentUser.name = newName;
-      currentUser.photo = newPhoto;
-      currentUser.bio = newBio;
-      currentUser.wa = newWhatsapp;
-      localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-      
-      document.getElementById('navName').textContent = newName;
-      document.getElementById('navAvatar').src = newPhoto;
-      document.getElementById('welcomeName').textContent = newName;
-      document.getElementById('userBio').textContent = newBio;
-      
-      toast('✅ Profile berhasil diupdate', 'ok');
-      closeProfileModal();
-    } else {
-      toast('Gagal update profile', 'err');
-    }
-  } catch (error) {
-    showProgress('', '', false);
-    toast('Gagal terhubung ke server', 'err');
+    document.getElementById('navName').textContent = newName;
+    document.getElementById('navAvatar').src = newPhoto;
+    document.getElementById('welcomeName').textContent = newName;
+    document.getElementById('userBio').textContent = newBio;
+    
+    showToast('✅ Profile berhasil diupdate', 'ok');
+    closeProfileModal();
+  } else {
+    showToast('Gagal update profile', 'err');
   }
 }
 
 // ==================== UTILS ====================
-function formatTime(dateStr) {
-  if (!dateStr) return 'baru saja';
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diff = Math.floor((now - date) / 1000);
-  
-  if (diff < 60) return `${diff} detik lalu`;
-  if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
-  return `${Math.floor(diff / 86400)} hari lalu`;
-}
-
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
 }
 
 function switchTab(name) {
-  const tabs = ['home', 'add', 'sold', 'myids'];
+  const tabs = ['add', 'sold', 'myids'];
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === name));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${name}`));
   
-  if (name === 'home') loadFeed();
   if (name === 'myids') loadMyIds();
 }
+
+// ==================== EVENT LISTENER ====================
+document.getElementById('addIdList').addEventListener('input', function() {
+  previewAutoDetect();
+});
 
 // ==================== INIT ====================
 (async () => {
   if (!checkAuth()) return;
-  await loadFeed();
   await loadMyIds();
   document.getElementById('navUserBtn').onclick = openProfileModal;
 })();
