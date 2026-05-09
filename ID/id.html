@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Katalog ID — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --bg2:#111111;
+  --card:#161616;
+  --card2:#1a1a1a;
+  --border:#232323;
+  --border2:#2a2a2a;
+  --text:#f0f0f0;
+  --muted:#666;
+  --muted2:#888;
+  --white:#fff;
+  --low:#6b7280;
+  --medium:#3b82f6;
+  --high:#f97316;
+  --legend:#eab308;
+  --sold:#ef4444;
+  --font:'Inter',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(13,13,13,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-left{display:flex;align-items:center;gap:12px}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--muted2);text-decoration:none;font-size:.8rem;font-weight:500;padding:.3rem .7rem;border-radius:8px;border:1px solid var(--border);background:var(--card);transition:all .2s}
+.nav-back:hover{color:var(--white);border-color:var(--border2)}
+.nav-back svg{width:14px;height:14px}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;color:var(--white)}
+.nav-logo-icon{width:22px;height:22px;background:var(--white);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#000;font-weight:900}
+.nav-right-info{font-family:var(--mono);font-size:.65rem;color:var(--muted);display:flex;align-items:center;gap:6px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PAGE HEADER */
+.ph{position:relative;z-index:1;padding:80px 32px 32px;border-bottom:1px solid var(--border);max-width:1200px;margin:0 auto}
+.ph-pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border2);padding:.25rem .75rem;border-radius:99px;font-size:.68rem;color:var(--muted2);margin-bottom:16px}
+.ph-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;letter-spacing:-1.5px;line-height:1.1;color:var(--white);margin-bottom:8px}
+.ph-title span{color:var(--muted)}
+.ph-sub{font-size:.8rem;color:var(--muted);font-family:var(--mono)}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:56px;z-index:150;background:rgba(13,13,13,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;gap:6px;overflow-x:auto;align-items:center}
+.filter-bar::-webkit-scrollbar{display:none}
+.fl{font-size:.65rem;color:var(--muted);font-weight:500;white-space:nowrap;flex-shrink:0;margin-right:4px}
+.fb{background:var(--card);border:1px solid var(--border2);color:var(--muted2);padding:.32rem .85rem;border-radius:8px;cursor:pointer;font-size:.75rem;font-weight:500;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.fb:hover{border-color:var(--border2);color:var(--white);background:var(--card2)}
+.fb.act{background:var(--white);border-color:var(--white);color:#000;font-weight:600}
+.fb.sold-btn.act{background:var(--sold);border-color:var(--sold);color:#fff}
+
+/* SEARCH */
+.search-section{position:sticky;top:105px;z-index:149;background:rgba(13,13,13,.95);backdrop-filter:blur(16px);padding:10px 32px;border-bottom:1px solid var(--border)}
+.search-wrap{position:relative;max-width:500px;margin:0 auto}
+.search-wrap input{width:100%;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:.5rem .9rem .5rem 2.4rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none}
+.search-wrap input:focus{border-color:rgba(255,255,255,.2)}
+.search-wrap input::placeholder{color:var(--muted)}
+.si{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem}
+.search-type{display:flex;gap:6px;margin-top:8px;justify-content:center}
+.search-type-btn{background:transparent;border:1px solid var(--border2);color:var(--muted2);padding:.2rem .65rem;border-radius:20px;font-size:.6rem;cursor:pointer}
+.search-type-btn.active{background:var(--card2);color:var(--white);border-color:rgba(255,255,255,.2)}
+
+/* TOOLBAR */
+.toolbar{position:relative;z-index:1;padding:10px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
+.ri{font-size:.75rem;color:var(--muted);font-family:var(--mono)}
+.ri span{color:var(--text);font-weight:600}
+.sold-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--muted)}
+.sold-dot{width:6px;height:6px;border-radius:50%;background:var(--sold)}
+
+/* MAIN */
+.main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px 32px 80px}
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:14px}
+.spinner{width:32px;height:32px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TIER GROUP */
+.sg{margin-bottom:40px}
+.gh{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.gtier-name{font-size:1.2rem;font-weight:700;color:var(--white)}
+.glevel{font-size:.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:.22rem .65rem;border-radius:6px;border:1px solid}
+.tier-low-badge{background:rgba(107,114,128,.08);border-color:rgba(107,114,128,.2);color:var(--low)}
+.tier-medium-badge{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);color:var(--medium)}
+.tier-high-badge{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);color:var(--high)}
+.tier-legend-badge{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2);color:var(--legend)}
+.gcnt{font-size:.7rem;color:var(--muted);margin-left:auto}
+.gcnt b{color:var(--white)}
+
+/* ID GRID */
+.id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+@media(max-width:480px){.id-grid{grid-template-columns:repeat(2,1fr)}}
+.id-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.id-card:hover{border-color:var(--border2);background:var(--card2);transform:translateY(-2px)}
+.id-card.is-sold{border-color:rgba(239,68,68,.15);background:rgba(239,68,68,.03);cursor:default;opacity:.6}
+.id-card.is-sold:hover{transform:none}
+.id-num{font-family:var(--mono);font-size:.8rem;color:var(--text);word-break:break-all}
+.id-card.is-sold .id-num{color:var(--muted);text-decoration:line-through}
+.id-tags{display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-size:.55rem;font-weight:600;padding:.18rem .5rem;border-radius:4px}
+.tag-sold{background:rgba(239,68,68,.1);color:var(--sold);border:1px solid rgba(239,68,68,.2)}
+.tag-new{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2)}
+.tag-con{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid rgba(255,255,255,.08);font-size:.52rem;display:inline-flex;align-items:center;gap:3px}
+.tag-con img{width:10px;height:10px;border-radius:50%}
+.tag-verified{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.2);display:inline-flex;align-items:center;gap:3px}
+.tag-verified img{width:10px;height:10px}
+.sold-ribbon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);background:rgba(239,68,68,.9);color:#fff;font-size:.55rem;font-weight:700;padding:.2rem .7rem;border-radius:4px;white-space:nowrap}
+
+/* PAGINATION */
+.pag{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.pn{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--card);font-size:.72rem;font-family:var(--mono);cursor:pointer;color:var(--muted);padding:0 8px}
+.pn:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
+.pn.act{background:var(--white);border-color:var(--white);color:#000}
+.empty{text-align:center;padding:60px 16px;color:var(--muted)}
+mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;padding:0 2px}
+
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .ph{padding:76px 16px 24px}
+  .filter-bar{padding:10px 16px}
+  .search-section{padding:10px 16px}
+  .toolbar{padding:10px 16px}
+  .main{padding:16px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="../index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Kembali
+    </a>
+    <div class="nav-logo"><div class="nav-logo-icon">ID</div>IDglitxh</div>
+  </div>
+  <div class="nav-right-info"><div class="live-dot"></div>Live Data</div>
+</nav>
+
+<div class="ph">
+  <div class="ph-pill">• Katalog Lengkap</div>
+  <h1 class="ph-title">Semua <span>ID</span> Tersedia</h1>
+  <p class="ph-sub" id="phSub">Memuat data...</p>
+</div>
+
+<div class="filter-bar">
+  <span class="fl">Filter</span>
+  <button class="fb act" data-t="all" onclick="setF('all')">Semua</button>
+  <button class="fb" data-t="low" onclick="setF('low')">Low</button>
+  <button class="fb" data-t="medium" onclick="setF('medium')">Medium</button>
+  <button class="fb" data-t="high" onclick="setF('high')">High</button>
+  <button class="fb" data-t="legend" onclick="setF('legend')">Legend</button>
+  <button class="fb sold-btn" data-t="sold" onclick="setF('sold')">Sold</button>
+</div>
+
+<div class="search-section">
+  <div class="search-wrap">
+    <span class="si">⌕</span>
+    <input type="text" id="gSearch" placeholder="Cari ID atau nama Contributor..."/>
+  </div>
+  <div class="search-type">
+    <button class="search-type-btn active" data-type="all" onclick="setSearchType('all')">Semua</button>
+    <button class="search-type-btn" data-type="id" onclick="setSearchType('id')">Cari ID</button>
+    <button class="search-type-btn" data-type="contributor" onclick="setSearchType('contributor')">Cari Contributor</button>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="ri" id="ri">Memuat...</div>
+  <div class="sold-leg"><span class="sold-dot"></span>ID yang sudah terjual</div>
+</div>
+
+<div class="main" id="main"><div class="loader"><div class="spinner"></div><div class="lt">Mengambil data...</div></div></div>
+
+<script>
+const API_URL = '/api';
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
+
+let allData = { low: [], medium: [], high: [], legend: [] };
+let soldSet = new Set();
+let newSet = new Set();
+let activeF = 'all';
+let searchQ = '';
+let searchType = 'all';
+let curPage = { low: 1, medium: 1, high: 1, legend: 1 };
+let idToContributor = {};
+let contributorNameToIds = {};
+
+const PAGE_SIZE = 200;
+const TIERS = ['low', 'medium', 'high', 'legend'];
+const TIER_NAMES = { low: 'Low', medium: 'Medium', high: 'High', legend: 'Legend' };
+const TIER_COLORS = { low: 'rgba(107,114,128,.6)', medium: 'rgba(59,130,246,.7)', high: 'rgba(249,115,22,.7)', legend: 'rgba(234,179,8,.7)' };
+const TIER_BADGE_CLASS = { low: 'tier-low-badge', medium: 'tier-medium-badge', high: 'tier-high-badge', legend: 'tier-legend-badge' };
+
+async function fetchAPI(endpoint) {
+  try {
+    const res = await fetch(`${API_URL}/${endpoint}`);
+    return await res.json();
+  } catch { return { success: false, data: [] }; }
+}
+
+async function loadAllData() {
+  const contributorsRes = await fetchAPI('contributors');
+  const contributors = contributorsRes.success ? contributorsRes.data : [];
+  
+  // Build contributor maps
+  for (const con of contributors) {
+    const idsRes = await fetchAPI(`my-ids?username=${con.username}`);
+    if (idsRes.success && idsRes.data) {
+      contributorNameToIds[con.username] = {
+        name: con.name,
+        username: con.username,
+        photo: con.photo,
+        verified: con.verified,
+        ids: new Set(idsRes.data.map(i => i.id))
+      };
+      for (const id of idsRes.data) {
+        idToContributor[id.id] = { name: con.name, username: con.username, photo: con.photo, verified: con.verified };
+      }
+    }
+  }
+  
+  // Load tier data
+  for (const tier of TIERS) {
+    const res = await fetchAPI(`ids?tier=${tier}`);
+    if (res.success && res.data) allData[tier] = res.data;
+  }
+  
+  // Load sold data
+  const soldRes = await fetchAPI('sold-ids');
+  if (soldRes.success && soldRes.data) soldSet = new Set(soldRes.data.map(s => s.id));
+  
+  const total = Object.values(allData).flat().length;
+  document.getElementById('phSub').innerHTML = `${total.toLocaleString('id-ID')} ID total · ${soldSet.size} terjual · ${Object.keys(idToContributor).length} ID terhubung contributor`;
+  
+  render();
+}
+
+function setF(filter) { activeF = filter; searchQ = ''; document.getElementById('gSearch').value = ''; document.querySelectorAll('.fb').forEach(b => b.classList.toggle('act', b.dataset.t === filter)); TIERS.forEach(t => curPage[t] = 1); render(); }
+
+function setSearchType(type) { searchType = type; document.querySelectorAll('.search-type-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.type === type)); searchQ = ''; document.getElementById('gSearch').value = ''; render(); }
+
+document.getElementById('gSearch').addEventListener('input', function(e) { searchQ = e.target.value.trim().toLowerCase(); TIERS.forEach(t => curPage[t] = 1); render(); });
+
+function searchFilter(ids) {
+  if (!searchQ) return ids;
+  if (searchType === 'id') return ids.filter(id => id.toLowerCase().includes(searchQ));
+  if (searchType === 'contributor') {
+    const matchingIds = new Set();
+    for (const [username, data] of Object.entries(contributorNameToIds)) {
+      if (username.includes(searchQ) || data.name.toLowerCase().includes(searchQ)) data.ids.forEach(id => matchingIds.add(id));
+    }
+    return ids.filter(id => matchingIds.has(id));
+  }
+  return ids.filter(id => id.toLowerCase().includes(searchQ) || (idToContributor[id] && idToContributor[id].name.toLowerCase().includes(searchQ)));
+}
+
+function getFilteredData() {
+  const tiersToShow = activeF === 'all' || activeF === 'sold' ? TIERS : [activeF];
+  const result = {};
+  for (const tier of tiersToShow) {
+    let ids = [...(allData[tier] || [])];
+    if (activeF === 'sold') ids = ids.filter(id => soldSet.has(id));
+    if (searchQ.length >= 1) ids = searchFilter(ids);
+    if (ids.length) result[tier] = ids;
+  }
+  return result;
+}
+
+function render() {
+  const filtered = getFilteredData();
+  const main = document.getElementById('main');
+  let total = 0;
+  Object.values(filtered).forEach(arr => total += arr.length);
+  document.getElementById('ri').innerHTML = `Menampilkan <span>${total.toLocaleString('id-ID')}</span> ID`;
+  
+  if (total === 0) {
+    main.innerHTML = `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-t">Tidak ada hasil</div><div class="empty-s">Coba ubah filter atau kata kunci pencarian.</div></div>`;
+    return;
+  }
+  
+  main.innerHTML = '';
+  for (const tier of TIERS) {
+    const ids = filtered[tier];
+    if (!ids || !ids.length) continue;
+    const cp = curPage[tier] || 1;
+    const start = (cp - 1) * PAGE_SIZE;
+    const pageIds = ids.slice(start, start + PAGE_SIZE);
+    const totalPages = Math.ceil(ids.length / PAGE_SIZE);
+    
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'sg';
+    groupDiv.innerHTML = `<div class="gh"><span class="gtier-name">${TIER_NAMES[tier]}</span><span class="glevel ${TIER_BADGE_CLASS[tier]}">${TIER_NAMES[tier].toUpperCase()} — ${tier === 'low' ? 'BASIC' : tier === 'medium' ? 'STANDARD' : tier === 'high' ? 'PREMIUM' : 'ULTIMATE'}</span><span class="gcnt"><b>${pageIds.length}</b> / ${ids.length} ID</span></div>`;
+    
+    const grid = document.createElement('div');
+    grid.className = 'id-grid';
+    
+    pageIds.forEach((id, idx) => {
+      const isSold = soldSet.has(id);
+      const con = idToContributor[id];
+      const card = document.createElement('div');
+      card.className = `id-card${isSold ? ' is-sold' : ''}`;
+      card.style.setProperty('--cc', TIER_COLORS[tier]);
+      card.style.animationDelay = `${Math.min(idx * 6, 180)}ms`;
+      
+      let displayId = id;
+      if (searchQ && searchType !== 'contributor') {
+        const rx = new RegExp(`(${searchQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        displayId = id.replace(rx, '<mark>$1</mark>');
+      }
+      
+      let tags = '';
+      if (isSold) tags += `<span class="tag tag-sold">SOLD</span>`;
+      if (con) {
+        let conName = con.name;
+        if (searchQ && searchType !== 'id' && con.name.toLowerCase().includes(searchQ)) {
+          const rx = new RegExp(`(${searchQ})`, 'gi');
+          conName = con.name.replace(rx, '<mark>$1</mark>');
+        }
+        tags += `<span class="tag tag-con">${con.photo ? `<img src="${con.photo}" onerror="this.style.display='none'">` : ''}${conName}</span>`;
+      }
+      if (con?.verified) tags += `<span class="tag tag-verified"><img src="${VERIFIED_ICON_URL}" alt="✓"/>DV</span>`;
+      
+      card.innerHTML = `${isSold ? '<div class="sold-ribbon">SOLD</div>' : ''}<div class="id-num">${displayId}</div>${tags ? `<div class="id-tags">${tags}</div>` : ''}`;
+      if (!isSold) card.onclick = () => window.location.href = `../payment/payment.html?id=${encodeURIComponent(id)}&tier=${tier}`;
+      grid.appendChild(card);
+    });
+    
+    groupDiv.appendChild(grid);
+    if (totalPages > 1) {
+      const pagDiv = document.createElement('div');
+      pagDiv.className = 'pag';
+      let sp = Math.max(1, cp - 3), ep = Math.min(totalPages, sp + 6);
+      if (sp > 1) { addPB(pagDiv, 1, cp, tier); if (sp > 2) { const d = document.createElement('div'); d.className = 'pn'; d.textContent = '···'; d.style.cursor = 'default'; pagDiv.appendChild(d); } }
+      for (let i = sp; i <= ep; i++) addPB(pagDiv, i, cp, tier);
+      if (ep < totalPages) { if (ep < totalPages - 1) { const d = document.createElement('div'); d.className = 'pn'; d.textContent = '···'; d.style.cursor = 'default'; pagDiv.appendChild(d); } addPB(pagDiv, totalPages, cp, tier); }
+      groupDiv.appendChild(pagDiv);
+    }
+    main.appendChild(groupDiv);
+  }
+}
+
+function addPB(container, pn, cp, tier) {
+  const b = document.createElement('div');
+  b.className = `pn${pn === cp ? ' act' : ''}`;
+  b.textContent = pn;
+  b.onclick = () => { curPage[tier] = pn; render(); document.querySelector('.main').scrollIntoView({ behavior: 'smooth' }); };
+  container.appendChild(b);
+}
+
+loadAllData();
+</script>
+</body>
+</html>
