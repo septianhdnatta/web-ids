@@ -1,0 +1,26 @@
+{
+  "name": "idglitxh",
+  "version": "1.0.0",
+  "description": "IDglitxh — Premium ID Store Platform with MongoDB",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "start": "vercel dev"
+  },
+  "keywords": [
+    "id-store",
+    "premium-id",
+    "idglitxh",
+    "mongodb",
+    "vercel"
+  ],
+  "author": "IDglitxh Team",
+  "license": "MIT",
+  "dependencies": {
+    "mongodb": "^6.5.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  }
+}
