@@ -341,7 +341,7 @@ function getCardIcon(tierName) {
 
 async function fetchAPI(endpoint) {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}.js`);
+    const res = await fetch(`${API_URL}/${endpoint}`);
     return await res.json();
   } catch { return { success: false, data: [] }; }
 }
