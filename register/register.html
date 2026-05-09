@@ -126,9 +126,8 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
     <div class="progress-title" style="color:var(--white);margin-bottom:6px">Mendaftar...</div>
   </div>
 </div>
-
 <script>
-// Gunakan URL API yang benar (tanpa .js)
+// Gunakan URL API dengan .js
 const API_URL = '/api';
 
 async function doRegister() {
@@ -139,7 +138,6 @@ async function doRegister() {
   const bio = document.getElementById('regBio').value.trim();
   const password = document.getElementById('regPassword').value;
 
-  // Validasi
   if (!username || !name || !wa || !password) {
     toast('Username, Nama, WhatsApp, dan Password wajib diisi', 'err');
     return;
@@ -148,7 +146,8 @@ async function doRegister() {
   showProgress(true);
 
   try {
-    const response = await fetch(`${API_URL}/register`, {
+    // PERUBAHAN: tambahkan .js di endpoint
+    const response = await fetch(`${API_URL}/register.js`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, name, photo, bio, wa, password })
@@ -157,7 +156,6 @@ async function doRegister() {
     const data = await response.json();
 
     if (data.success) {
-      // Simpan data user ke localStorage
       localStorage.setItem('contributor_user', JSON.stringify(data.data));
       toast('✅ Pendaftaran berhasil! Mengarahkan ke dashboard...', 'ok');
       setTimeout(() => {
@@ -187,12 +185,12 @@ function showProgress(show) {
   else el.classList.remove('show');
 }
 
-// Enter key support
 document.querySelectorAll('input').forEach(input => {
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') doRegister();
   });
 });
 </script>
+
 </body>
 </html>
