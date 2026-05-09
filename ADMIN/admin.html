@@ -326,7 +326,7 @@ async function submitIDs() {
   
   showProgress(true);
   try {
-    const res = await fetch(`${API_URL}/ids.js`, {
+    const res = await fetch(`${API_URL}/ids`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: conUser, tier, ids: newIDs })
@@ -363,7 +363,7 @@ async function saveFile() {
   
   showProgress(true);
   try {
-    const res = await fetch(`${API_URL}/save-file.js`, {
+    const res = await fetch(`${API_URL}/save-file`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ filename, content })
