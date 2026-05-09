@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contributor Profile — IDglitxh</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--card:#161616;--card2:#1a1a1a;--border:#232323;--border2:#2a2a2a;
+  --text:#f0f0f0;--muted:#666;--muted2:#888;--white:#fff;
+  --font:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  --gold:#fbbf24;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:80px 20px 40px;
+  position:relative;
+  overflow-x:hidden;
+}
+.bg-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(13,13,13,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:700;color:var(--white);text-decoration:none}
+.nav-logo-icon{width:24px;height:24px;background:var(--white);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#000;font-weight:900}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-link{font-size:.82rem;color:var(--muted2);text-decoration:none;transition:color .2s}
+.nav-link:hover{color:var(--white)}
+.spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.profile-wrap{position:relative;z-index:1;max-width:440px;width:100%;animation:fadeUp .6s .08s ease both}
+.profile-card{background:rgba(22,22,22,.55);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.07);border-radius:28px;overflow:hidden}
+.inner-content{padding:24px 28px 32px;text-align:center}
+.profile-img{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.15);margin-top:-50px;background:var(--card);box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5)}
+.no-cover-img{margin-top:0 !important}
+.profile-name{font-size:1.7rem;font-weight:800;color:var(--white);letter-spacing:-.5px;margin-top:16px}
+.role-badge{font-size:.7rem;font-weight:600;padding:.25rem .8rem;border-radius:24px;font-family:var(--mono);display:inline-block;margin-top:8px}
+.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
+.profile-usn{font-family:var(--mono);font-size:.82rem;color:var(--muted2);margin:8px 0}
+.verified-icon{display:inline-flex;width:18px;height:18px;margin-left:6px;vertical-align:middle}
+.verified-icon img{width:100%;height:100%;object-fit:contain}
+.bio{font-size:.82rem;color:var(--muted2);margin:16px 0;line-height:1.6}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:16px 0}
+.stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
+.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.stat-pill:first-child{border-radius:12px 0 0 12px}
+.stat-pill:last-child{border-radius:0 12px 12px 0}
+.stat-pill:not(:last-child){border-right:none}
+.sp-n{font-size:1.1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
+.sp-l{font-size:.65rem;color:var(--muted);margin-top:4px}
+.id-section{margin-top:24px;text-align:left}
+.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.id-section-title::before,.id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:8px;max-height:200px;overflow-y:auto}
+.id-tag-item{font-family:var(--mono);font-size:.7rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.25rem .7rem;border-radius:8px}
+.back-link{margin-top:24px;text-align:center}
+.back-link a{color:var(--muted);font-size:.78rem;text-decoration:none}
+.back-link a:hover{color:var(--white)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  nav{padding:0 20px}.nav-links{display:none}
+  .profile-wrap{max-width:380px}
+  .profile-img{width:84px;height:84px;margin-top:-42px}
+  .profile-name{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">ID</div>IDglitxh</a>
+  <div class="nav-links">
+    <a href="../index.html#scores" class="nav-link">Koleksi</a>
+    <a href="../index.html#fitur" class="nav-link">Fitur</a>
+    <a href="../index.html#stok" class="nav-link">Stok</a>
+    <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+  </div>
+</nav>
+
+<div id="loadingState" style="text-align:center;padding:40px"><div class="spinner"></div><div style="margin-top:14px;color:var(--muted)">Memuat profil...</div></div>
+
+<div id="profileSection" style="display:none">
+  <div class="profile-wrap">
+    <div class="profile-card">
+      <div class="inner-content">
+        <img class="profile-img" id="profileImg" src="" alt=""/>
+        <div class="profile-name" id="profileName">—</div>
+        <div><span class="role-badge" id="roleBadge"></span></div>
+        <div class="profile-usn" id="profileUsn">@— <span class="verified-icon" id="verifiedBadge" style="display:none"><img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" alt="✓"/></span></div>
+        <div class="bio" id="profileBio">—</div>
+        <div class="divider"></div>
+        <div class="stat-row">
+          <div class="stat-pill"><div class="sp-n" id="statTotal">—</div><div class="sp-l">Total ID</div></div>
+          <div class="stat-pill"><div class="sp-n" id="statRank">—</div><div class="sp-l">Rank</div></div>
+          <div class="stat-pill"><div class="sp-n" id="statJoined">—</div><div class="sp-l">Bergabung</div></div>
+        </div>
+        <div class="id-section" id="idSection" style="display:none">
+          <div class="id-section-title">ID Contributed</div>
+          <div class="id-tags-wrap" id="idListContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="back-link"><a href="leaderboard.html">← Kembali ke Leaderboard</a></div>
+</div>
+
+<div id="notFoundState" style="display:none;text-align:center;padding:40px">
+  <div style="width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+  </div>
+  <div style="font-size:1rem;font-weight:700;color:var(--white);margin-bottom:6px">Contributor Tidak Ditemukan</div>
+  <div style="font-size:.78rem;color:var(--muted)">Contributor yang kamu cari tidak ada atau belum terdaftar.</div>
+</div>
+
+<script>
+const API_URL = '/api';
+const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
+
+const urlParams = new URLSearchParams(window.location.search);
+const targetUser = urlParams.get('u');
+
+async function fetchAPI(endpoint) {
+  try {
+    const res = await fetch(`${API_URL}/${endpoint}`);
+    return await res.json();
+  } catch { return { success: false, data: [] }; }
+}
+
+async function loadProfile() {
+  if (!targetUser) { showNotFound(); return; }
+  
+  const result = await fetchAPI(`contributors`);
+  if (!result.success || !result.data) { showNotFound(); return; }
+  
+  const contributor = result.data.find(c => c.username === targetUser.toLowerCase());
+  if (!contributor) { showNotFound(); return; }
+  
+  renderProfile(contributor, result.data);
+}
+
+async function renderProfile(contributor, allContributors) {
+  document.title = `${contributor.name} — IDglitxh`;
+  
+  document.getElementById('profileImg').src = contributor.photo || '';
+  document.getElementById('profileName').textContent = contributor.name;
+  
+  const roleBadge = document.getElementById('roleBadge');
+  roleBadge.textContent = contributor.role === 'DV' ? 'DV' : 'CB';
+  roleBadge.className = `role-badge ${contributor.role === 'DV' ? 'role-dv' : 'role-cb'}`;
+  
+  document.getElementById('profileUsn').innerHTML = `@${contributor.username}`;
+  if (contributor.verified) {
+    document.getElementById('verifiedBadge').style.display = 'inline-flex';
+  }
+  
+  document.getElementById('profileBio').textContent = contributor.bio || 'Premium ID Contributor.';
+  document.getElementById('statTotal').textContent = (contributor.total || 0).toLocaleString('id-ID');
+  
+  const sorted = [...allContributors].sort((a, b) => (b.total || 0) - (a.total || 0));
+  const rank = sorted.findIndex(c => c.username === contributor.username) + 1;
+  document.getElementById('statRank').textContent = `#${rank}`;
+  
+  if (contributor.joined) {
+    const d = new Date(contributor.joined);
+    document.getElementById('statJoined').textContent = d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
+  }
+  
+  // Load IDs
+  const idsResult = await fetchAPI(`my-ids?username=${contributor.username}`);
+  if (idsResult.success && idsResult.data && idsResult.data.length > 0) {
+    const container = document.getElementById('idListContainer');
+    container.innerHTML = idsResult.data.map(id => `<span class="id-tag-item">${escapeHtml(id.id)}</span>`).join('');
+    document.getElementById('idSection').style.display = 'block';
+  }
+  
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('profileSection').style.display = 'block';
+}
+
+function showNotFound() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('notFoundState').style.display = 'block';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+loadProfile();
+</script>
+</body>
+</html>
