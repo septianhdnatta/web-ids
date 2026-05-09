@@ -176,7 +176,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 /* STAT ROW */
 .stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
-.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s}
+.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s;cursor:pointer}
 .stat-pill:first-child{border-radius:12px 0 0 12px}
 .stat-pill:last-child{border-radius:0 12px 12px 0}
 .stat-pill:not(:last-child){border-right:none}
@@ -194,6 +194,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .id-tag-item{font-family:var(--mono);font-size:.7rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.25rem .7rem;border-radius:8px;transition:all .15s;cursor:default}
 .id-tag-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+.id-tag-item.sold-item{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.15);color:var(--muted2);text-decoration:line-through}
 
 /* TIER BADGES */
 .badge-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
@@ -206,6 +207,95 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .tier-id-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .tier-badge-sm{font-size:.6rem;font-weight:600;letter-spacing:.5px;padding:.16rem .6rem;border-radius:6px;font-family:var(--mono);text-transform:uppercase}
 .tier-id-count{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+
+/* MODAL POPUP */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(8px);
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  visibility:hidden;
+  opacity:0;
+  transition:all .2s;
+}
+.modal-overlay.show{
+  visibility:visible;
+  opacity:1;
+}
+.modal{
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  max-width:500px;
+  width:90%;
+  max-height:80vh;
+  overflow:hidden;
+  animation:fadeUp .3s ease;
+}
+.modal-header{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.modal-title{
+  font-size:1rem;
+  font-weight:700;
+  color:var(--white);
+}
+.modal-close{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:1.2rem;
+  cursor:pointer;
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--white)}
+.modal-body{
+  padding:20px 24px;
+  max-height:60vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+.sold-list-modal{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.sold-item-modal{
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:var(--text);
+  background:var(--card2);
+  border:1px solid var(--border2);
+  padding:.6rem .9rem;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.sold-tier-tag{
+  font-size:.55rem;
+  font-weight:600;
+  padding:.15rem .5rem;
+  border-radius:4px;
+}
+.modal-empty{
+  text-align:center;
+  padding:40px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:.75rem;
+}
 
 /* BACK LINK */
 .back-link{margin-top:24px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
@@ -305,6 +395,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
         <div class="bio" id="profileBio">Premium ID Contributor.</div>
 
+        <!-- STAT ROW: Total ID | Bergabung | ID Sold -->
         <div class="stat-row">
           <div class="stat-pill">
             <div class="sp-n" id="statTotal">—</div>
@@ -314,9 +405,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <div class="sp-n" id="statJoined">—</div>
             <div class="sp-l">Bergabung</div>
           </div>
-          <div class="stat-pill">
-            <div class="sp-n">✓</div>
-            <div class="sp-l">Verified</div>
+          <div class="stat-pill" id="soldStat" onclick="showSoldModal()">
+            <div class="sp-n" id="statSold">—</div>
+            <div class="sp-l">ID Sold →</div>
           </div>
         </div>
 
@@ -326,6 +417,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
         </div>
 
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POPUP UNTUK SOLD IDS -->
+<div class="modal-overlay" id="soldModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">ID Sold</span>
+      <button class="modal-close" onclick="closeSoldModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-empty">Memuat...</div>
     </div>
   </div>
 </div>
@@ -361,6 +465,8 @@ const TIER_CONFIG = {
 };
 
 let allContributors = [];
+let currentSoldIDs = [];
+let currentSoldTiers = {};
 
 // ==================== FUNGSI API ====================
 async function fetchAPI(endpoint) {
@@ -386,6 +492,20 @@ function formatDate(dateStr) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+// ==================== AMBIL SOLD IDS DARI COLLECTION sold_username ====================
+async function fetchSoldIDs(username) {
+  try {
+    const res = await fetch(`${API_URL}/sold-by-contributor.js?username=${username}`);
+    const data = await res.json();
+    if (data.success) {
+      return { soldList: data.data, soldCount: data.count };
+    }
+    return { soldList: [], soldCount: 0 };
+  } catch {
+    return { soldList: [], soldCount: 0 };
+  }
 }
 
 // ==================== INIT ====================
@@ -490,87 +610,136 @@ async function renderProfile(con) {
   document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
   document.getElementById('statJoined').textContent = formatDate(con.joined);
 
-  // Fetch ID list milik contributor ini
+  // AMBIL SOLD IDS DARI COLLECTION SOLD_USERNAME
+  const { soldList, soldCount } = await fetchSoldIDs(con.username);
+  currentSoldIDs = soldList;
+  document.getElementById('statSold').textContent = soldCount.toLocaleString('id-ID');
+
+  // Fetch ID list milik contributor ini (aktif, belum sold)
   const idsResult = await fetchAPI(`my-ids?username=${con.username}`);
   if (idsResult.success && idsResult.data && idsResult.data.length > 0) {
-    // Fetch tier data to categorize IDs
-    const tierURLs = {
-      low: 'ids?tier=low',
-      medium: 'ids?tier=medium',
-      high: 'ids?tier=high',
-      legend: 'ids?tier=legend',
-    };
+    // Buat Set sold IDs untuk filter
+    const soldIdSet = new Set(soldList.map(s => s.id));
+    
+    // Filter hanya ID yang belum sold
+    const activeIds = idsResult.data.filter(item => !soldIdSet.has(item.id));
+    
+    if (activeIds.length > 0) {
+      // Fetch tier data to categorize IDs
+      const tierURLs = {
+        low: 'ids?tier=low',
+        medium: 'ids?tier=medium',
+        high: 'ids?tier=high',
+        legend: 'ids?tier=legend',
+      };
 
-    const tierSets = {};
-    await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
-      const res = await fetchAPI(url);
-      tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
-    }));
+      const tierSets = {};
+      await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
+        const res = await fetchAPI(url);
+        tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
+      }));
 
-    // Group IDs by tier
-    const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
-    idsResult.data.forEach(item => {
-      const sid = String(item.id);
-      let found = false;
-      for (const tier of ['legend','high','medium','low']) {
-        if (tierSets[tier] && tierSets[tier].has(sid)) {
-          grouped[tier].push(sid);
-          found = true;
-          break;
+      // Group IDs by tier
+      const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
+      activeIds.forEach(item => {
+        const sid = String(item.id);
+        let found = false;
+        for (const tier of ['legend','high','medium','low']) {
+          if (tierSets[tier] && tierSets[tier].has(sid)) {
+            grouped[tier].push(sid);
+            found = true;
+            break;
+          }
         }
+        if (!found) grouped.other.push(sid);
+      });
+
+      const idSection = document.getElementById('idSection');
+      const tierGroups = document.getElementById('idTierGroups');
+      tierGroups.innerHTML = '';
+
+      const tierOrder = ['legend', 'high', 'medium', 'low'];
+      let hasAny = false;
+
+      tierOrder.forEach(tier => {
+        const ids = grouped[tier];
+        if (!ids.length) return;
+        hasAny = true;
+        const cfg = TIER_CONFIG[tier];
+        const groupEl = document.createElement('div');
+        groupEl.className = 'tier-id-group';
+        groupEl.innerHTML = `
+          <div class="tier-id-header">
+            <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
+            <span class="tier-id-count">${ids.length} ID</span>
+          </div>
+          <div class="id-tags-wrap">
+            ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+          </div>
+        `;
+        tierGroups.appendChild(groupEl);
+      });
+
+      if (grouped.other.length > 0) {
+        hasAny = true;
+        const groupEl = document.createElement('div');
+        groupEl.className = 'tier-id-group';
+        groupEl.innerHTML = `
+          <div class="tier-id-header">
+            <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
+            <span class="tier-id-count">${grouped.other.length} ID</span>
+          </div>
+          <div class="id-tags-wrap">
+            ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+          </div>
+        `;
+        tierGroups.appendChild(groupEl);
       }
-      if (!found) grouped.other.push(sid);
-    });
 
-    const idSection = document.getElementById('idSection');
-    const tierGroups = document.getElementById('idTierGroups');
-    tierGroups.innerHTML = '';
-
-    const tierOrder = ['legend', 'high', 'medium', 'low'];
-    let hasAny = false;
-
-    tierOrder.forEach(tier => {
-      const ids = grouped[tier];
-      if (!ids.length) return;
-      hasAny = true;
-      const cfg = TIER_CONFIG[tier];
-      const groupEl = document.createElement('div');
-      groupEl.className = 'tier-id-group';
-      groupEl.innerHTML = `
-        <div class="tier-id-header">
-          <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
-          <span class="tier-id-count">${ids.length} ID</span>
-        </div>
-        <div class="id-tags-wrap">
-          ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
-        </div>
-      `;
-      tierGroups.appendChild(groupEl);
-    });
-
-    if (grouped.other.length > 0) {
-      hasAny = true;
-      const groupEl = document.createElement('div');
-      groupEl.className = 'tier-id-group';
-      groupEl.innerHTML = `
-        <div class="tier-id-header">
-          <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
-          <span class="tier-id-count">${grouped.other.length} ID</span>
-        </div>
-        <div class="id-tags-wrap">
-          ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
-        </div>
-      `;
-      tierGroups.appendChild(groupEl);
+      if (hasAny) idSection.style.display = '';
     }
-
-    if (hasAny) idSection.style.display = '';
   }
 
   // Show profile
   document.getElementById('loadingState').style.display = 'none';
   document.getElementById('profileSection').style.display = '';
   document.getElementById('backLink').style.display = '';
+}
+
+// ==================== MODAL SOLD ====================
+function showSoldModal() {
+  const modal = document.getElementById('soldModal');
+  const modalBody = document.getElementById('modalBody');
+  const modalTitle = document.getElementById('modalTitle');
+  const username = document.getElementById('profileUsn').textContent.replace('@', '');
+  
+  modalTitle.textContent = `ID Sold — @${username}`;
+  
+  if (!currentSoldIDs.length) {
+    modalBody.innerHTML = `<div class="modal-empty">Belum ada ID yang terjual dari contributor ini.</div>`;
+    modal.classList.add('show');
+    return;
+  }
+  
+  const tierLabels = { legend: 'LEGEND', high: 'HIGH', medium: 'MEDIUM', low: 'LOW' };
+  const tierClasses = { legend: 'badge-legend', high: 'badge-high', medium: 'badge-medium', low: 'badge-low' };
+  
+  modalBody.innerHTML = `
+    <div class="sold-list-modal">
+      ${currentSoldIDs.map(item => `
+        <div class="sold-item-modal">
+          <span style="font-family:var(--mono)">${escapeHtml(item.id)}</span>
+          ${item.tier ? `<span class="sold-tier-tag ${tierClasses[item.tier]}">${tierLabels[item.tier]}</span>` : '<span class="sold-tier-tag" style="background:rgba(255,255,255,.05);color:var(--muted)">UNKNOWN</span>'}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modal.classList.add('show');
+}
+
+function closeSoldModal() {
+  document.getElementById('soldModal').classList.remove('show');
 }
 
 function showNotFound() {
