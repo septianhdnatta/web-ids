@@ -168,7 +168,7 @@ tbody td.td-count{color:var(--white);font-weight:500}
 .cta-left .cta-label::before{content:'';width:16px;height:1px;background:linear-gradient(90deg,var(--purple),var(--pink))}
 .cta-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;letter-spacing:-1px;color:var(--white);line-height:1.2;margin-bottom:10px}
 .cta-sub{font-size:.82rem;color:var(--muted2);line-height:1.7}
-.btn-cta{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-size:.82rem;font-weight:600;padding:.8rem 1.8rem;border-radius:10px;text-decoration:none;white-space:nowrap;transition:all .2s}
+.btn-cta{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-size:.82rem;font-weight:600;padding:.8rem 1.8rem;border-radius:10px;text-decoration:none;transition:all .2s}
 .btn-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(168,85,247,.4)}
 
 /* FOOTER */
@@ -341,7 +341,7 @@ function getCardIcon(tierName) {
 
 async function fetchAPI(endpoint) {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}`);
+    const res = await fetch(`${API_URL}/${endpoint}.js`);
     return await res.json();
   } catch { return { success: false, data: [] }; }
 }
