@@ -72,7 +72,7 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
     
     <div class="field">
       <label>Username</label>
-      <input type="text" id="loginUsername" placeholder="cth: dilzzwkwk">
+      <input type="text" id="loginUsername" placeholder="cth: natas">
     </div>
     <div class="field">
       <label>Password</label>
@@ -109,30 +109,6 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
 <script>
 const API_URL = '/api';
 
-async function callAPI(endpoint, method, body = null) {
-  const options = {
-    method: method,
-    headers: { 'Content-Type': 'application/json' }
-  };
-  if (body) options.body = JSON.stringify(body);
-  
-  const response = await fetch(`${API_URL}/${endpoint}`, options);
-  return await response.json();
-}
-
-function showProgress(show) {
-  const el = document.getElementById('progressOverlay');
-  if (show) el.classList.add('show');
-  else el.classList.remove('show');
-}
-
-function toast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
 async function doLogin() {
   const username = document.getElementById('loginUsername').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
@@ -145,26 +121,52 @@ async function doLogin() {
   showProgress(true);
   
   try {
-    const result = await callAPI('login.js', 'POST', { username, password });
+    // PERBAIKAN: tambahkan .js di endpoint
+    const response = await fetch(`${API_URL}/login.js`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    
+    const data = await response.json();
     showProgress(false);
     
-    if (!result.success) {
-      toast(result.error || 'Login gagal', 'err');
+    if (!data.success) {
+      toast(data.error || 'Login gagal', 'err');
       return;
     }
     
     // Login sukses
-    localStorage.setItem('contributor_user', JSON.stringify(result.data));
+    localStorage.setItem('contributor_user', JSON.stringify(data.data));
     
     toast('✅ Login berhasil! Mengarahkan...', 'ok');
     setTimeout(() => {
-      window.location.href = '../contributor-dashboard.html';
+      window.location.href = '../dashboard/dashboard.html';
     }, 1000);
   } catch (error) {
     showProgress(false);
+    console.error('Login error:', error);
     toast('❌ Gagal terhubung ke server', 'err');
   }
 }
+
+function toast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function showProgress(show) {
+  const el = document.getElementById('progressOverlay');
+  if (show) el.classList.add('show');
+  else el.classList.remove('show');
+}
+
+// Enter key support
+document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
 </script>
 </body>
 </html>
