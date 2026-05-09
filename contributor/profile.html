@@ -21,8 +21,6 @@
   --font:'Inter',sans-serif;
   --mono:'JetBrains Mono',monospace;
   --gold:#fbbf24;
-  --silver:#d1d5db;
-  --bronze:#fb923c;
   --red:#ef4444;
 }
 html{scroll-behavior:smooth}
@@ -55,7 +53,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .nav-links{display:flex;align-items:center;gap:28px}
 .nav-link{font-size:.82rem;color:var(--muted2);text-decoration:none;transition:color .2s;font-weight:400}
 .nav-link:hover{color:var(--white)}
-.nav-link.active{color:var(--white)}
 
 /* LOADER */
 #loadingState{position:relative;z-index:1;text-align:center;color:var(--muted);font-family:var(--mono);font-size:.78rem}
@@ -67,11 +64,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .page-pill-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* BLOCKED BADGE LARGE */
-.blocked-large{display:inline-block;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:30px;padding:.3rem .9rem;font-size:.7rem;font-weight:600;margin-top:8px}
+/* BLOCKED BADGE */
+.blocked-large{display:inline-block;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:30px;padding:.25rem .8rem;font-size:.65rem;font-weight:600;margin-top:6px}
 
 /* PROFILE CARD */
-.profile-wrap{position:relative;z-index:1;max-width:440px;width:100%;animation:fadeUp .6s .08s ease both}
+.profile-wrap{position:relative;z-index:1;max-width:420px;width:100%;animation:fadeUp .6s .08s ease both}
 
 .profile-card{
   background:rgba(22,22,22,.55);
@@ -96,22 +93,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 }
 
 /* COVER */
-.cover{width:100%;height:140px;overflow:hidden;position:relative;display:none}
+.cover{width:100%;height:120px;overflow:hidden;position:relative;display:none}
 .cover.has-cover{display:block}
-.cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(22,22,22,.8),transparent);z-index:2}
+.cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(22,22,22,.8),transparent);z-index:2}
 .cover-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.85)}
 
 /* INNER CONTENT */
-.inner-content{padding:24px 28px 32px;position:relative;z-index:2;text-align:center}
+.inner-content{padding:20px 24px 28px;position:relative;z-index:2;text-align:center}
 
 /* PROFILE IMAGE */
 .profile-img{
-  width:100px;
-  height:100px;
+  width:96px;
+  height:96px;
   border-radius:50%;
   object-fit:cover;
   border:3px solid rgba(255,255,255,.15);
-  margin-top:-50px;
+  margin-top:-48px;
   background:var(--card);
   box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5);
   position:relative;
@@ -121,29 +118,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .profile-img:hover{transform:scale(1.02)}
 .no-cover-img{margin-top:0 !important}
 
-/* BLOCKED OVERLAY ON AVATAR */
-.avatar-blocked-overlay{position:absolute;bottom:-5px;right:-5px;background:var(--red);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:white;border:2px solid var(--card);z-index:4}
+/* AVATAR BLOCKED OVERLAY */
+.avatar-blocked-overlay{position:absolute;bottom:-2px;right:-2px;background:var(--red);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:white;border:2px solid var(--card);z-index:4}
 
-/* NAME ROW */
-.name-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;margin-bottom:6px;flex-wrap:wrap}
-.profile-name{font-size:1.7rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
-
-/* ROLE BADGE */
-.role-badge{font-size:.7rem;font-weight:600;letter-spacing:.5px;padding:.25rem .8rem;border-radius:24px;font-family:var(--mono);display:inline-block;margin-left:8px}
-.role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
-.role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
+/* NAME ROW (tanpa role badge) */
+.name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;margin-bottom:4px;flex-wrap:wrap}
+.profile-name{font-size:1.5rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
 
 /* USN ROW */
-.usn-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
-.profile-usn{font-family:var(--mono);font-size:.82rem;color:var(--muted2)}
+.usn-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px}
+.profile-usn{font-family:var(--mono);font-size:.78rem;color:var(--muted2)}
 
 /* VERIFIED BADGE */
 .verified-badge{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  width:20px;
-  height:20px;
+  width:18px;
+  height:18px;
   flex-shrink:0;
 }
 .verified-badge img{
@@ -154,52 +146,52 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 }
 
 /* RANK BADGE */
-.rank-wrapper{margin:6px 0 4px}
+.rank-wrapper{margin:6px 0 2px}
 .rank-badge-leader{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:6px;
-  font-size:.6rem;
+  gap:5px;
+  font-size:.55rem;
   font-weight:600;
   font-family:var(--mono);
-  padding:.2rem .8rem;
+  padding:.15rem .7rem;
   border-radius:30px;
   letter-spacing:.5px;
   background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.1);
   color:var(--muted2);
 }
-.rank-badge-leader.rank-1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;box-shadow:0 0 8px rgba(251,191,36,.3)}
+.rank-badge-leader.rank-1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;box-shadow:0 0 6px rgba(251,191,36,.3)}
 .rank-badge-leader.rank-2{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#000;border:none}
 .rank-badge-leader.rank-3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;border:none}
-.rank-icon{font-size:.75rem}
+.rank-icon{font-size:.7rem}
 
 /* DIVIDER */
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:16px 0 20px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:12px 0 16px}
 
 /* BIO */
-.bio{font-size:.82rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
+.bio{font-size:.78rem;color:var(--muted2);margin-bottom:20px;line-height:1.6}
 
-/* STAT ROW */
-.stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
-.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s}
-.stat-pill:first-child{border-radius:12px 0 0 12px}
-.stat-pill:last-child{border-radius:0 12px 12px 0}
+/* STAT ROW - Total ID | Bergabung | ID Sold */
+.stat-row{display:flex;justify-content:center;gap:0;margin-bottom:20px}
+.stat-pill{flex:1;padding:10px 6px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s;cursor:pointer}
+.stat-pill:first-child{border-radius:10px 0 0 10px}
+.stat-pill:last-child{border-radius:0 10px 10px 0}
 .stat-pill:not(:last-child){border-right:none}
 .stat-pill:hover{background:rgba(255,255,255,.06)}
-.sp-n{font-size:1.1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
-.sp-l{font-size:.65rem;color:var(--muted);margin-top:4px;font-weight:400}
+.sp-n{font-size:1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
+.sp-l{font-size:.6rem;color:var(--muted);margin-top:3px;font-weight:400}
 
 /* ID LIST SECTION */
-.id-section{margin-top:24px;text-align:left}
-.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.id-section{margin-top:20px;text-align:left}
+.id-section-title{font-size:.68rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .id-section-title::before{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
 .id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-.id-tags-wrap{display:flex;flex-wrap:wrap;gap:8px;max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
 .id-tags-wrap::-webkit-scrollbar{width:3px}
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.id-tag-item{font-family:var(--mono);font-size:.7rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.25rem .7rem;border-radius:8px;transition:all .15s;cursor:default}
+.id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:8px;transition:all .15s;cursor:default}
 .id-tag-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
 
 /* TIER BADGES */
@@ -209,22 +201,111 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .badge-legend{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.25)}
 
 /* TIER GROUP */
-.tier-id-group{margin-bottom:16px}
-.tier-id-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.tier-badge-sm{font-size:.6rem;font-weight:600;letter-spacing:.5px;padding:.16rem .6rem;border-radius:6px;font-family:var(--mono);text-transform:uppercase}
-.tier-id-count{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+.tier-id-group{margin-bottom:14px}
+.tier-id-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tier-badge-sm{font-size:.58rem;font-weight:600;letter-spacing:.5px;padding:.14rem .5rem;border-radius:6px;font-family:var(--mono);text-transform:uppercase}
+.tier-id-count{font-size:.65rem;color:var(--muted);font-family:var(--mono)}
+
+/* MODAL POPUP */
+.modal-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(8px);
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  visibility:hidden;
+  opacity:0;
+  transition:all .2s;
+}
+.modal-overlay.show{
+  visibility:visible;
+  opacity:1;
+}
+.modal{
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  max-width:500px;
+  width:90%;
+  max-height:80vh;
+  overflow:hidden;
+  animation:fadeUp .3s ease;
+}
+.modal-header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.modal-title{
+  font-size:.95rem;
+  font-weight:700;
+  color:var(--white);
+}
+.modal-close{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-size:1.1rem;
+  cursor:pointer;
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--white)}
+.modal-body{
+  padding:16px 20px;
+  max-height:60vh;
+  overflow-y:auto;
+  scrollbar-width:thin;
+}
+.sold-list-modal{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.sold-item-modal{
+  font-family:var(--mono);
+  font-size:.72rem;
+  color:var(--text);
+  background:var(--card2);
+  border:1px solid var(--border2);
+  padding:.5rem .8rem;
+  border-radius:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.sold-tier-tag{
+  font-size:.52rem;
+  font-weight:600;
+  padding:.12rem .45rem;
+  border-radius:4px;
+}
+.modal-empty{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:.72rem;
+}
 
 /* BACK LINK */
-.back-link{margin-top:24px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
-.back-link a{color:var(--muted);font-size:.78rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
+.back-link{margin-top:20px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
+.back-link a{color:var(--muted);font-size:.75rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
 .back-link a:hover{color:var(--white)}
 
 /* NOT FOUND */
 .not-found{position:relative;z-index:1;text-align:center;padding:40px 20px;animation:fadeUp .5s ease both}
 .nf-icon{width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .nf-icon svg{width:24px;height:24px;stroke:var(--muted)}
-.nf-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:6px}
-.nf-sub{font-size:.78rem;color:var(--muted);line-height:1.6}
+.nf-title{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.nf-sub{font-size:.75rem;color:var(--muted);line-height:1.6}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
@@ -237,14 +318,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   nav{padding:0 20px}
   .nav-links{display:none}
   .profile-wrap{max-width:380px}
-  .inner-content{padding:20px 20px 28px}
-  .cover{height:120px}
-  .profile-img{width:84px;height:84px;margin-top:-42px}
-  .profile-name{font-size:1.4rem}
+  .inner-content{padding:16px 18px 22px}
+  .cover{height:100px}
+  .profile-img{width:80px;height:80px;margin-top:-40px}
+  .profile-name{font-size:1.3rem}
   body{padding:70px 16px 30px}
-  .verified-badge{width:18px;height:18px}
-  .rank-badge-leader{font-size:.55rem;padding:.15rem .6rem}
-  .role-badge{font-size:.6rem;padding:.2rem .6rem}
+  .verified-badge{width:16px;height:16px}
+  .rank-badge-leader{font-size:.5rem;padding:.12rem .6rem}
+  .sp-n{font-size:.9rem}
+  .sp-l{font-size:.55rem}
 }
 </style>
 </head>
@@ -294,13 +376,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
           <div id="avatarBlockedOverlay" class="avatar-blocked-overlay" style="display:none" title="Account Blocked">⛔</div>
         </div>
 
-        <!-- NAME + ROLE BADGE -->
+        <!-- NAME ONLY (tanpa role badge) -->
         <div class="name-row">
           <span class="profile-name" id="profileName">—</span>
-          <span class="role-badge" id="roleBadge" style="display:none"></span>
         </div>
 
-        <!-- BLOCKED BADGE (large) -->
+        <!-- BLOCKED BADGE -->
         <div id="blockedBadge" class="blocked-large" style="display:none">⛔ AKUN DIBLOKIR</div>
 
         <!-- USN + VERIFIED -->
@@ -320,7 +401,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
         <div class="bio" id="profileBio">Premium ID Contributor.</div>
 
-        <!-- STAT ROW -->
+        <!-- STAT ROW: Total ID | Bergabung | ID Sold -->
         <div class="stat-row">
           <div class="stat-pill">
             <div class="sp-n" id="statTotal">—</div>
@@ -330,9 +411,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
             <div class="sp-n" id="statJoined">—</div>
             <div class="sp-l">Bergabung</div>
           </div>
-          <div class="stat-pill">
-            <div class="sp-n">✓</div>
-            <div class="sp-l">Verified</div>
+          <div class="stat-pill" id="soldStat" onclick="showSoldModal()">
+            <div class="sp-n" id="statSold">—</div>
+            <div class="sp-l">ID Sold →</div>
           </div>
         </div>
 
@@ -343,6 +424,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
         </div>
 
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL POPUP -->
+<div class="modal-overlay" id="soldModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">ID Sold</span>
+      <button class="modal-close" onclick="closeSoldModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-empty">Memuat...</div>
     </div>
   </div>
 </div>
@@ -378,6 +472,8 @@ const TIER_CONFIG = {
 };
 
 let allContributors = [];
+let currentSoldIDs = [];
+let currentSoldTiers = {};
 
 // ==================== FUNGSI API ====================
 async function callAPI(endpoint) {
@@ -403,6 +499,20 @@ function formatDate(dateStr) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+
+// ==================== AMBIL SOLD IDS ====================
+async function fetchSoldIDs(username) {
+  try {
+    const res = await callAPI(`my-ids?username=${username}`);
+    if (res.success && res.data) {
+      const soldIds = res.data.filter(item => item.isSold).map(item => ({ id: item.id, tier: item.tier }));
+      return { soldList: soldIds, soldCount: soldIds.length };
+    }
+    return { soldList: [], soldCount: 0 };
+  } catch {
+    return { soldList: [], soldCount: 0 };
+  }
 }
 
 // ==================== INIT ====================
@@ -432,11 +542,9 @@ async function init() {
 async function renderProfile(con) {
   const isVerified = con.verified === true;
   const isBlocked = con.active === false;
-  const role = con.role || 'CB';
-  const isDeveloper = role === 'DV';
 
   document.title = `${con.name} — IDglitxh`;
-  document.getElementById('pillText').textContent = isDeveloper ? 'Developer Profile' : 'Contributor Profile';
+  document.getElementById('pillText').textContent = 'Contributor Profile';
   document.getElementById('pagePill').style.display = '';
 
   // COVER
@@ -456,7 +564,7 @@ async function renderProfile(con) {
     imgEl.classList.add('no-cover-img');
     imgEl.style.marginTop = '0';
   } else {
-    imgEl.style.marginTop = '-50px';
+    imgEl.style.marginTop = '-48px';
   }
 
   // BLOCKED OVERLAY ON AVATAR
@@ -468,28 +576,20 @@ async function renderProfile(con) {
     document.getElementById('blockedBadge').style.display = 'none';
   }
 
-  // NAME
+  // NAME (tanpa role badge)
   document.getElementById('profileName').textContent = con.name;
-  
-  // ROLE BADGE (DV/CB)
-  const roleBadge = document.getElementById('roleBadge');
-  const roleBadgeClass = role === 'DV' ? 'role-dv' : 'role-cb';
-  const roleLabel = role === 'DV' ? 'DV' : 'CB';
-  roleBadge.textContent = roleLabel;
-  roleBadge.className = `role-badge ${roleBadgeClass}`;
-  roleBadge.style.display = 'inline-block';
 
   // USN
   document.getElementById('profileUsn').textContent = '@' + con.username;
 
-  // VERIFIED BADGE (hanya jika verified: true)
+  // VERIFIED BADGE
   if (isVerified) {
     document.getElementById('verifiedBadgeUsn').style.display = 'inline-flex';
   } else {
     document.getElementById('verifiedBadgeUsn').style.display = 'none';
   }
 
-  // RANK BADGE (hanya jika tidak diblokir atau tetap tampilkan)
+  // RANK BADGE
   const ranking = await fetchRanking(allContributors, con.username);
   const rankWrapper = document.getElementById('rankWrapper');
   const rankBadgeEl = document.getElementById('rankBadgeLeader');
@@ -509,100 +609,146 @@ async function renderProfile(con) {
     rankWrapper.style.display = 'none';
   }
 
-  // BIO (tambahkan info blokir)
+  // BIO
   if (isBlocked) {
     document.getElementById('profileBio').textContent = (con.bio || 'Premium ID Contributor.') + ' (Akun diblokir)';
   } else if (con.bio) {
     document.getElementById('profileBio').textContent = con.bio;
   } else {
-    document.getElementById('profileBio').textContent = isDeveloper ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
+    document.getElementById('profileBio').textContent = 'Premium ID Contributor.';
   }
 
   // STATS
   document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
   document.getElementById('statJoined').textContent = formatDate(con.joined);
 
-  // Fetch ID list milik contributor ini
+  // FETCH SOLD IDS
+  const { soldList, soldCount } = await fetchSoldIDs(con.username);
+  currentSoldIDs = soldList;
+  document.getElementById('statSold').textContent = soldCount.toLocaleString('id-ID');
+
+  // Fetch ID list (aktif, belum sold)
   const idsResult = await callAPI(`my-ids?username=${con.username}`);
   if (idsResult.success && idsResult.data && idsResult.data.length > 0 && !isBlocked) {
-    // Fetch tier data to categorize IDs
-    const tierURLs = {
-      low: 'ids?tier=low',
-      medium: 'ids?tier=medium',
-      high: 'ids?tier=high',
-      legend: 'ids?tier=legend',
-    };
+    // Filter hanya ID yang belum sold
+    const activeIds = idsResult.data.filter(item => !item.isSold);
+    
+    if (activeIds.length > 0) {
+      // Fetch tier data
+      const tierURLs = {
+        low: 'ids?tier=low',
+        medium: 'ids?tier=medium',
+        high: 'ids?tier=high',
+        legend: 'ids?tier=legend',
+      };
 
-    const tierSets = {};
-    await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
-      const res = await callAPI(url);
-      tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
-    }));
+      const tierSets = {};
+      await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
+        const res = await callAPI(url);
+        tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
+      }));
 
-    // Group IDs by tier
-    const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
-    idsResult.data.forEach(item => {
-      const sid = String(item.id);
-      let found = false;
-      for (const tier of ['legend','high','medium','low']) {
-        if (tierSets[tier] && tierSets[tier].has(sid)) {
-          grouped[tier].push(sid);
-          found = true;
-          break;
+      // Group IDs by tier
+      const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
+      activeIds.forEach(item => {
+        const sid = String(item.id);
+        let found = false;
+        for (const tier of ['legend','high','medium','low']) {
+          if (tierSets[tier] && tierSets[tier].has(sid)) {
+            grouped[tier].push(sid);
+            found = true;
+            break;
+          }
         }
+        if (!found) grouped.other.push(sid);
+      });
+
+      const idSection = document.getElementById('idSection');
+      const tierGroups = document.getElementById('idTierGroups');
+      tierGroups.innerHTML = '';
+
+      const tierOrder = ['legend', 'high', 'medium', 'low'];
+      let hasAny = false;
+
+      tierOrder.forEach(tier => {
+        const ids = grouped[tier];
+        if (!ids.length) return;
+        hasAny = true;
+        const cfg = TIER_CONFIG[tier];
+        const groupEl = document.createElement('div');
+        groupEl.className = 'tier-id-group';
+        groupEl.innerHTML = `
+          <div class="tier-id-header">
+            <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
+            <span class="tier-id-count">${ids.length} ID</span>
+          </div>
+          <div class="id-tags-wrap">
+            ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+          </div>
+        `;
+        tierGroups.appendChild(groupEl);
+      });
+
+      if (grouped.other.length > 0) {
+        hasAny = true;
+        const groupEl = document.createElement('div');
+        groupEl.className = 'tier-id-group';
+        groupEl.innerHTML = `
+          <div class="tier-id-header">
+            <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
+            <span class="tier-id-count">${grouped.other.length} ID</span>
+          </div>
+          <div class="id-tags-wrap">
+            ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+          </div>
+        `;
+        tierGroups.appendChild(groupEl);
       }
-      if (!found) grouped.other.push(sid);
-    });
 
-    const idSection = document.getElementById('idSection');
-    const tierGroups = document.getElementById('idTierGroups');
-    tierGroups.innerHTML = '';
-
-    const tierOrder = ['legend', 'high', 'medium', 'low'];
-    let hasAny = false;
-
-    tierOrder.forEach(tier => {
-      const ids = grouped[tier];
-      if (!ids.length) return;
-      hasAny = true;
-      const cfg = TIER_CONFIG[tier];
-      const groupEl = document.createElement('div');
-      groupEl.className = 'tier-id-group';
-      groupEl.innerHTML = `
-        <div class="tier-id-header">
-          <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
-          <span class="tier-id-count">${ids.length} ID</span>
-        </div>
-        <div class="id-tags-wrap">
-          ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
-        </div>
-      `;
-      tierGroups.appendChild(groupEl);
-    });
-
-    if (grouped.other.length > 0) {
-      hasAny = true;
-      const groupEl = document.createElement('div');
-      groupEl.className = 'tier-id-group';
-      groupEl.innerHTML = `
-        <div class="tier-id-header">
-          <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
-          <span class="tier-id-count">${grouped.other.length} ID</span>
-        </div>
-        <div class="id-tags-wrap">
-          ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
-        </div>
-      `;
-      tierGroups.appendChild(groupEl);
+      if (hasAny) idSection.style.display = '';
     }
-
-    if (hasAny) idSection.style.display = '';
   }
 
   // Show profile
   document.getElementById('loadingState').style.display = 'none';
   document.getElementById('profileSection').style.display = '';
   document.getElementById('backLink').style.display = '';
+}
+
+// ==================== MODAL SOLD ====================
+function showSoldModal() {
+  const modal = document.getElementById('soldModal');
+  const modalBody = document.getElementById('modalBody');
+  const modalTitle = document.getElementById('modalTitle');
+  const username = document.getElementById('profileUsn').textContent.replace('@', '');
+  
+  modalTitle.textContent = `ID Sold — @${username}`;
+  
+  if (!currentSoldIDs.length) {
+    modalBody.innerHTML = `<div class="modal-empty">Belum ada ID yang terjual dari contributor ini.</div>`;
+    modal.classList.add('show');
+    return;
+  }
+  
+  const tierLabels = { legend: 'LEGEND', high: 'HIGH', medium: 'MEDIUM', low: 'LOW' };
+  const tierClasses = { legend: 'badge-legend', high: 'badge-high', medium: 'badge-medium', low: 'badge-low' };
+  
+  modalBody.innerHTML = `
+    <div class="sold-list-modal">
+      ${currentSoldIDs.map(item => `
+        <div class="sold-item-modal">
+          <span style="font-family:var(--mono)">${escapeHtml(item.id)}</span>
+          ${item.tier ? `<span class="sold-tier-tag ${tierClasses[item.tier]}">${tierLabels[item.tier]}</span>` : '<span class="sold-tier-tag" style="background:rgba(255,255,255,.05);color:var(--muted)">UNKNOWN</span>'}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modal.classList.add('show');
+}
+
+function closeSoldModal() {
+  document.getElementById('soldModal').classList.remove('show');
 }
 
 function showNotFound() {
