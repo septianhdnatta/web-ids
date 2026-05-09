@@ -7,7 +7,6 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     const all = await contributors.find({}).toArray();
-    // Hapus password dari response
     const safe = all.map(c => {
       delete c.pass;
       return c;
