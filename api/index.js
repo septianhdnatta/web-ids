@@ -212,11 +212,27 @@ async function handleMyIds(req, res) {
 
   const client = await clientPromise;
   const db = client.db('idglitxh');
-  const ids = await db.collection(`ids_${username}`).find({}).toArray();
-  const soldDocs = await db.collection(`sold_${username}`).find({}).toArray();
+  
+  // Ambil semua ID dari collection ids_username
+  const userCollection = db.collection(`ids_${username}`);
+  const ids = await userCollection.find({}).toArray();
+  
+  // Ambil sold IDs dari collection sold_username
+  const soldCollection = db.collection(`sold_${username}`);
+  const soldDocs = await soldCollection.find({}).toArray();
   const soldSet = new Set(soldDocs.map(d => d.id));
+  
+  // Log untuk debugging
+  console.log(`User: ${username}, IDs: ${ids.length}, Sold: ${soldDocs.length}`);
+  console.log('Sold IDs:', soldDocs.map(d => d.id));
+  
+  const result = ids.map(doc => ({
+    id: doc.id,
+    tier: doc.tier,
+    isSold: soldSet.has(doc.id)
+  }));
 
-  return res.status(200).json({ success: true, data: ids.map(doc => ({ id: doc.id, tier: doc.tier, isSold: soldSet.has(doc.id) })) });
+  return res.status(200).json({ success: true, data: result });
 }
 
 // ==================== MARK SOLD ====================
@@ -228,18 +244,41 @@ async function handleSold(req, res) {
   const db = client.db('idglitxh');
 
   for (const id of soldIds) {
-    await db.collection('sold_ids').updateOne({ id }, { $set: { id, seller: username, soldAt: new Date(), tier } }, { upsert: true });
-    await db.collection(`sold_${username}`).updateOne({ id }, { $set: { id, tier, soldAt: new Date() } }, { upsert: true });
+    // Simpan ke sold_ids global
+    await db.collection('sold_ids').updateOne(
+      { id: id },
+      { $set: { id: id, seller: username, soldAt: new Date(), tier: tier } },
+      { upsert: true }
+    );
+    
+    // Simpan ke collection sold_username
+    await db.collection(`sold_${username}`).updateOne(
+      { id: id },
+      { $set: { id: id, tier: tier, soldAt: new Date() } },
+      { upsert: true }
+    );
   }
 
+  // Hapus dari tier collection
   if (tier) {
     const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
     const tierCollection = db.collection(tierMap[tier]);
-    for (const id of soldIds) await tierCollection.deleteOne({ id });
+    for (const id of soldIds) {
+      await tierCollection.deleteOne({ id: id });
+    }
   }
 
-  for (const id of soldIds) await db.collection(`ids_${username}`).deleteOne({ id });
-  await db.collection('contributors').updateOne({ username }, { $inc: { soldTotal: soldIds.length } });
+  // Hapus dari collection ids_username
+  for (const id of soldIds) {
+    await db.collection(`ids_${username}`).deleteOne({ id: id });
+  }
+
+  // Update soldTotal contributor
+  await db.collection('contributors').updateOne(
+    { username: username },
+    { $inc: { soldTotal: soldIds.length } }
+  );
+
   return res.status(200).json({ success: true, message: `Marked ${soldIds.length} IDs as sold` });
 }
 
