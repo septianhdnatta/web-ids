@@ -39,7 +39,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .nav-logo-icon{width:22px;height:22px;background:var(--white);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#000;font-weight:900}
 .nav-right-info{font-family:var(--mono);font-size:.65rem;color:var(--muted);display:flex;align-items:center;gap:6px}
 .live-dot{width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* PAGE HEADER */
 .ph{position:relative;z-index:1;padding:80px 32px 32px;border-bottom:1px solid var(--border);max-width:1200px;margin:0 auto}
@@ -57,7 +56,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .fb.act{background:var(--white);border-color:var(--white);color:#000;font-weight:600}
 .fb.sold-btn.act{background:var(--sold);border-color:var(--sold);color:#fff}
 
-/* SEARCH */
+/* SEARCH SECTION */
 .search-section{position:sticky;top:105px;z-index:149;background:rgba(13,13,13,.95);backdrop-filter:blur(16px);padding:10px 32px;border-bottom:1px solid var(--border)}
 .search-wrap{position:relative;max-width:500px;margin:0 auto}
 .search-wrap input{width:100%;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:.5rem .9rem .5rem 2.4rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none}
@@ -65,60 +64,84 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .search-wrap input::placeholder{color:var(--muted)}
 .si{position:absolute;left:.75rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem}
 .search-type{display:flex;gap:6px;margin-top:8px;justify-content:center}
-.search-type-btn{background:transparent;border:1px solid var(--border2);color:var(--muted2);padding:.2rem .65rem;border-radius:20px;font-size:.6rem;cursor:pointer}
+.search-type-btn{background:transparent;border:1px solid var(--border2);color:var(--muted2);padding:.2rem .65rem;border-radius:20px;font-size:.6rem;cursor:pointer;transition:all .15s}
 .search-type-btn.active{background:var(--card2);color:var(--white);border-color:rgba(255,255,255,.2)}
+.search-type-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
 
 /* TOOLBAR */
 .toolbar{position:relative;z-index:1;padding:10px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--border)}
 .ri{font-size:.75rem;color:var(--muted);font-family:var(--mono)}
 .ri span{color:var(--text);font-weight:600}
-.sold-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--muted)}
-.sold-dot{width:6px;height:6px;border-radius:50%;background:var(--sold)}
+.sold-leg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+.sold-dot{width:6px;height:6px;border-radius:50%;background:var(--sold);flex-shrink:0}
 
 /* MAIN */
 .main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px 32px 80px}
+
+/* LOADER */
 .loader{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:14px}
 .spinner{width:32px;height:32px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.lt{font-size:.75rem;color:var(--muted);font-family:var(--mono)}
 
 /* TIER GROUP */
 .sg{margin-bottom:40px}
 .gh{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);flex-wrap:wrap}
-.gtier-name{font-size:1.2rem;font-weight:700;color:var(--white)}
+.gtier-name{font-size:1.2rem;font-weight:700;letter-spacing:-0.5px;color:var(--white)}
 .glevel{font-size:.6rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:.22rem .65rem;border-radius:6px;border:1px solid}
+.gcnt{font-size:.7rem;color:var(--muted);font-family:var(--mono);font-weight:400;margin-left:auto;letter-spacing:-0.2px}
+.gcnt b{color:var(--white);font-weight:600}
+
+/* TIER BADGE COLORS */
 .tier-low-badge{background:rgba(107,114,128,.08);border-color:rgba(107,114,128,.2);color:var(--low)}
 .tier-medium-badge{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.2);color:var(--medium)}
 .tier-high-badge{background:rgba(249,115,22,.08);border-color:rgba(249,115,22,.2);color:var(--high)}
 .tier-legend-badge{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2);color:var(--legend)}
-.gcnt{font-size:.7rem;color:var(--muted);margin-left:auto}
-.gcnt b{color:var(--white)}
+.tier-low{color:var(--low)}
+.tier-medium{color:var(--medium)}
+.tier-high{color:var(--high)}
+.tier-legend{color:var(--legend)}
 
 /* ID GRID */
 .id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
 @media(max-width:480px){.id-grid{grid-template-columns:repeat(2,1fr)}}
-.id-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.id-card:hover{border-color:var(--border2);background:var(--card2);transform:translateY(-2px)}
+
+/* ID CARD */
+.id-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;animation:fi .2s ease both}
+.id-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--cc,rgba(255,255,255,.1));opacity:.5}
+.id-card:hover{border-color:var(--border2);background:var(--card2);transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.id-card:hover::before{opacity:1}
 .id-card.is-sold{border-color:rgba(239,68,68,.15);background:rgba(239,68,68,.03);cursor:default;opacity:.6}
-.id-card.is-sold:hover{transform:none}
-.id-num{font-family:var(--mono);font-size:.8rem;color:var(--text);word-break:break-all}
+.id-card.is-sold:hover{transform:none;box-shadow:none}
+.id-num{font-family:var(--mono);font-size:.8rem;font-weight:400;color:var(--text);word-break:break-all;line-height:1.4;letter-spacing:-0.3px}
 .id-card.is-sold .id-num{color:var(--muted);text-decoration:line-through}
 .id-tags{display:flex;gap:4px;flex-wrap:wrap}
-.tag{font-size:.55rem;font-weight:600;padding:.18rem .5rem;border-radius:4px}
+.tag{font-size:.55rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:.18rem .5rem;border-radius:4px;line-height:1}
 .tag-sold{background:rgba(239,68,68,.1);color:var(--sold);border:1px solid rgba(239,68,68,.2)}
 .tag-new{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2)}
 .tag-con{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid rgba(255,255,255,.08);font-size:.52rem;display:inline-flex;align-items:center;gap:3px}
-.tag-con img{width:10px;height:10px;border-radius:50%}
+.tag-con img{width:10px;height:10px;border-radius:50%;object-fit:cover}
 .tag-verified{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.2);display:inline-flex;align-items:center;gap:3px}
-.tag-verified img{width:10px;height:10px}
-.sold-ribbon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);background:rgba(239,68,68,.9);color:#fff;font-size:.55rem;font-weight:700;padding:.2rem .7rem;border-radius:4px;white-space:nowrap}
+.tag-verified img{width:10px;height:10px;object-fit:contain}
+.tag-match{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+
+/* SOLD RIBBON */
+.sold-ribbon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-15deg);background:rgba(239,68,68,.9);color:#fff;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.2rem .7rem;border-radius:4px;white-space:nowrap;pointer-events:none;backdrop-filter:blur(4px);font-family:var(--mono)}
+
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* PAGINATION */
 .pag{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
-.pn{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--card);font-size:.72rem;font-family:var(--mono);cursor:pointer;color:var(--muted);padding:0 8px}
+.pn{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--card);font-size:.72rem;font-family:var(--mono);font-weight:500;cursor:pointer;transition:all .15s;color:var(--muted);padding:0 8px}
 .pn:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
-.pn.act{background:var(--white);border-color:var(--white);color:#000}
+.pn.act{background:var(--white);border-color:var(--white);color:#000;font-weight:700}
+
+/* EMPTY */
 .empty{text-align:center;padding:60px 16px;color:var(--muted)}
-mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;padding:0 2px}
+.empty-ico{font-size:2rem;margin-bottom:12px}
+.empty-t{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-0.3px}
+.empty-s{font-size:.8rem;font-weight:400}
+mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;padding:0 2px;font-weight:500}
 
 @media(max-width:768px){
   nav{padding:0 16px}
@@ -162,7 +185,7 @@ mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;paddin
 <div class="search-section">
   <div class="search-wrap">
     <span class="si">⌕</span>
-    <input type="text" id="gSearch" placeholder="Cari ID atau nama Contributor..."/>
+    <input type="text" id="gSearch" placeholder="Cari ID atau nama Contributor..." autocomplete="off"/>
   </div>
   <div class="search-type">
     <button class="search-type-btn active" data-type="all" onclick="setSearchType('all')">Semua</button>
@@ -176,11 +199,20 @@ mark{background:rgba(255,255,255,.1);color:var(--white);border-radius:2px;paddin
   <div class="sold-leg"><span class="sold-dot"></span>ID yang sudah terjual</div>
 </div>
 
-<div class="main" id="main"><div class="loader"><div class="spinner"></div><div class="lt">Mengambil data...</div></div></div>
+<div class="main" id="main">
+  <div class="loader"><div class="spinner"></div><div class="lt">Mengambil data...</div></div>
+</div>
 
 <script>
+// ==================== KONFIGURASI ====================
 const API_URL = '/api';
 const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
+
+const TIERS = ['low', 'medium', 'high', 'legend'];
+const TIER_NAMES = { low: 'Low', medium: 'Medium', high: 'High', legend: 'Legend' };
+const TIER_LEVELS = { low: 'BASIC', medium: 'STANDARD', high: 'PREMIUM', legend: 'ULTIMATE' };
+const TIER_COLORS = { low: 'rgba(107,114,128,.6)', medium: 'rgba(59,130,246,.7)', high: 'rgba(249,115,22,.7)', legend: 'rgba(234,179,8,.7)' };
+const TIER_BADGE_CLASS = { low: 'tier-low-badge', medium: 'tier-medium-badge', high: 'tier-high-badge', legend: 'tier-legend-badge' };
 
 let allData = { low: [], medium: [], high: [], legend: [] };
 let soldSet = new Set();
@@ -193,19 +225,18 @@ let idToContributor = {};
 let contributorNameToIds = {};
 
 const PAGE_SIZE = 200;
-const TIERS = ['low', 'medium', 'high', 'legend'];
-const TIER_NAMES = { low: 'Low', medium: 'Medium', high: 'High', legend: 'Legend' };
-const TIER_COLORS = { low: 'rgba(107,114,128,.6)', medium: 'rgba(59,130,246,.7)', high: 'rgba(249,115,22,.7)', legend: 'rgba(234,179,8,.7)' };
-const TIER_BADGE_CLASS = { low: 'tier-low-badge', medium: 'tier-medium-badge', high: 'tier-high-badge', legend: 'tier-legend-badge' };
 
+// ==================== FUNGSI API ====================
 async function fetchAPI(endpoint) {
   try {
-    const res = await fetch(`${API_URL}/${endpoint}`);
+    const res = await fetch(`${API_URL}/${endpoint}.js`);
     return await res.json();
   } catch { return { success: false, data: [] }; }
 }
 
+// ==================== LOAD DATA ====================
 async function loadAllData() {
+  // Load contributors
   const contributorsRes = await fetchAPI('contributors');
   const contributors = contributorsRes.success ? contributorsRes.data : [];
   
@@ -213,15 +244,20 @@ async function loadAllData() {
   for (const con of contributors) {
     const idsRes = await fetchAPI(`my-ids?username=${con.username}`);
     if (idsRes.success && idsRes.data) {
-      contributorNameToIds[con.username] = {
+      contributorNameToIds[con.username.toLowerCase()] = {
         name: con.name,
         username: con.username,
         photo: con.photo,
         verified: con.verified,
         ids: new Set(idsRes.data.map(i => i.id))
       };
-      for (const id of idsRes.data) {
-        idToContributor[id.id] = { name: con.name, username: con.username, photo: con.photo, verified: con.verified };
+      for (const idItem of idsRes.data) {
+        idToContributor[idItem.id] = { 
+          name: con.name, 
+          username: con.username, 
+          photo: con.photo, 
+          verified: con.verified 
+        };
       }
     }
   }
@@ -234,7 +270,9 @@ async function loadAllData() {
   
   // Load sold data
   const soldRes = await fetchAPI('sold-ids');
-  if (soldRes.success && soldRes.data) soldSet = new Set(soldRes.data.map(s => s.id));
+  if (soldRes.success && soldRes.data) {
+    soldSet = new Set(soldRes.data.map(s => s.id || s));
+  }
   
   const total = Object.values(allData).flat().length;
   document.getElementById('phSub').innerHTML = `${total.toLocaleString('id-ID')} ID total · ${soldSet.size} terjual · ${Object.keys(idToContributor).length} ID terhubung contributor`;
@@ -242,23 +280,55 @@ async function loadAllData() {
   render();
 }
 
-function setF(filter) { activeF = filter; searchQ = ''; document.getElementById('gSearch').value = ''; document.querySelectorAll('.fb').forEach(b => b.classList.toggle('act', b.dataset.t === filter)); TIERS.forEach(t => curPage[t] = 1); render(); }
+// ==================== FILTER & SEARCH ====================
+function setF(filter) {
+  activeF = filter;
+  searchQ = '';
+  document.getElementById('gSearch').value = '';
+  document.querySelectorAll('.fb').forEach(b => b.classList.toggle('act', b.dataset.t === filter));
+  TIERS.forEach(t => curPage[t] = 1);
+  render();
+}
 
-function setSearchType(type) { searchType = type; document.querySelectorAll('.search-type-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.type === type)); searchQ = ''; document.getElementById('gSearch').value = ''; render(); }
+function setSearchType(type) {
+  searchType = type;
+  document.querySelectorAll('.search-type-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === type);
+  });
+  searchQ = '';
+  document.getElementById('gSearch').value = '';
+  render();
+}
 
-document.getElementById('gSearch').addEventListener('input', function(e) { searchQ = e.target.value.trim().toLowerCase(); TIERS.forEach(t => curPage[t] = 1); render(); });
+document.getElementById('gSearch').addEventListener('input', function(e) {
+  searchQ = e.target.value.trim().toLowerCase();
+  TIERS.forEach(t => curPage[t] = 1);
+  render();
+});
 
-function searchFilter(ids) {
+function searchFilter(ids, tierName) {
   if (!searchQ) return ids;
-  if (searchType === 'id') return ids.filter(id => id.toLowerCase().includes(searchQ));
-  if (searchType === 'contributor') {
+  
+  if (searchType === 'id') {
+    return ids.filter(id => id.toLowerCase().includes(searchQ));
+  }
+  else if (searchType === 'contributor') {
     const matchingIds = new Set();
     for (const [username, data] of Object.entries(contributorNameToIds)) {
-      if (username.includes(searchQ) || data.name.toLowerCase().includes(searchQ)) data.ids.forEach(id => matchingIds.add(id));
+      if (username.includes(searchQ) || data.name.toLowerCase().includes(searchQ)) {
+        data.ids.forEach(id => matchingIds.add(id));
+      }
     }
     return ids.filter(id => matchingIds.has(id));
   }
-  return ids.filter(id => id.toLowerCase().includes(searchQ) || (idToContributor[id] && idToContributor[id].name.toLowerCase().includes(searchQ)));
+  else {
+    return ids.filter(id => {
+      const idMatch = id.toLowerCase().includes(searchQ);
+      const con = idToContributor[id];
+      const conMatch = con && con.name.toLowerCase().includes(searchQ);
+      return idMatch || conMatch;
+    });
+  }
 }
 
 function getFilteredData() {
@@ -267,12 +337,13 @@ function getFilteredData() {
   for (const tier of tiersToShow) {
     let ids = [...(allData[tier] || [])];
     if (activeF === 'sold') ids = ids.filter(id => soldSet.has(id));
-    if (searchQ.length >= 1) ids = searchFilter(ids);
+    if (searchQ.length >= 1) ids = searchFilter(ids, tier);
     if (ids.length) result[tier] = ids;
   }
   return result;
 }
 
+// ==================== RENDER ====================
 function render() {
   const filtered = getFilteredData();
   const main = document.getElementById('main');
@@ -281,14 +352,16 @@ function render() {
   document.getElementById('ri').innerHTML = `Menampilkan <span>${total.toLocaleString('id-ID')}</span> ID`;
   
   if (total === 0) {
-    main.innerHTML = `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-t">Tidak ada hasil</div><div class="empty-s">Coba ubah filter atau kata kunci pencarian.</div></div>`;
+    main.innerHTML = `<div class="empty"><div class="empty-ico">🔍</div><div class="empty-t">Tidak ada hasil</div><div class="empty-s">Coba ubah filter atau kata kunci pencarian.<br>${searchQ ? `Pencarian: "${searchQ}"` : ''}</div></div>`;
     return;
   }
   
   main.innerHTML = '';
+  
   for (const tier of TIERS) {
     const ids = filtered[tier];
     if (!ids || !ids.length) continue;
+    
     const cp = curPage[tier] || 1;
     const start = (cp - 1) * PAGE_SIZE;
     const pageIds = ids.slice(start, start + PAGE_SIZE);
@@ -296,7 +369,14 @@ function render() {
     
     const groupDiv = document.createElement('div');
     groupDiv.className = 'sg';
-    groupDiv.innerHTML = `<div class="gh"><span class="gtier-name">${TIER_NAMES[tier]}</span><span class="glevel ${TIER_BADGE_CLASS[tier]}">${TIER_NAMES[tier].toUpperCase()} — ${tier === 'low' ? 'BASIC' : tier === 'medium' ? 'STANDARD' : tier === 'high' ? 'PREMIUM' : 'ULTIMATE'}</span><span class="gcnt"><b>${pageIds.length}</b> / ${ids.length} ID</span></div>`;
+    groupDiv.id = `g-${tier}`;
+    groupDiv.innerHTML = `
+      <div class="gh">
+        <span class="gtier-name">${TIER_NAMES[tier]}</span>
+        <span class="glevel ${TIER_BADGE_CLASS[tier]}">${TIER_NAMES[tier].toUpperCase()} — ${TIER_LEVELS[tier]}</span>
+        <span class="gcnt"><b>${pageIds.length}</b> / ${ids.length} ID</span>
+      </div>
+    `;
     
     const grid = document.createElement('div');
     grid.className = 'id-grid';
@@ -304,6 +384,8 @@ function render() {
     pageIds.forEach((id, idx) => {
       const isSold = soldSet.has(id);
       const con = idToContributor[id];
+      const isSearchMatch = searchQ && (id.toLowerCase().includes(searchQ) || (con && con.name.toLowerCase().includes(searchQ)));
+      
       const card = document.createElement('div');
       card.className = `id-card${isSold ? ' is-sold' : ''}`;
       card.style.setProperty('--cc', TIER_COLORS[tier]);
@@ -318,42 +400,74 @@ function render() {
       let tags = '';
       if (isSold) tags += `<span class="tag tag-sold">SOLD</span>`;
       if (con) {
-        let conName = con.name;
+        let conNameDisplay = con.name;
         if (searchQ && searchType !== 'id' && con.name.toLowerCase().includes(searchQ)) {
           const rx = new RegExp(`(${searchQ})`, 'gi');
-          conName = con.name.replace(rx, '<mark>$1</mark>');
+          conNameDisplay = con.name.replace(rx, '<mark>$1</mark>');
         }
-        tags += `<span class="tag tag-con">${con.photo ? `<img src="${con.photo}" onerror="this.style.display='none'">` : ''}${conName}</span>`;
+        tags += `<span class="tag tag-con">${con.photo ? `<img src="${con.photo}" onerror="this.style.display='none'">` : ''}${conNameDisplay}</span>`;
       }
       if (con?.verified) tags += `<span class="tag tag-verified"><img src="${VERIFIED_ICON_URL}" alt="✓"/>DV</span>`;
+      if (isSearchMatch && searchType === 'all') tags += `<span class="tag tag-match">MATCH</span>`;
       
       card.innerHTML = `${isSold ? '<div class="sold-ribbon">SOLD</div>' : ''}<div class="id-num">${displayId}</div>${tags ? `<div class="id-tags">${tags}</div>` : ''}`;
-      if (!isSold) card.onclick = () => window.location.href = `../payment/payment.html?id=${encodeURIComponent(id)}&tier=${tier}`;
+      
+      if (!isSold) {
+        card.onclick = () => window.location.href = `../payment/payment.html?id=${encodeURIComponent(id)}&tier=${tier}`;
+        card.style.cursor = 'pointer';
+      }
       grid.appendChild(card);
     });
     
     groupDiv.appendChild(grid);
+    
     if (totalPages > 1) {
       const pagDiv = document.createElement('div');
       pagDiv.className = 'pag';
-      let sp = Math.max(1, cp - 3), ep = Math.min(totalPages, sp + 6);
-      if (sp > 1) { addPB(pagDiv, 1, cp, tier); if (sp > 2) { const d = document.createElement('div'); d.className = 'pn'; d.textContent = '···'; d.style.cursor = 'default'; pagDiv.appendChild(d); } }
-      for (let i = sp; i <= ep; i++) addPB(pagDiv, i, cp, tier);
-      if (ep < totalPages) { if (ep < totalPages - 1) { const d = document.createElement('div'); d.className = 'pn'; d.textContent = '···'; d.style.cursor = 'default'; pagDiv.appendChild(d); } addPB(pagDiv, totalPages, cp, tier); }
+      let sp = Math.max(1, cp - 3);
+      let ep = Math.min(totalPages, sp + 6);
+      if (ep - sp < 6) sp = Math.max(1, ep - 6);
+      
+      if (sp > 1) {
+        addPageButton(pagDiv, 1, cp, tier);
+        if (sp > 2) {
+          const dots = document.createElement('div');
+          dots.className = 'pn';
+          dots.textContent = '···';
+          dots.style.cursor = 'default';
+          pagDiv.appendChild(dots);
+        }
+      }
+      for (let i = sp; i <= ep; i++) addPageButton(pagDiv, i, cp, tier);
+      if (ep < totalPages) {
+        if (ep < totalPages - 1) {
+          const dots = document.createElement('div');
+          dots.className = 'pn';
+          dots.textContent = '···';
+          dots.style.cursor = 'default';
+          pagDiv.appendChild(dots);
+        }
+        addPageButton(pagDiv, totalPages, cp, tier);
+      }
       groupDiv.appendChild(pagDiv);
     }
     main.appendChild(groupDiv);
   }
 }
 
-function addPB(container, pn, cp, tier) {
-  const b = document.createElement('div');
-  b.className = `pn${pn === cp ? ' act' : ''}`;
-  b.textContent = pn;
-  b.onclick = () => { curPage[tier] = pn; render(); document.querySelector('.main').scrollIntoView({ behavior: 'smooth' }); };
-  container.appendChild(b);
+function addPageButton(container, pageNum, currentPage, tier) {
+  const btn = document.createElement('div');
+  btn.className = `pn${pageNum === currentPage ? ' act' : ''}`;
+  btn.textContent = pageNum;
+  btn.onclick = () => {
+    curPage[tier] = pageNum;
+    render();
+    document.getElementById(`g-${tier}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  container.appendChild(btn);
 }
 
+// ==================== INIT ====================
 loadAllData();
 </script>
 </body>
