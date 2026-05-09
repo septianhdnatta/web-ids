@@ -16,6 +16,38 @@
       "dest": "/api/index.js"
     },
     {
+      "src": "/contributor/profile",
+      "dest": "/contributor/profile.html"
+    },
+    {
+      "src": "/contributor/leaderboard",
+      "dest": "/contributor/leaderboard.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/login/login.html"
+    },
+    {
+      "src": "/register",
+      "dest": "/register/register.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/dashboard/dashboard.html"
+    },
+    {
+      "src": "/dashboard-admin",
+      "dest": "/dashboard/dashboard-admin.html"
+    },
+    {
+      "src": "/ID",
+      "dest": "/ID/id.html"
+    },
+    {
+      "src": "/payment",
+      "dest": "/payment/payment.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
