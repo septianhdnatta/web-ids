@@ -145,7 +145,7 @@ async function doLogin() {
   showProgress(true);
   
   try {
-    const result = await callAPI('login', 'POST', { username, password });
+    const result = await callAPI('login.js', 'POST', { username, password });
     showProgress(false);
     
     if (!result.success) {
