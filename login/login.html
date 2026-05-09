@@ -50,6 +50,7 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
+.toast.warn .toast-dot{background:var(--yellow)}
 .toast-dot{width:7px;height:7px;border-radius:50%}
 .progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
 .progress-overlay.show{display:flex}
@@ -114,14 +115,13 @@ async function doLogin() {
   const password = document.getElementById('loginPassword').value;
   
   if (!username || !password) {
-    toast('Username dan password wajib diisi', 'err');
+    showToast('Username dan password wajib diisi', 'err');
     return;
   }
   
   showProgress(true);
   
   try {
-    // PERBAIKAN: tambahkan .js di endpoint
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -132,29 +132,42 @@ async function doLogin() {
     showProgress(false);
     
     if (!data.success) {
-      toast(data.error || 'Login gagal', 'err');
+      // Tampilkan pesan error khusus jika akun diblokir
+      if (data.error && data.error.includes('diblokir')) {
+        showToast('⚠️ Akun Anda telah diblokir oleh admin. Hubungi admin untuk informasi lebih lanjut.', 'warn');
+      } else {
+        showToast(data.error || 'Login gagal', 'err');
+      }
       return;
     }
     
     // Login sukses
     localStorage.setItem('contributor_user', JSON.stringify(data.data));
     
-    toast('✅ Login berhasil! Mengarahkan...', 'ok');
-    setTimeout(() => {
-      window.location.href = '../dashboard/dashboard.html';
-    }, 1000);
+    // Redirect berdasarkan role
+    if (data.role === 'admin') {
+      showToast('✅ Login sebagai Admin! Mengarahkan...', 'ok');
+      setTimeout(() => {
+        window.location.href = '../ADMIN/admin.html';
+      }, 1000);
+    } else {
+      showToast('✅ Login berhasil! Mengarahkan ke dashboard...', 'ok');
+      setTimeout(() => {
+        window.location.href = '../dashboard/dashboard.html';
+      }, 1000);
+    }
   } catch (error) {
     showProgress(false);
     console.error('Login error:', error);
-    toast('❌ Gagal terhubung ke server', 'err');
+    showToast('❌ Gagal terhubung ke server', 'err');
   }
 }
 
-function toast(msg, type = 'ok') {
+function showToast(msg, type = 'ok') {
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 4000);
 }
 
 function showProgress(show) {
