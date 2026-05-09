@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Contributor Profile — IDglitxh</title>
+<title>Contributor — IDglitxh</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -21,6 +21,8 @@
   --font:'Inter',sans-serif;
   --mono:'JetBrains Mono',monospace;
   --gold:#fbbf24;
+  --silver:#d1d5db;
+  --bronze:#fb923c;
 }
 html{scroll-behavior:smooth}
 body{
@@ -35,113 +37,332 @@ body{
   padding:80px 20px 40px;
   position:relative;
   overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
+
+/* BACKGROUND GLOW */
 .bg-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+.bg-glow2{position:fixed;top:20%;left:20%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.025) 0%,transparent 65%);pointer-events:none;z-index:0}
+.bg-glow3{position:fixed;bottom:10%;right:15%;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.02) 0%,transparent 65%);pointer-events:none;z-index:0}
+
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(13,13,13,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{display:flex;align-items:center;gap:8px;font-size:.95rem;font-weight:700;color:var(--white);text-decoration:none}
 .nav-logo-icon{width:24px;height:24px;background:var(--white);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#000;font-weight:900}
 .nav-links{display:flex;align-items:center;gap:28px}
-.nav-link{font-size:.82rem;color:var(--muted2);text-decoration:none;transition:color .2s}
+.nav-link{font-size:.82rem;color:var(--muted2);text-decoration:none;transition:color .2s;font-weight:400}
 .nav-link:hover{color:var(--white)}
+.nav-link.active{color:var(--white)}
+
+/* LOADER */
+#loadingState{position:relative;z-index:1;text-align:center;color:var(--muted);font-family:var(--mono);font-size:.78rem}
 .spinner{width:28px;height:28px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 14px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* PILL */
+.page-pill{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border2);padding:.3rem .9rem;border-radius:99px;font-size:.72rem;color:var(--muted2);margin-bottom:28px;animation:fadeUp .6s ease both;position:relative;z-index:1}
+.page-pill-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PROFILE CARD */
 .profile-wrap{position:relative;z-index:1;max-width:440px;width:100%;animation:fadeUp .6s .08s ease both}
-.profile-card{background:rgba(22,22,22,.55);backdrop-filter:blur(32px);border:1px solid rgba(255,255,255,.07);border-radius:28px;overflow:hidden}
-.inner-content{padding:24px 28px 32px;text-align:center}
-.profile-img{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.15);margin-top:-50px;background:var(--card);box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5)}
+
+.profile-card{
+  background:rgba(22,22,22,.55);
+  backdrop-filter:blur(32px) saturate(1.4);
+  -webkit-backdrop-filter:blur(32px) saturate(1.4);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:28px;
+  overflow:hidden;
+  position:relative;
+  transition:all .4s cubic-bezier(.25,.1,.25,1);
+  box-shadow:0 0 0 1px rgba(255,255,255,.04),0 24px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+}
+.profile-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.12);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08),0 32px 100px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.profile-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 50%,rgba(255,255,255,.02) 100%);
+  pointer-events:none;z-index:1;border-radius:28px;
+}
+
+/* COVER */
+.cover{width:100%;height:140px;overflow:hidden;position:relative;display:none}
+.cover.has-cover{display:block}
+.cover::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(22,22,22,.8),transparent);z-index:2}
+.cover-img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.85)}
+
+/* INNER CONTENT */
+.inner-content{padding:24px 28px 32px;position:relative;z-index:2;text-align:center}
+
+/* PROFILE IMAGE */
+.profile-img{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid rgba(255,255,255,.15);
+  margin-top:-50px;
+  background:var(--card);
+  box-shadow:0 0 0 4px rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.5);
+  position:relative;
+  z-index:3;
+  transition:transform .3s;
+}
+.profile-img:hover{transform:scale(1.02)}
 .no-cover-img{margin-top:0 !important}
-.profile-name{font-size:1.7rem;font-weight:800;color:var(--white);letter-spacing:-.5px;margin-top:16px}
-.role-badge{font-size:.7rem;font-weight:600;padding:.25rem .8rem;border-radius:24px;font-family:var(--mono);display:inline-block;margin-top:8px}
+
+/* NAME ROW */
+.name-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;margin-bottom:6px;flex-wrap:wrap}
+.profile-name{font-size:1.7rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
+
+/* ROLE BADGE */
+.role-badge{font-size:.7rem;font-weight:600;letter-spacing:.5px;padding:.25rem .8rem;border-radius:24px;font-family:var(--mono);display:inline-block;margin-left:8px}
 .role-dv{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
 .role-cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
-.profile-usn{font-family:var(--mono);font-size:.82rem;color:var(--muted2);margin:8px 0;display:flex;align-items:center;justify-content:center;gap:6px}
-.verified-icon{display:inline-flex;width:18px;height:18px;vertical-align:middle}
-.verified-icon img{width:100%;height:100%;object-fit:contain}
-.bio{font-size:.82rem;color:var(--muted2);margin:16px 0;line-height:1.6}
-.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:16px 0}
+
+/* USN ROW */
+.usn-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.profile-usn{font-family:var(--mono);font-size:.82rem;color:var(--muted2)}
+
+/* VERIFIED BADGE */
+.verified-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  flex-shrink:0;
+}
+.verified-badge img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+/* RANK BADGE */
+.rank-wrapper{margin:6px 0 4px}
+.rank-badge-leader{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:.6rem;
+  font-weight:600;
+  font-family:var(--mono);
+  padding:.2rem .8rem;
+  border-radius:30px;
+  letter-spacing:.5px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--muted2);
+}
+.rank-badge-leader.rank-1{background:linear-gradient(135deg,#fbbf24,#d97706);color:#000;border:none;box-shadow:0 0 8px rgba(251,191,36,.3)}
+.rank-badge-leader.rank-2{background:linear-gradient(135deg,#d1d5db,#9ca3af);color:#000;border:none}
+.rank-badge-leader.rank-3{background:linear-gradient(135deg,#fb923c,#ea580c);color:#fff;border:none}
+.rank-icon{font-size:.75rem}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);margin:16px 0 20px}
+
+/* BIO */
+.bio{font-size:.82rem;color:var(--muted2);margin-bottom:24px;line-height:1.7}
+
+/* STAT ROW */
 .stat-row{display:flex;justify-content:center;gap:0;margin-bottom:24px}
-.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.stat-pill{flex:1;padding:12px 8px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s}
 .stat-pill:first-child{border-radius:12px 0 0 12px}
 .stat-pill:last-child{border-radius:0 12px 12px 0}
 .stat-pill:not(:last-child){border-right:none}
+.stat-pill:hover{background:rgba(255,255,255,.08)}
 .sp-n{font-size:1.1rem;font-weight:700;color:var(--white);line-height:1;font-family:var(--mono)}
-.sp-l{font-size:.65rem;color:var(--muted);margin-top:4px}
+.sp-l{font-size:.65rem;color:var(--muted);margin-top:4px;font-weight:400}
+
+/* ID LIST SECTION */
 .id-section{margin-top:24px;text-align:left}
-.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.id-section-title::before,.id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-.id-tags-wrap{display:flex;flex-wrap:wrap;gap:8px;max-height:200px;overflow-y:auto;scrollbar-width:thin}
+.id-section-title{font-size:.72rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.id-section-title::before{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:8px;max-height:200px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
 .id-tags-wrap::-webkit-scrollbar{width:3px}
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .id-tag-item{font-family:var(--mono);font-size:.7rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.25rem .7rem;border-radius:8px;transition:all .15s;cursor:default}
 .id-tag-item:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
-.back-link{margin-top:24px;text-align:center}
-.back-link a{color:var(--muted);font-size:.78rem;text-decoration:none}
+
+/* TIER BADGES */
+.badge-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
+.badge-medium{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+.badge-high{background:rgba(249,115,22,.1);color:#fb923c;border:1px solid rgba(249,115,22,.2)}
+.badge-legend{background:rgba(234,179,8,.1);color:#fbbf24;border:1px solid rgba(234,179,8,.25)}
+
+/* TIER GROUP */
+.tier-id-group{margin-bottom:16px}
+.tier-id-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tier-badge-sm{font-size:.6rem;font-weight:600;letter-spacing:.5px;padding:.16rem .6rem;border-radius:6px;font-family:var(--mono);text-transform:uppercase}
+.tier-id-count{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+
+/* BACK LINK */
+.back-link{margin-top:24px;text-align:center;position:relative;z-index:1;animation:fadeUp .6s .2s ease both}
+.back-link a{color:var(--muted);font-size:.78rem;text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:6px}
 .back-link a:hover{color:var(--white)}
+
+/* NOT FOUND */
+.not-found{position:relative;z-index:1;text-align:center;padding:40px 20px;animation:fadeUp .5s ease both}
+.nf-icon{width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.nf-icon svg{width:24px;height:24px;stroke:var(--muted)}
+.nf-title{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.nf-sub{font-size:.78rem;color:var(--muted);line-height:1.6}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#333}
+
 @media(max-width:768px){
-  nav{padding:0 20px}.nav-links{display:none}
+  nav{padding:0 20px}
+  .nav-links{display:none}
   .profile-wrap{max-width:380px}
+  .inner-content{padding:20px 20px 28px}
+  .cover{height:120px}
   .profile-img{width:84px;height:84px;margin-top:-42px}
   .profile-name{font-size:1.4rem}
+  body{padding:70px 16px 30px}
+  .verified-badge{width:18px;height:18px}
+  .rank-badge-leader{font-size:.55rem;padding:.15rem .6rem}
+  .role-badge{font-size:.6rem;padding:.2rem .6rem}
 }
 </style>
 </head>
 <body>
 
 <div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+<div class="bg-glow3"></div>
 
 <nav>
-  <a href="../index.html" class="nav-logo"><div class="nav-logo-icon">ID</div>IDglitxh</a>
+  <a href="../index.html" class="nav-logo">
+    <div class="nav-logo-icon">ID</div>
+    IDglitxh
+  </a>
   <div class="nav-links">
     <a href="../index.html#scores" class="nav-link">Koleksi</a>
     <a href="../index.html#fitur" class="nav-link">Fitur</a>
     <a href="../index.html#stok" class="nav-link">Stok</a>
+    <a href="../contact.html" class="nav-link">Contact</a>
     <a href="leaderboard.html" class="nav-link">Leaderboard</a>
   </div>
 </nav>
 
-<div id="loadingState" style="text-align:center;padding:40px"><div class="spinner"></div><div style="margin-top:14px;color:var(--muted)">Memuat profil...</div></div>
+<div class="page-pill" id="pagePill" style="display:none">
+  <div class="page-pill-dot"></div>
+  <span id="pillText">Contributor Profile</span>
+</div>
 
+<!-- LOADING STATE -->
+<div id="loadingState">
+  <div class="spinner"></div>
+  Memuat profil contributor...
+</div>
+
+<!-- PROFILE SECTION -->
 <div id="profileSection" style="display:none">
-  <div class="profile-wrap">
-    <div class="profile-card">
+  <div class="profile-wrap" id="profileWrap">
+    <div class="profile-card" id="profileCard">
+
+      <div class="cover" id="coverDiv">
+        <img class="cover-img" id="coverImg" src="" alt="cover"/>
+      </div>
+
       <div class="inner-content">
         <img class="profile-img" id="profileImg" src="" alt=""/>
-        <div class="profile-name" id="profileName">—</div>
-        <div><span class="role-badge" id="roleBadge"></span></div>
-        <div class="profile-usn" id="profileUsn">@— <span class="verified-icon" id="verifiedBadge" style="display:none"><img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" alt="✓"/></span></div>
-        <div class="bio" id="profileBio">—</div>
-        <div class="divider"></div>
-        <div class="stat-row">
-          <div class="stat-pill"><div class="sp-n" id="statTotal">—</div><div class="sp-l">Total ID</div></div>
-          <div class="stat-pill"><div class="sp-n" id="statRank">—</div><div class="sp-l">Rank</div></div>
-          <div class="stat-pill"><div class="sp-n" id="statJoined">—</div><div class="sp-l">Bergabung</div></div>
+
+        <!-- NAME ROW + ROLE BADGE -->
+        <div class="name-row">
+          <span class="profile-name" id="profileName">—</span>
+          <span class="role-badge" id="roleBadge" style="display:none"></span>
         </div>
+
+        <div class="usn-row">
+          <span class="profile-usn" id="profileUsn">@—</span>
+          <div class="verified-badge" id="verifiedBadgeUsn" style="display:none">
+            <img src="https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000" alt="Verified" />
+          </div>
+        </div>
+
+        <div class="rank-wrapper" id="rankWrapper" style="display:none">
+          <div class="rank-badge-leader" id="rankBadgeLeader"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="bio" id="profileBio">Premium ID Contributor.</div>
+
+        <div class="stat-row">
+          <div class="stat-pill">
+            <div class="sp-n" id="statTotal">—</div>
+            <div class="sp-l">Total ID</div>
+          </div>
+          <div class="stat-pill">
+            <div class="sp-n" id="statJoined">—</div>
+            <div class="sp-l">Bergabung</div>
+          </div>
+          <div class="stat-pill">
+            <div class="sp-n">✓</div>
+            <div class="sp-l">Verified</div>
+          </div>
+        </div>
+
         <div class="id-section" id="idSection" style="display:none">
           <div class="id-section-title">ID Contributed</div>
-          <div class="id-tags-wrap" id="idListContainer"></div>
+          <div id="idTierGroups"></div>
         </div>
+
       </div>
     </div>
   </div>
-  <div class="back-link"><a href="leaderboard.html">← Kembali ke Leaderboard</a></div>
 </div>
 
-<div id="notFoundState" style="display:none;text-align:center;padding:40px">
-  <div style="width:52px;height:52px;border-radius:14px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+<!-- NOT FOUND -->
+<div id="notFoundState" style="display:none">
+  <div class="not-found">
+    <div class="nf-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+    </div>
+    <div class="nf-title">Contributor Tidak Ditemukan</div>
+    <div class="nf-sub">Contributor yang kamu cari tidak ada atau<br/>belum terdaftar di platform ini.</div>
   </div>
-  <div style="font-size:1rem;font-weight:700;color:var(--white);margin-bottom:6px">Contributor Tidak Ditemukan</div>
-  <div style="font-size:.78rem;color:var(--muted)">Contributor yang kamu cari tidak ada atau belum terdaftar.</div>
+</div>
+
+<div class="back-link" id="backLink" style="display:none">
+  <a href="../index.html">← Kembali ke Beranda</a>
 </div>
 
 <script>
+// ==================== KONFIGURASI ====================
 const API_URL = '/api';
 const VERIFIED_ICON_URL = 'https://img.icons8.com/?size=100&id=98A4yZTt9abw&format=png&color=000000';
 
 const urlParams = new URLSearchParams(window.location.search);
-const targetUser = urlParams.get('u');
+const targetUser = urlParams.get('u') || urlParams.get('username') || '';
 
+const TIER_CONFIG = {
+  low:    { label: 'LOW',    badge: 'badge-low',    color: '#9ca3af' },
+  medium: { label: 'MEDIUM', badge: 'badge-medium', color: '#60a5fa' },
+  high:   { label: 'HIGH',   badge: 'badge-high',   color: '#fb923c' },
+  legend: { label: 'LEGEND', badge: 'badge-legend', color: '#fbbf24' },
+};
+
+let allContributors = [];
+
+// ==================== FUNGSI API ====================
 async function fetchAPI(endpoint) {
   try {
     const res = await fetch(`${API_URL}/${endpoint}.js`);
@@ -149,62 +370,17 @@ async function fetchAPI(endpoint) {
   } catch { return { success: false, data: [] }; }
 }
 
-async function loadProfile() {
-  if (!targetUser) { showNotFound(); return; }
-  
-  const result = await fetchAPI('contributors');
-  if (!result.success || !result.data) { showNotFound(); return; }
-  
-  const contributor = result.data.find(c => c.username === targetUser.toLowerCase());
-  if (!contributor) { showNotFound(); return; }
-  
-  await renderProfile(contributor, result.data);
+// ==================== FUNGSI UTILITY ====================
+async function fetchRanking(contributors, currentUsername) {
+  const sorted = [...contributors].sort((a, b) => (b.total || 0) - (a.total || 0));
+  const rank = sorted.findIndex(c => c.username === currentUsername) + 1;
+  return rank;
 }
 
-async function renderProfile(contributor, allContributors) {
-  document.title = `${contributor.name} — IDglitxh`;
-  
-  document.getElementById('profileImg').src = contributor.photo || '';
-  document.getElementById('profileName').textContent = contributor.name;
-  
-  const roleBadge = document.getElementById('roleBadge');
-  roleBadge.textContent = contributor.role === 'DV' ? 'DV' : 'CB';
-  roleBadge.className = `role-badge ${contributor.role === 'DV' ? 'role-dv' : 'role-cb'}`;
-  
-  document.getElementById('profileUsn').innerHTML = `@${contributor.username}`;
-  if (contributor.verified) {
-    document.getElementById('verifiedBadge').style.display = 'inline-flex';
-  }
-  
-  document.getElementById('profileBio').textContent = contributor.bio || 'Premium ID Contributor.';
-  document.getElementById('statTotal').textContent = (contributor.total || 0).toLocaleString('id-ID');
-  
-  const sorted = [...allContributors].sort((a, b) => (b.total || 0) - (a.total || 0));
-  const rank = sorted.findIndex(c => c.username === contributor.username) + 1;
-  document.getElementById('statRank').textContent = `#${rank}`;
-  
-  if (contributor.joined) {
-    const d = new Date(contributor.joined);
-    document.getElementById('statJoined').textContent = d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
-  } else {
-    document.getElementById('statJoined').textContent = '—';
-  }
-  
-  // Load IDs milik contributor ini
-  const idsResult = await fetchAPI(`my-ids?username=${contributor.username}`);
-  if (idsResult.success && idsResult.data && idsResult.data.length > 0) {
-    const container = document.getElementById('idListContainer');
-    container.innerHTML = idsResult.data.map(id => `<span class="id-tag-item">${escapeHtml(id.id)}</span>`).join('');
-    document.getElementById('idSection').style.display = 'block';
-  }
-  
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('profileSection').style.display = 'block';
-}
-
-function showNotFound() {
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('notFoundState').style.display = 'block';
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' });
 }
 
 function escapeHtml(str) {
@@ -212,7 +388,198 @@ function escapeHtml(str) {
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
 }
 
-loadProfile();
+// ==================== INIT ====================
+async function init() {
+  const result = await fetchAPI('contributors');
+  if (!result.success || !result.data || result.data.length === 0) {
+    showNotFound();
+    return;
+  }
+  
+  allContributors = result.data;
+
+  if (!targetUser) {
+    showNotFound();
+    return;
+  }
+
+  const con = allContributors.find(c => c.username && c.username.toLowerCase() === targetUser.toLowerCase());
+  if (!con) {
+    showNotFound();
+    return;
+  }
+
+  await renderProfile(con);
+}
+
+async function renderProfile(con) {
+  const isVerified = con.verified === true;
+  const role = con.role || 'CB';
+  const isDeveloper = role === 'DV';
+
+  document.title = `${con.name} — IDglitxh`;
+  document.getElementById('pillText').textContent = isDeveloper ? 'Developer Profile' : 'Contributor Profile';
+  document.getElementById('pagePill').style.display = '';
+
+  // COVER
+  if (con.cover) {
+    const coverDiv = document.getElementById('coverDiv');
+    coverDiv.classList.add('has-cover');
+    document.getElementById('coverImg').src = con.cover;
+  }
+
+  // PROFILE IMAGE
+  const imgEl = document.getElementById('profileImg');
+  if (con.photo) {
+    imgEl.src = con.photo;
+    imgEl.onerror = () => { imgEl.src = ''; imgEl.style.background = 'var(--card2)'; };
+  }
+  if (!con.cover) {
+    imgEl.classList.add('no-cover-img');
+    imgEl.style.marginTop = '0';
+  } else {
+    imgEl.style.marginTop = '-50px';
+  }
+
+  // NAME
+  document.getElementById('profileName').textContent = con.name;
+  
+  // ROLE BADGE (DV/CB)
+  const roleBadge = document.getElementById('roleBadge');
+  const roleBadgeClass = role === 'DV' ? 'role-dv' : 'role-cb';
+  const roleLabel = role === 'DV' ? 'DV' : 'CB';
+  roleBadge.textContent = roleLabel;
+  roleBadge.className = `role-badge ${roleBadgeClass}`;
+  roleBadge.style.display = 'inline-block';
+
+  // USN
+  document.getElementById('profileUsn').textContent = '@' + con.username;
+
+  // VERIFIED BADGE (hanya jika verified: true)
+  if (isVerified) {
+    document.getElementById('verifiedBadgeUsn').style.display = 'inline-flex';
+  } else {
+    document.getElementById('verifiedBadgeUsn').style.display = 'none';
+  }
+
+  // RANK BADGE
+  const ranking = await fetchRanking(allContributors, con.username);
+  const rankWrapper = document.getElementById('rankWrapper');
+  const rankBadgeEl = document.getElementById('rankBadgeLeader');
+  
+  if (ranking <= 10) {
+    let rankClass = '';
+    let rankIcon = '';
+    let rankText = `#${ranking}`;
+    if (ranking === 1) { rankClass = 'rank-1'; rankIcon = '🏆 '; }
+    else if (ranking === 2) { rankClass = 'rank-2'; rankIcon = '🥈 '; }
+    else if (ranking === 3) { rankClass = 'rank-3'; rankIcon = '🥉 '; }
+    else { rankClass = ''; rankIcon = '📊 '; }
+    rankBadgeEl.innerHTML = `<span class="rank-icon">${rankIcon}</span>Leaderboard Rank ${rankText}`;
+    rankBadgeEl.className = `rank-badge-leader ${rankClass}`;
+    rankWrapper.style.display = 'block';
+  } else {
+    rankWrapper.style.display = 'none';
+  }
+
+  // BIO
+  if (con.bio) document.getElementById('profileBio').textContent = con.bio;
+  else document.getElementById('profileBio').textContent = isDeveloper ? 'Pendiri & Developer IDglitxh.' : 'Premium ID Contributor.';
+
+  // STATS
+  document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
+  document.getElementById('statJoined').textContent = formatDate(con.joined);
+
+  // Fetch ID list milik contributor ini
+  const idsResult = await fetchAPI(`my-ids?username=${con.username}`);
+  if (idsResult.success && idsResult.data && idsResult.data.length > 0) {
+    // Fetch tier data to categorize IDs
+    const tierURLs = {
+      low: 'ids?tier=low',
+      medium: 'ids?tier=medium',
+      high: 'ids?tier=high',
+      legend: 'ids?tier=legend',
+    };
+
+    const tierSets = {};
+    await Promise.all(Object.entries(tierURLs).map(async ([tier, url]) => {
+      const res = await fetchAPI(url);
+      tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
+    }));
+
+    // Group IDs by tier
+    const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
+    idsResult.data.forEach(item => {
+      const sid = String(item.id);
+      let found = false;
+      for (const tier of ['legend','high','medium','low']) {
+        if (tierSets[tier] && tierSets[tier].has(sid)) {
+          grouped[tier].push(sid);
+          found = true;
+          break;
+        }
+      }
+      if (!found) grouped.other.push(sid);
+    });
+
+    const idSection = document.getElementById('idSection');
+    const tierGroups = document.getElementById('idTierGroups');
+    tierGroups.innerHTML = '';
+
+    const tierOrder = ['legend', 'high', 'medium', 'low'];
+    let hasAny = false;
+
+    tierOrder.forEach(tier => {
+      const ids = grouped[tier];
+      if (!ids.length) return;
+      hasAny = true;
+      const cfg = TIER_CONFIG[tier];
+      const groupEl = document.createElement('div');
+      groupEl.className = 'tier-id-group';
+      groupEl.innerHTML = `
+        <div class="tier-id-header">
+          <span class="tier-badge-sm ${cfg.badge}">${cfg.label}</span>
+          <span class="tier-id-count">${ids.length} ID</span>
+        </div>
+        <div class="id-tags-wrap">
+          ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+        </div>
+      `;
+      tierGroups.appendChild(groupEl);
+    });
+
+    if (grouped.other.length > 0) {
+      hasAny = true;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'tier-id-group';
+      groupEl.innerHTML = `
+        <div class="tier-id-header">
+          <span class="tier-badge-sm" style="background:rgba(255,255,255,.06);color:var(--muted2);border:1px solid var(--border2)">OTHER</span>
+          <span class="tier-id-count">${grouped.other.length} ID</span>
+        </div>
+        <div class="id-tags-wrap">
+          ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+        </div>
+      `;
+      tierGroups.appendChild(groupEl);
+    }
+
+    if (hasAny) idSection.style.display = '';
+  }
+
+  // Show profile
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('profileSection').style.display = '';
+  document.getElementById('backLink').style.display = '';
+}
+
+function showNotFound() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('notFoundState').style.display = '';
+  document.getElementById('backLink').style.display = '';
+}
+
+init();
 </script>
 </body>
 </html>
