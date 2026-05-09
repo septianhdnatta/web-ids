@@ -147,7 +147,7 @@ async function doRegister() {
 
   try {
     // PERUBAHAN: tambahkan .js di endpoint
-    const response = await fetch(`${API_URL}/register.js`, {
+    const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, name, photo, bio, wa, password })
