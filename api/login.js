@@ -13,19 +13,32 @@ export default async function handler(req, res) {
 
   const client = await clientPromise;
   const db = client.db('idglitxh');
-  const contributors = db.collection('contributors');
-
-  const user = await contributors.findOne({ 
+  
+  // Cek di contributors
+  let user = await db.collection('contributors').findOne({ 
     username: username.toLowerCase(), 
     pass: password 
   });
 
-  if (!user) {
-    return res.status(401).json({ success: false, error: 'Invalid username or password' });
+  if (user) {
+    // Cek apakah user di-block
+    if (user.active === false) {
+      return res.status(403).json({ success: false, error: 'Akun Anda telah diblokir oleh admin. Hubungi admin untuk informasi lebih lanjut.' });
+    }
+    delete user.pass;
+    return res.status(200).json({ success: true, data: user, role: 'contributor' });
   }
 
-  // Jangan kirim password
-  delete user.pass;
+  // Cek di admins
+  const admin = await db.collection('admins').findOne({ 
+    username: username.toLowerCase(), 
+    pass: password 
+  });
 
-  return res.status(200).json({ success: true, data: user });
+  if (admin) {
+    delete admin.pass;
+    return res.status(200).json({ success: true, data: admin, role: 'admin' });
+  }
+
+  return res.status(401).json({ success: false, error: 'Invalid username or password' });
 }
