@@ -132,7 +132,6 @@ async function doLogin() {
     showProgress(false);
     
     if (!data.success) {
-      // Tampilkan pesan error khusus jika akun diblokir
       if (data.error && data.error.includes('diblokir')) {
         showToast('⚠️ Akun Anda telah diblokir oleh admin. Hubungi admin untuk informasi lebih lanjut.', 'warn');
       } else {
@@ -141,16 +140,18 @@ async function doLogin() {
       return;
     }
     
-    // Login sukses
+    // Login sukses - simpan data user
     localStorage.setItem('contributor_user', JSON.stringify(data.data));
     
     // Redirect berdasarkan role
-    if (data.role === 'admin') {
-      showToast('✅ Login sebagai Admin! Mengarahkan...', 'ok');
+    if (data.role === 'DV') {
+      // Developer (role DV) → dashboard admin
+      showToast('✅ Login sebagai Developer! Mengarahkan ke Admin Panel...', 'ok');
       setTimeout(() => {
-        window.location.href = '../ADMIN/admin.html';
+        window.location.href = '../dashboard/dashboard-admin.html';
       }, 1000);
     } else {
+      // Contributor biasa (role CB) → dashboard biasa
       showToast('✅ Login berhasil! Mengarahkan ke dashboard...', 'ok');
       setTimeout(() => {
         window.location.href = '../dashboard/dashboard.html';
