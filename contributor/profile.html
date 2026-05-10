@@ -193,8 +193,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;padding:2px}
 .id-tags-wrap::-webkit-scrollbar{width:3px}
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
-.id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:8px;transition:all .15s;cursor:default}
-.id-tag-item:hover{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.3);color:var(--white)}
+.id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:8px;transition:all .15s;cursor:pointer}
+.id-tag-item:hover{background:rgba(168,85,247,.2);border-color:var(--purple);color:var(--white);transform:translateY(-1px)}
 
 /* TIER BADGES */
 .badge-low{background:rgba(107,114,128,.1);color:#9ca3af;border:1px solid rgba(107,114,128,.2)}
@@ -416,7 +416,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
         </div>
 
         <div class="id-section" id="idSection" style="display:none">
-          <div class="id-section-title">ID Contributed</div>
+          <div class="id-section-title">ID Contributed (klik untuk beli)</div>
           <div id="idTierGroups"></div>
         </div>
 
@@ -470,6 +470,64 @@ const TIER_CONFIG = {
 
 let allContributors = [];
 let currentSoldIDs = [];
+
+// ==================== DETEKSI TIER (SAMA SEPERTI DI DASHBOARD) ====================
+function detectTierFromID(id) {
+  const idStr = String(id);
+  
+  // Cari semua kelompok angka berulang beserta panjangnya
+  let sequences = [];
+  let currentChar = idStr[0];
+  let currentLength = 1;
+  
+  for (let i = 1; i < idStr.length; i++) {
+    if (idStr[i] === currentChar) {
+      currentLength++;
+    } else {
+      if (currentLength >= 2) {
+        sequences.push(currentLength);
+      }
+      currentChar = idStr[i];
+      currentLength = 1;
+    }
+  }
+  if (currentLength >= 2) {
+    sequences.push(currentLength);
+  }
+  
+  sequences.sort((a, b) => b - a);
+  
+  if (sequences.length === 0) return 'low';
+  
+  const maxLen = sequences[0];
+  
+  // LEGEND: 9+ angka sama
+  if (maxLen >= 9) return 'legend';
+  
+  // HIGH: 6+ angka sama DAN minimal 4 angka sama lainnya
+  if (maxLen >= 6) {
+    const hasSecondBig = sequences.slice(1).some(len => len >= 4);
+    if (hasSecondBig) return 'high';
+    return 'medium';
+  }
+  
+  // MEDIUM: 5+ angka sama ATAU minimal 2 kelompok dengan panjang >= 4
+  if (maxLen >= 5) return 'medium';
+  
+  const countLen4OrMore = sequences.filter(len => len >= 4).length;
+  if (countLen4OrMore >= 2) return 'medium';
+  
+  const countLen3OrMore = sequences.filter(len => len >= 3).length;
+  if (countLen3OrMore >= 3) return 'medium';
+  
+  return 'low';
+}
+
+// ==================== FUNGSI UNTUK HANDLE KLIK ID ====================
+function handleIdClick(id) {
+  const tier = detectTierFromID(id);
+  window.location.href = `../payment/payment.html?id=${encodeURIComponent(id)}&tier=${tier}`;
+}
 
 // ==================== FUNGSI API ====================
 async function callAPI(endpoint) {
@@ -680,7 +738,7 @@ async function renderProfile(con) {
             <span class="tier-id-count">${ids.length} ID</span>
           </div>
           <div class="id-tags-wrap">
-            ${ids.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+            ${ids.map(id => `<span class="id-tag-item" onclick="handleIdClick('${escapeHtml(id)}')">${escapeHtml(id)}</span>`).join('')}
           </div>
         `;
         tierGroups.appendChild(groupEl);
@@ -696,7 +754,7 @@ async function renderProfile(con) {
             <span class="tier-id-count">${grouped.other.length} ID</span>
           </div>
           <div class="id-tags-wrap">
-            ${grouped.other.map(id => `<span class="id-tag-item">${escapeHtml(id)}</span>`).join('')}
+            ${grouped.other.map(id => `<span class="id-tag-item" onclick="handleIdClick('${escapeHtml(id)}')">${escapeHtml(id)}</span>`).join('')}
           </div>
         `;
         tierGroups.appendChild(groupEl);
