@@ -10,8 +10,7 @@
 :root{
   --bg:#0d0d0d;--card:#161616;--card2:#1a1a1a;--border:#232323;--border2:#2a2a2a;
   --text:#f0f0f0;--muted:#666;--muted2:#888;--white:#fff;
-  --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
-  --font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
+  --green:#10b981;--red:#ef4444;--font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
 }
 html{scroll-behavior:smooth}
 body{
@@ -27,29 +26,25 @@ body{
   overflow-x:hidden;
 }
 .hero-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
-.register-container{position:relative;z-index:1;width:100%;max-width:450px}
-.register-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center;backdrop-filter:blur(10px)}
+.register-container{position:relative;z-index:1;width:100%;max-width:400px}
+.register-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center}
 .logo-icon{width:48px;height:48px;background:var(--white);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
 .logo-icon svg{width:24px;height:24px;color:#000}
 h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
 .sub{font-size:.72rem;color:var(--muted);margin-bottom:24px}
 .field{margin-bottom:16px;text-align:left}
 .field label{font-size:.68rem;color:var(--muted2);display:block;margin-bottom:6px;font-family:var(--mono)}
-.field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none;transition:border-color .2s}
+.field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none}
 .field input:focus{border-color:rgba(255,255,255,.2)}
-.field input::placeholder{color:var(--muted);font-size:.7rem}
-.row-2{display:flex;gap:12px}
-.row-2 .field{flex:1}
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn-primary{background:var(--white);color:#000}
 .btn-primary:hover{background:#e8e8e8;transform:translateY(-1px)}
 .auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
-.auth-switch a{color:var(--white);text-decoration:none;cursor:pointer}
-.auth-switch a:hover{text-decoration:underline}
+.auth-switch a{color:var(--white);text-decoration:none}
 .back-link{margin-top:16px;text-align:center}
 .back-link a{color:var(--muted);font-size:.72rem;text-decoration:none}
 .back-link a:hover{color:var(--white)}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
@@ -71,7 +66,7 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
     </div>
     <h1>Daftar Contributor</h1>
-    <p class="sub">Isi data untuk bergabung menjadi contributor</p>
+    <p class="sub">Isi data untuk bergabung</p>
     
     <div class="field">
       <label>Username</label>
@@ -81,19 +76,9 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
       <label>Nama Lengkap</label>
       <input type="text" id="regName" placeholder="cth: Natas">
     </div>
-    <div class="row-2">
-      <div class="field">
-        <label>WhatsApp</label>
-        <input type="tel" id="regWa" placeholder="6281234567890">
-      </div>
-      <div class="field">
-        <label>Foto URL</label>
-        <input type="url" id="regPhoto" placeholder="https://...">
-      </div>
-    </div>
     <div class="field">
-      <label>Bio (opsional)</label>
-      <input type="text" id="regBio" placeholder="Premium ID Contributor">
+      <label>WhatsApp</label>
+      <input type="tel" id="regWa" placeholder="6281234567890">
     </div>
     <div class="field">
       <label>Password</label>
@@ -116,16 +101,8 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
-
-<!-- PROGRESS -->
-<div class="progress-overlay" id="progressOverlay">
-  <div class="progress-card">
-    <div class="progress-spinner"></div>
-    <div class="progress-title" style="color:var(--white);margin-bottom:6px">Mendaftar...</div>
-  </div>
-</div>
+<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg"></div></div>
+<div class="progress-overlay" id="progressOverlay"><div class="progress-card"><div class="progress-spinner"></div><div class="progress-title">Mendaftar...</div></div></div>
 
 <script>
 const API_URL = '/api';
@@ -134,12 +111,10 @@ async function doRegister() {
   const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '-');
   const name = document.getElementById('regName').value.trim();
   const wa = document.getElementById('regWa').value.trim();
-  const photo = document.getElementById('regPhoto').value.trim();
-  const bio = document.getElementById('regBio').value.trim();
   const password = document.getElementById('regPassword').value;
 
   if (!username || !name || !wa || !password) {
-    showToast('Username, Nama, WhatsApp, dan Password wajib diisi', 'err');
+    showToast('Semua field wajib diisi', 'err');
     return;
   }
 
@@ -149,16 +124,15 @@ async function doRegister() {
     const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, name, photo, bio, wa, password })
+      body: JSON.stringify({ username, name, wa, password })
     });
 
     const data = await response.json();
     showProgress(false);
 
     if (data.success) {
-      // Simpan data user ke localStorage
       localStorage.setItem('contributor_user', JSON.stringify(data.data));
-      showToast('✅ Pendaftaran berhasil! Mengarahkan ke dashboard...', 'ok');
+      showToast('✅ Pendaftaran berhasil!', 'ok');
       setTimeout(() => {
         window.location.href = '../dashboard/dashboard.html';
       }, 1500);
@@ -167,7 +141,6 @@ async function doRegister() {
     }
   } catch (error) {
     showProgress(false);
-    console.error('Register error:', error);
     showToast('❌ Gagal terhubung ke server', 'err');
   }
 }
@@ -185,7 +158,6 @@ function showProgress(show) {
   else el.classList.remove('show');
 }
 
-// Enter key support
 document.querySelectorAll('input').forEach(input => {
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') doRegister();
