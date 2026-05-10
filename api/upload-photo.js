@@ -1,6 +1,7 @@
 import { Catbox } from 'node-catbox';
 import formidable from 'formidable';
 import fs from 'fs';
+import clientPromise from './_lib/mongodb.js';
 
 export const config = {
   api: {
@@ -9,6 +10,15 @@ export const config = {
 };
 
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
@@ -31,10 +41,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'No file or username provided' });
     }
 
+    console.log('Uploading file:', file.originalFilename, 'size:', file.size);
+
     // Upload ke Catbox
     const response = await catbox.uploadFile({
       path: file.filepath
     });
+
+    console.log('Catbox response:', response);
 
     // Hapus file temporary
     fs.unlinkSync(file.filepath);
