@@ -116,38 +116,48 @@ async function doRegister() {
   const wa = document.getElementById('regWa').value.trim();
   const password = document.getElementById('regPassword').value;
 
-  // Validasi
+  console.log('🔍 Register started with:', { username, name, wa });
+
   if (!username || !name || !wa || !password) {
     showToast('Semua field wajib diisi', 'err');
+    console.log('❌ Validation failed');
     return;
   }
 
   showProgress(true);
 
   try {
+    console.log('📡 Sending request to:', `${API_URL}/register`);
+    
     const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, name, wa, password })
     });
 
+    console.log('📥 Response status:', response.status);
+    
     const data = await response.json();
+    console.log('📦 Response data:', data);
+
     showProgress(false);
 
     if (data.success) {
-      // LANGSUNG simpan data user ke localStorage
+      console.log('✅ Register success! Saving to localStorage...');
       localStorage.setItem('contributor_user', JSON.stringify(data.data));
       showToast('✅ Pendaftaran berhasil! Mengarahkan ke dashboard...', 'ok');
+      console.log('🔄 Redirecting to dashboard...');
       setTimeout(() => {
         window.location.href = '../dashboard/dashboard.html';
       }, 1500);
     } else {
+      console.log('❌ Register failed:', data.error);
       showToast(data.error || 'Gagal mendaftar', 'err');
     }
   } catch (error) {
+    console.error('❌ Network error:', error);
     showProgress(false);
-    console.error('Register error:', error);
-    showToast('❌ Gagal terhubung ke server', 'err');
+    showToast('❌ Gagal terhubung ke server: ' + error.message, 'err');
   }
 }
 
@@ -164,7 +174,6 @@ function showProgress(show) {
   else el.classList.remove('show');
 }
 
-// Enter key support
 document.querySelectorAll('input').forEach(input => {
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') doRegister();
