@@ -1,4 +1,4 @@
-import { Catbox } from 'node-catbox';
+import Catbox from 'catbox.moe';
 import formidable from 'formidable';
 import fs from 'fs';
 import clientPromise from './_lib/mongodb.js';
@@ -23,7 +23,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const catbox = new Catbox();
+  // Gunakan Catbox tanpa user hash (anonymous upload)
+  const catbox = new Catbox.Catbox();
   
   // Parse form data
   const form = formidable({ 
@@ -43,11 +44,9 @@ export default async function handler(req, res) {
 
     console.log('Uploading file:', file.originalFilename, 'size:', file.size);
 
-    // Upload ke Catbox
-    const response = await catbox.uploadFile({
-      path: file.filepath
-    });
-
+    // Upload ke Catbox menggunakan path file
+    const response = await catbox.upload(file.filepath);
+    
     console.log('Catbox response:', response);
 
     // Hapus file temporary
