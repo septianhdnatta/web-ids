@@ -235,7 +235,7 @@ async function handleAddIds(req, res) {
   return res.status(200).json({ success: true, message: `Added ${ids.length} IDs` });
 }
 
-// ==================== GET USER'S IDS ====================
+// ==================== GET USER'S IDS (DARI ids_username DAN sold_username) ====================
 async function handleMyIds(req, res) {
   const { username } = req.query;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -244,27 +244,32 @@ async function handleMyIds(req, res) {
   const db = client.db('idglitxh');
   
   try {
-    // Ambil semua ID dari collection ids_username
+    // Ambil ID aktif dari ids_username
     const userCollection = db.collection(`ids_${username}`);
-    const ids = await userCollection.find({}).toArray();
+    const activeIds = await userCollection.find({}).toArray();
     
-    // Ambil sold IDs dari collection sold_username
+    // Ambil ID sold dari sold_username
     const soldCollection = db.collection(`sold_${username}`);
-    const soldDocs = await soldCollection.find({}).toArray();
+    const soldIds = await soldCollection.find({}).toArray();
     
-    // Buat Set untuk sold IDs
-    const soldSet = new Set();
-    for (const doc of soldDocs) {
-      soldSet.add(doc.id);
-    }
+    // Gabungkan: ID aktif (isSold: false) + ID sold (isSold: true)
+    const result = [
+      ...activeIds.map(doc => ({
+        id: doc.id,
+        tier: doc.tier || 'unknown',
+        isSold: false
+      })),
+      ...soldIds.map(doc => ({
+        id: doc.id,
+        tier: doc.tier || 'unknown',
+        isSold: true
+      }))
+    ];
     
-    console.log(`[my-ids] User: ${username}, Total IDs: ${ids.length}, Sold IDs: ${soldDocs.length}, Sold Set:`, Array.from(soldSet));
+    // Urutkan berdasarkan ID (opsional)
+    result.sort((a, b) => a.id.localeCompare(b.id));
     
-    const result = ids.map(doc => ({
-      id: doc.id,
-      tier: doc.tier || 'unknown',
-      isSold: soldSet.has(doc.id)
-    }));
+    console.log(`[my-ids] User: ${username}, Active: ${activeIds.length}, Sold: ${soldIds.length}, Total: ${result.length}`);
     
     return res.status(200).json({ success: true, data: result });
   } catch (error) {
