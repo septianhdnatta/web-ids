@@ -1,7 +1,7 @@
+import clientPromise from './_lib/mongodb.js';
 import Catbox from 'catbox.moe';
 import formidable from 'formidable';
 import fs from 'fs';
-import clientPromise from './_lib/mongodb.js';
 
 export const config = {
   api: {
