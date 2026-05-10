@@ -28,6 +28,7 @@ export default async function handler(req, res) {
   if (pathname === '/api/update-total' && req.method === 'POST') return handleUpdateTotal(req, res);
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
+  if (pathname === '/api/upload-photo' && req.method === 'POST') return handleUploadPhoto(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
@@ -361,7 +362,7 @@ async function handleUpdateProfile(req, res) {
   return res.status(200).json({ success: true, message: 'Profile updated' });
 }
 
-// ==================== RESET ALL IDS (SEMUA CONTRIBUTOR) ====================
+// ==================== RESET ALL IDS ====================
 async function handleResetAllIds(req, res) {
   const client = await clientPromise;
   const db = client.db('idglitxh');
@@ -369,46 +370,83 @@ async function handleResetAllIds(req, res) {
   try {
     let deletedCount = 0;
 
-    // 1. Kosongkan semua tier collections
     const tierCollections = ['ids_low', 'ids_medium', 'ids_high', 'ids_legend'];
     for (const collectionName of tierCollections) {
       const result = await db.collection(collectionName).deleteMany({});
       deletedCount += result.deletedCount;
     }
 
-    // 2. Kosongkan sold_ids global
     const soldResult = await db.collection('sold_ids').deleteMany({});
     deletedCount += soldResult.deletedCount;
 
-    // 3. Dapatkan semua contributor
     const contributors = await db.collection('contributors').find({}).toArray();
 
-    // 4. Untuk setiap contributor, kosongkan collection ids_username dan sold_username
     for (const con of contributors) {
       try {
         const idsResult = await db.collection(`ids_${con.username}`).deleteMany({});
         deletedCount += idsResult.deletedCount;
-        
         const soldResult2 = await db.collection(`sold_${con.username}`).deleteMany({});
         deletedCount += soldResult2.deletedCount;
-      } catch(e) {
-        // Collection mungkin tidak ada, skip
-      }
+      } catch(e) {}
     }
 
-    // 5. Reset total dan soldTotal semua contributor ke 0
-    await db.collection('contributors').updateMany(
-      {},
-      { $set: { total: 0, soldTotal: 0 } }
+    await db.collection('contributors').updateMany({}, { $set: { total: 0, soldTotal: 0 } });
+
+    return res.status(200).json({ success: true, message: 'All IDs reset', deletedCount });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
+// ==================== UPLOAD PHOTO ====================
+import { Catbox } from 'node-catbox';
+import formidable from 'formidable';
+import fs from 'fs';
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+async function handleUploadPhoto(req, res) {
+  const catbox = new Catbox();
+  
+  const form = formidable({ 
+    uploadDir: '/tmp',
+    keepExtensions: true,
+    maxFileSize: 10 * 1024 * 1024
+  });
+
+  try {
+    const [fields, files] = await form.parse(req);
+    const file = files.file?.[0];
+    const username = fields.username?.[0];
+
+    if (!file || !username) {
+      return res.status(400).json({ success: false, error: 'No file or username provided' });
+    }
+
+    const response = await catbox.uploadFile({
+      path: file.filepath
+    });
+
+    fs.unlinkSync(file.filepath);
+
+    const client = await clientPromise;
+    const db = client.db('idglitxh');
+    await db.collection('contributors').updateOne(
+      { username: username },
+      { $set: { photo: response } }
     );
 
     return res.status(200).json({ 
       success: true, 
-      message: 'All IDs have been reset', 
-      deletedCount: deletedCount 
+      url: response,
+      message: 'Photo uploaded successfully!'
     });
   } catch (error) {
-    console.error('Error resetting all IDs:', error);
-    return res.status(500).json({ success: false, error: 'Internal server error' });
+    console.error('Upload error:', error);
+    return res.status(500).json({ success: false, error: error.message });
   }
 }
