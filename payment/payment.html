@@ -108,6 +108,19 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .price-total-row{display:flex;justify-content:space-between;align-items:center;padding-top:8px}
 .price-total-label{font-size:.85rem;font-weight:600;color:var(--white)}
 .price-total-val{font-size:1.3rem;font-weight:700;font-family:var(--mono);background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.discount-row{background:rgba(16,185,129,.1);border-radius:8px;margin-top:6px;padding:6px 12px}
+.discount-row .price-label{color:var(--green)}
+.discount-row .price-val{color:var(--green)}
+
+/* DISCOUNT INPUT */
+.discount-input-group{display:flex;gap:8px;margin-bottom:12px}
+.discount-input-group input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.6rem .9rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none}
+.discount-input-group input:focus{border-color:var(--purple)}
+.discount-input-group button{background:linear-gradient(135deg,var(--purple),var(--pink));border:none;border-radius:10px;padding:0 16px;cursor:pointer;color:#fff;font-weight:600}
+.discount-input-group button:disabled{opacity:0.5;cursor:not-allowed}
+.discount-info{font-size:.65rem;color:var(--muted);margin-top:4px;text-align:right}
+.discount-info.success{color:var(--green)}
+.discount-info.error{color:var(--red)}
 
 /* BUY BUTTON */
 .btn-buy{width:100%;padding:15px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-size:.88rem;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;font-family:var(--font);letter-spacing:-.2px}
@@ -134,6 +147,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 #qrcode-canvas{display:flex;justify-content:center}
 .qris-label{font-size:.65rem;color:var(--muted);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
 .qris-amount{font-size:1.1rem;font-weight:700;font-family:var(--mono);background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.discount-badge{background:var(--green);color:#fff;font-size:.6rem;padding:2px 6px;border-radius:10px;margin-left:8px}
 
 /* TIMER */
 .timer-box{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
@@ -168,6 +182,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .btn-wa:hover{background:#20b858;transform:translateY(-1px)}
 .btn-wa:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .btn-wa svg{width:16px;height:16px;stroke:#fff}
+
+.discount-applied{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.discount-applied span{color:var(--green);font-size:.75rem}
+.discount-applied button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.7rem}
+.discount-applied button:hover{color:var(--red)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:768px){nav{padding:0 16px}.wrap{padding:76px 16px 60px}}
@@ -218,6 +237,25 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
       </div>
     </div>
 
+    <!-- DISCOUNT INPUT -->
+    <div class="info-card" id="discountCard">
+      <div class="info-row">
+        <div class="ir-left">
+          <div class="ir-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12v8H4v-8M12 2v12m-4-4 4 4 4-4"/></svg>
+          </div>
+          <div style="flex:1">
+            <div class="ir-label">Kode Diskon</div>
+            <div class="discount-input-group">
+              <input type="text" id="discountCode" placeholder="Masukkan kode diskon" autocomplete="off">
+              <button id="applyDiscountBtn" onclick="applyDiscount()">Terapkan</button>
+            </div>
+            <div id="discountInfo" class="discount-info"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="info-card">
       <div class="info-row">
         <div class="ir-left">
@@ -262,14 +300,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
       </div>
     </div>
 
+    <!-- PRICE CARD -->
     <div class="price-card">
       <div class="price-row">
-        <span class="price-label">Harga ID (by Contributor)</span>
+        <span class="price-label">Harga ID</span>
         <span class="price-val" id="basePrice">—</span>
       </div>
       <div class="price-row" id="adminFeeRow" style="display:none">
         <span class="price-label">Biaya Metode Akun</span>
         <span class="price-val" id="accountFee">Rp0</span>
+      </div>
+      <div id="discountRow" class="discount-row" style="display:none">
+        <div class="price-row">
+          <span class="price-label">Diskon</span>
+          <span class="price-val" id="discountAmount">Rp0</span>
+        </div>
       </div>
       <div class="price-divider"></div>
       <div class="price-total-row">
@@ -292,6 +337,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   </div>
 </div>
 
+<!-- MODAL -->
 <div class="modal" id="paymentModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -330,7 +376,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
     </div>
 
     <div id="modalError" class="err-msg">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12} y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
       <span>Waktu pembayaran habis. Tutup dan pesan ulang.</span>
     </div>
 
@@ -359,6 +405,9 @@ let totalPrice = 0, basePrice = 0, idNum = '', tierName = '', timerInterval = nu
 let idContributor = null;
 let currentQris = DEFAULT_QRIS;
 let currentWa = DEFAULT_WA;
+let appliedDiscount = null;
+let discountPercent = 0;
+let discountedPrice = 0;
 
 function getPriceFromContributor(contributor, tier) {
   if (!contributor || !contributor.price) {
@@ -367,6 +416,8 @@ function getPriceFromContributor(contributor, tier) {
   }
   return contributor.price[tier] || 10000;
 }
+
+function formatRupiah(n) { return 'Rp' + n.toLocaleString('id-ID'); }
 
 // ==================== FUNGSI QRIS ====================
 function crc16(str) {
@@ -401,8 +452,6 @@ function generateQRIS(amount, qrisString = DEFAULT_QRIS) {
   });
 }
 
-function formatRupiah(n) { return 'Rp' + n.toLocaleString('id-ID'); }
-
 // ==================== API CALLS ====================
 async function callAPI(endpoint, method = 'GET', body = null) {
   const options = { method, headers: { 'Content-Type': 'application/json' } };
@@ -432,22 +481,105 @@ async function findContributorForId(id) {
   }
 }
 
+// ==================== DISCOUNT FUNCTIONS ====================
+async function applyDiscount() {
+  const code = document.getElementById('discountCode').value.trim().toUpperCase();
+  const infoDiv = document.getElementById('discountInfo');
+  const applyBtn = document.getElementById('applyDiscountBtn');
+  
+  if (!code) {
+    infoDiv.textContent = 'Masukkan kode diskon';
+    infoDiv.className = 'discount-info error';
+    return;
+  }
+  
+  if (!idContributor) {
+    infoDiv.textContent = 'Menunggu data contributor...';
+    infoDiv.className = 'discount-info error';
+    return;
+  }
+  
+  applyBtn.disabled = true;
+  infoDiv.textContent = 'Memeriksa kode...';
+  infoDiv.className = 'discount-info';
+  
+  try {
+    const result = await callAPI('get-discount', 'POST', {
+      code: code,
+      contributorUsername: idContributor.username
+    });
+    
+    if (result.success) {
+      discountPercent = result.data.discountPercent;
+      appliedDiscount = { code: code, percent: discountPercent };
+      
+      infoDiv.innerHTML = `✅ Kode berlaku! Diskon ${discountPercent}% akan diterapkan.`;
+      infoDiv.className = 'discount-info success';
+      
+      calculateTotal();
+    } else {
+      infoDiv.textContent = result.error || 'Kode diskon tidak valid';
+      infoDiv.className = 'discount-info error';
+      appliedDiscount = null;
+      discountPercent = 0;
+      calculateTotal();
+    }
+  } catch (error) {
+    infoDiv.textContent = 'Gagal memeriksa kode';
+    infoDiv.className = 'discount-info error';
+    appliedDiscount = null;
+    discountPercent = 0;
+    calculateTotal();
+  } finally {
+    applyBtn.disabled = false;
+  }
+}
+
+function removeDiscount() {
+  appliedDiscount = null;
+  discountPercent = 0;
+  document.getElementById('discountCode').value = '';
+  document.getElementById('discountInfo').innerHTML = '';
+  document.getElementById('discountInfo').className = 'discount-info';
+  calculateTotal();
+}
+
 // ==================== FUNGSI TOTAL ====================
 function calculateTotal() {
   const accountSelect = document.getElementById('accountMethod');
   const selectedOption = accountSelect.options[accountSelect.selectedIndex];
   const accountFee = parseInt(selectedOption.getAttribute('data-fee')) || 0;
   
-  totalPrice = basePrice + accountFee;
+  let priceAfterDiscount = basePrice;
+  let discountAmount = 0;
+  
+  if (appliedDiscount && discountPercent > 0) {
+    discountAmount = Math.floor(basePrice * discountPercent / 100);
+    priceAfterDiscount = basePrice - discountAmount;
+  }
+  
+  totalPrice = priceAfterDiscount + accountFee;
+  discountedPrice = priceAfterDiscount;
   
   const adminFeeRow = document.getElementById('adminFeeRow');
   const accountFeeSpan = document.getElementById('accountFee');
+  const discountRow = document.getElementById('discountRow');
+  const discountAmountSpan = document.getElementById('discountAmount');
   
   if (accountFee > 0) {
     adminFeeRow.style.display = 'flex';
     accountFeeSpan.textContent = formatRupiah(accountFee);
   } else {
     adminFeeRow.style.display = 'none';
+  }
+  
+  if (appliedDiscount && discountAmount > 0) {
+    discountRow.style.display = 'flex';
+    discountAmountSpan.textContent = `- ${formatRupiah(discountAmount)} (${discountPercent}%)`;
+    document.getElementById('basePrice').innerHTML = `${formatRupiah(basePrice)} <span class="discount-badge">Harga asli</span>`;
+  } else {
+    discountRow.style.display = 'none';
+    document.getElementById('basePrice').textContent = formatRupiah(basePrice);
   }
   
   document.getElementById('totalPrice').textContent = formatRupiah(totalPrice);
@@ -481,8 +613,26 @@ function resetTimer() {
 }
 
 // ==================== MODAL ====================
-function confirmPayment() {
+async function confirmPayment() {
   if (isPaid || timeLeft <= 0) return;
+  
+  if (appliedDiscount) {
+    try {
+      const result = await callAPI('use-discount', 'POST', {
+        code: appliedDiscount.code,
+        contributorUsername: idContributor.username
+      });
+      
+      if (!result.success) {
+        alert(result.error || 'Gagal menggunakan kode diskon');
+        return;
+      }
+    } catch (error) {
+      alert('Gagal memverifikasi kode diskon');
+      return;
+    }
+  }
+  
   isPaid = true;
   if (timerInterval) clearInterval(timerInterval);
   document.getElementById('statusPaid').classList.add('show');
@@ -503,7 +653,13 @@ function contactSeller() {
   if (waNumber.startsWith('0')) waNumber = '62' + waNumber.substring(1);
   if (!waNumber.startsWith('62')) waNumber = '62' + waNumber;
   
-  const msg = `Halo Kak ${conName},%0A%0ASaya sudah melakukan pembayaran untuk ID:%0A%0A📌 Detail Pembelian:%0A• ID: ${idNum}%0A• Tier: ${td}%0A• Metode Akun: ${accountName}%0A• Total: ${formatRupiah(totalPrice)}%0A%0ATolong segera kirimkan ID ke WhatsApp saya. Terima kasih!%0A%0A---%0APembeli IDglitxh`;
+  let msg = `Halo Kak ${conName},%0A%0ASaya sudah melakukan pembayaran untuk ID:%0A%0A📌 Detail Pembelian:%0A• ID: ${idNum}%0A• Tier: ${td}%0A• Metode Akun: ${accountName}%0A• Total: ${formatRupiah(totalPrice)}%0A`;
+  
+  if (appliedDiscount) {
+    msg += `• Diskon: ${discountPercent}% (kode: ${appliedDiscount.code})%0A`;
+  }
+  
+  msg += `%0ATolong segera kirimkan ID ke WhatsApp saya. Terima kasih!%0A%0A---%0APembeli IDglitxh`;
   
   window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
   setTimeout(() => {
@@ -570,14 +726,7 @@ async function init() {
   tierName = (p.get('tier') || '').toLowerCase();
   
   if (!idNum || !tierName) {
-    document.getElementById('loading').innerHTML = `<div style="text-align:center;padding:40px">
-      <div style="width:48px;height:48px;border-radius:12px;background:var(--card);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12} y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
-      </div>
-      <div style="font-size:.9rem;font-weight:600;color:var(--white);margin-bottom:6px">ID tidak ditemukan</div>
-      <div style="font-size:.78rem;color:var(--muted);margin-bottom:16px">Parameter tidak valid.</div>
-      <a href="../ID/id.html" style="color:var(--white);font-size:.78rem;text-decoration:none;padding:.5rem 1.2rem;border:1px solid var(--border2);border-radius:8px;background:var(--card)">Kembali ke Katalog</a>
-    </div>`;
+    document.getElementById('loading').innerHTML = `<div style="text-align:center;padding:40px">ID tidak ditemukan</div>`;
     return;
   }
   
