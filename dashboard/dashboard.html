@@ -153,7 +153,7 @@ body{
   border-radius:20px;
   overflow:hidden;
   margin-bottom:24px;
-  max-width:800px;
+  max-width:100%;
 }
 .panel-header{
   padding:16px 22px;
@@ -253,6 +253,24 @@ textarea{resize:vertical;min-height:100px}
   box-shadow:0 8px 24px rgba(168,85,247,.4);
   filter:brightness(1.05);
 }
+.btn-danger{
+  background:linear-gradient(135deg,var(--red),#dc2626);
+  color:#fff;
+}
+.btn-danger:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(239,68,68,.4);
+  filter:brightness(1.05);
+}
+.btn-secondary{
+  background:var(--card2);
+  border:1px solid var(--border2);
+  color:var(--white);
+}
+.btn-secondary:hover{
+  background:var(--card);
+  border-color:var(--purple);
+}
 
 /* PRICE GRID */
 .price-grid{
@@ -336,6 +354,16 @@ textarea{resize:vertical;min-height:100px}
   color:var(--white);
   border-color:var(--purple);
 }
+.id-btn-danger{
+  background:rgba(239,68,68,.1);
+  border-color:rgba(239,68,68,.3);
+  color:var(--red);
+}
+.id-btn-danger:hover{
+  background:rgba(239,68,68,.2);
+  border-color:var(--red);
+  color:var(--red);
+}
 
 /* SECTION HEADER */
 .section-header{
@@ -407,41 +435,6 @@ textarea{resize:vertical;min-height:100px}
 .auto-detect-result .high{color:#fb923c}
 .auto-detect-result .legend{color:#fbbf24}
 
-/* PAGINATION */
-.pagination{
-  display:flex;
-  gap:4px;
-  justify-content:center;
-  margin-top:20px;
-  flex-wrap:wrap;
-}
-.page-btn{
-  min-width:34px;
-  height:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:8px;
-  border:1px solid var(--border2);
-  background:var(--card);
-  font-size:.7rem;
-  font-family:var(--mono);
-  cursor:pointer;
-  transition:all .15s;
-  color:var(--muted);
-  padding:0 8px;
-}
-.page-btn:hover{
-  border-color:var(--purple);
-  color:var(--white);
-}
-.page-btn.active{
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  border-color:transparent;
-  color:#fff;
-  font-weight:700;
-}
-
 /* PROFILE AVATAR */
 .profile-avatar{
   width:80px;
@@ -474,7 +467,7 @@ textarea{resize:vertical;min-height:100px}
   color:var(--muted);
 }
 
-/* NOTIFICATION - FIXED */
+/* NOTIFICATION */
 .notification{
   position:fixed;
   bottom:24px;
@@ -711,7 +704,7 @@ textarea{resize:vertical;min-height:100px}
   <div id="pageContent"></div>
 </div>
 
-<!-- NOTIFICATION (FIXED) -->
+<!-- NOTIFICATION -->
 <div class="notification" id="notification">
   <div class="notification-content">
     <div class="notification-icon" id="notificationIcon">
@@ -745,12 +738,10 @@ let currentPage = 'dashboard';
 let allMyIdsData = [];
 let availableIdsData = [];
 let soldIdsData = [];
-let availableCurrentPage = 1;
 let searchQuery = '';
-const ITEMS_PER_PAGE = 10;
 let notificationTimer = null;
 
-// ==================== NOTIFICATION (FIXED) ====================
+// ==================== NOTIFICATION ====================
 function showNotification(type, title, message) {
   const notification = document.getElementById('notification');
   const iconDiv = document.getElementById('notificationIcon');
@@ -758,13 +749,10 @@ function showNotification(type, title, message) {
   const msgDiv = document.getElementById('notificationMessage');
   const progressBar = document.getElementById('notificationProgress');
   
-  // Clear previous timer
   if (notificationTimer) clearTimeout(notificationTimer);
   
-  // Hide notification first if showing
   notification.classList.remove('show');
   
-  // Small delay to reset animation
   setTimeout(() => {
     if (type === 'success') {
       iconDiv.className = 'notification-icon success';
@@ -776,7 +764,7 @@ function showNotification(type, title, message) {
       progressBar.className = 'notification-progress-bar error';
     } else {
       iconDiv.className = 'notification-icon warning';
-      iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+      iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12} y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>`;
       progressBar.className = 'notification-progress-bar warning';
     }
     
@@ -785,10 +773,8 @@ function showNotification(type, title, message) {
     progressBar.style.width = '100%';
     notification.classList.add('show');
     
-    // Animate progress bar
     setTimeout(() => { progressBar.style.width = '0%'; }, 100);
     
-    // Auto hide after 3 seconds
     notificationTimer = setTimeout(() => {
       hideNotification();
     }, 3500);
@@ -864,7 +850,7 @@ function detectTierFromID(id) {
   return 'low';
 }
 
-// ==================== PAGE: DASHBOARD ====================
+// ==================== PAGE RENDER FUNCTIONS ====================
 function renderDashboardPage() {
   return `
     <div class="panel">
@@ -892,7 +878,6 @@ function renderDashboardPage() {
   `;
 }
 
-// ==================== PAGE: TAMBAH ID (HANYA ANGKA) ====================
 function renderAddIdPage() {
   return `
     <div class="panel">
@@ -903,20 +888,31 @@ function renderAddIdPage() {
       <div class="panel-body">
         <div class="info-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
-          <span>⚡ RULES:<br/>• LOW (2+ angka sama)<br/>• MEDIUM (5+ angka sama ATAU 2 kelompok 4+ angka)<br/>• HIGH (6+ angka + 4+ angka)<br/>• LEGEND (9+ angka)</span>
+          <span>⚡ RULES:<br/>• LOW (2+ angka sama)<br/>• MEDIUM (5+ angka sama ATAU 2 kelompok 4+ angka)<br/>• HIGH (6+ angka + 4+ angka)<br/>• LEGEND (9+ angka)<br/><br/>📌 MAKSIMAL 25 ID dalam satu kali tambah!</span>
         </div>
         <div class="field">
-          <label>Daftar ID (satu per baris) - Hanya Angka</label>
+          <label>Daftar ID (satu per baris) - Hanya Angka (Max 25 ID)</label>
           <textarea id="addIdList" rows="6" placeholder="15655558888&#10;156666668888&#10;1566666668888"></textarea>
         </div>
         <div id="autoDetectResult" class="auto-detect-result" style="display:none"></div>
-        <button class="btn btn-primary" onclick="submitAddIDs()">➕ Tambah ID (Auto Detect)</button>
+        <button class="btn btn-primary" onclick="submitAddIDs()" style="margin-bottom:12px">➕ Tambah ID (Auto Detect)</button>
+        
+        <div class="divider"></div>
+        
+        <div class="info-box" style="border-color:rgba(239,68,68,.3); background:rgba(239,68,68,.05)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
+          <span>⚠️ PERHATIAN: Menghapus ID akan menghapus data ID dari database secara permanen, termasuk dari koleksi global dan sold.</span>
+        </div>
+        <div class="field">
+          <label>ID yang akan dihapus (satu per baris)</label>
+          <textarea id="deleteIdList" rows="4" placeholder="15655558888&#10;156666668888"></textarea>
+        </div>
+        <button class="btn btn-danger" onclick="submitDeleteIDs()">🗑️ Hapus ID Permanen</button>
       </div>
     </div>
   `;
 }
 
-// ==================== PAGE: MY IDS ====================
 function renderMyIdsPage() {
   return `
     <div class="panel">
@@ -937,14 +933,12 @@ function renderMyIdsPage() {
           <div class="section-header"><h3>✅ Sold IDs</h3><span id="soldCount">0 ID</span></div>
           <div id="soldContainer"><div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div></div>
         </div>
-        <div id="availablePagination" class="pagination"></div>
         <div id="noResultMessage" style="display:none;text-align:center;padding:40px;color:var(--muted)">🔍 Tidak ada ID yang cocok.</div>
       </div>
     </div>
   `;
 }
 
-// ==================== PAGE: HARGA ====================
 function renderHargaPage() {
   const prices = currentUser.price || { low: 500, medium: 10000, high: 15000, legend: 30000 };
   return `
@@ -982,7 +976,6 @@ function renderHargaPage() {
   `;
 }
 
-// ==================== PAGE: PROFILE ====================
 function renderProfilePage() {
   return `
     <div class="panel">
@@ -1016,7 +1009,7 @@ function renderProfilePage() {
   `;
 }
 
-// ==================== FUNGSI SUPPORT MY IDS ====================
+// ==================== MY IDS FUNCTIONS ====================
 async function loadMyIdsData() {
   try {
     showProgress(true, 'Memuat ID...');
@@ -1058,31 +1051,28 @@ function updateMyIdsDisplay() {
   if (availableSection) availableSection.style.display = availableIdsData.length > 0 ? 'block' : 'none';
   if (soldSection) soldSection.style.display = soldIdsData.length > 0 ? 'block' : 'none';
   
-  renderAvailableIds(availableIdsData);
-  renderSoldIds(soldIdsData);
-  renderAvailablePagination();
+  renderAllAvailableIds(availableIdsData);
+  renderAllSoldIds(soldIdsData);
 }
 
-function renderAvailableIds(ids) {
+function renderAllAvailableIds(ids) {
   const container = document.getElementById('availableContainer');
   if (!container) return;
   
-  const start = (availableCurrentPage - 1) * ITEMS_PER_PAGE;
-  const pageIds = ids.slice(start, start + ITEMS_PER_PAGE);
-  
-  if (pageIds.length === 0) {
+  if (ids.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Tidak ada ID available</div>';
     return;
   }
   
   container.innerHTML = `
     <div class="id-grid">
-      ${pageIds.map(item => `
+      ${ids.map(item => `
         <div class="id-card">
           <div class="id-code">${escapeHtml(item.id)}</div>
           <div class="id-status status-available">AVAILABLE</div>
           <div class="id-actions">
             <button class="id-btn" onclick="markAsSold('${escapeHtml(item.id)}', '${item.tier || detectTierFromID(item.id)}')">📦 Mark Sold</button>
+            <button class="id-btn id-btn-danger" onclick="deleteSingleId('${escapeHtml(item.id)}')">🗑️ Hapus</button>
           </div>
         </div>
       `).join('')}
@@ -1090,7 +1080,7 @@ function renderAvailableIds(ids) {
   `;
 }
 
-function renderSoldIds(ids) {
+function renderAllSoldIds(ids) {
   const container = document.getElementById('soldContainer');
   if (!container) return;
   
@@ -1107,34 +1097,12 @@ function renderSoldIds(ids) {
           <div class="id-status status-sold">SOLD</div>
           <div class="id-actions">
             <span style="font-size:.6rem;color:var(--muted);padding:4px 0;display:block">Tier: ${(item.tier || 'unknown').toUpperCase()}</span>
+            <button class="id-btn id-btn-danger" onclick="deleteSingleId('${escapeHtml(item.id)}')">🗑️ Hapus</button>
           </div>
         </div>
       `).join('')}
     </div>
   `;
-}
-
-function renderAvailablePagination() {
-  const container = document.getElementById('availablePagination');
-  if (!container) return;
-  
-  const totalPages = Math.ceil(availableIdsData.length / ITEMS_PER_PAGE);
-  if (totalPages <= 1) {
-    container.innerHTML = '';
-    return;
-  }
-  
-  let html = '';
-  for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-    html += `<div class="page-btn ${i === availableCurrentPage ? 'active' : ''}" onclick="goToAvailablePage(${i})">${i}</div>`;
-  }
-  container.innerHTML = html;
-}
-
-function goToAvailablePage(page) {
-  availableCurrentPage = page;
-  renderAvailableIds(availableIdsData);
-  renderAvailablePagination();
 }
 
 function searchMyIds() {
@@ -1145,8 +1113,21 @@ function searchMyIds() {
   }
   const filteredAvailable = availableIdsData.filter(item => item.id.toLowerCase().includes(query));
   const filteredSold = soldIdsData.filter(item => item.id.toLowerCase().includes(query));
-  renderAvailableIds(filteredAvailable);
-  renderSoldIds(filteredSold);
+  
+  const containerAvailable = document.getElementById('availableContainer');
+  const containerSold = document.getElementById('soldContainer');
+  const noResult = document.getElementById('noResultMessage');
+  
+  if (containerAvailable) renderAllAvailableIds(filteredAvailable);
+  if (containerSold) renderAllSoldIds(filteredSold);
+  
+  if (noResult) {
+    if (filteredAvailable.length === 0 && filteredSold.length === 0) {
+      noResult.style.display = 'block';
+    } else {
+      noResult.style.display = 'none';
+    }
+  }
 }
 
 async function markAsSold(id, tier) {
@@ -1157,6 +1138,7 @@ async function markAsSold(id, tier) {
   
   if (result.success) {
     currentUser.soldTotal = (currentUser.soldTotal || 0) + 1;
+    currentUser.total = (currentUser.total || 0) - 1;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
     showNotification('success', 'Berhasil!', `${id} ditandai sold`);
     await loadMyIdsData();
@@ -1165,7 +1147,97 @@ async function markAsSold(id, tier) {
   }
 }
 
-// ==================== TAMBAH ID (FIXED - HANYA ANGKA) ====================
+// ==================== DELETE ID FUNCTIONS ====================
+async function deleteSingleId(id) {
+  if (!confirm(`⚠️ PERINGATAN!\n\nID ${id} akan dihapus PERMANEN dari:\n• Koleksi ID Anda\n• Koleksi Global (Low/Medium/High/Legend)\n• Koleksi Sold (jika ada)\n\nTindakan ini TIDAK DAPAT DIBATALKAN!\n\nYakin ingin menghapus?`)) return;
+  
+  await executeDeleteIds([id]);
+}
+
+async function submitDeleteIDs() {
+  let raw = document.getElementById('deleteIdList').value;
+  if (!raw.trim()) {
+    showNotification('error', 'Gagal', 'Masukkan ID yang akan dihapus');
+    return;
+  }
+  
+  const deleteIds = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  if (deleteIds.length === 0) return;
+  
+  if (!confirm(`⚠️ PERINGATAN!\n\nAnda akan menghapus ${deleteIds.length} ID secara PERMANEN.\n\nID akan dihapus dari:\n• Koleksi ID Anda\n• Koleksi Global (Low/Medium/High/Legend)\n• Koleksi Sold (jika ada)\n\nTindakan ini TIDAK DAPAT DIBATALKAN!\n\nYakin ingin melanjutkan?`)) return;
+  
+  await executeDeleteIds(deleteIds);
+}
+
+async function executeDeleteIds(deleteIds) {
+  showProgress(true, `Menghapus ${deleteIds.length} ID...`);
+  
+  let deletedCount = 0;
+  let failedCount = 0;
+  const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
+  
+  for (const id of deleteIds) {
+    try {
+      // 1. Cari tier dari ID (untuk hapus dari global collection)
+      const tier = detectTierFromID(id);
+      
+      // 2. Hapus dari collection ids_{username}
+      await callAPI('delete-user-id', 'POST', { 
+        username: currentUser.username, 
+        id: id,
+        tier: tier 
+      });
+      
+      // 3. Hapus dari global tier collection
+      if (tierMap[tier]) {
+        await fetch(`${API_URL}/delete-global-id`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ collection: tierMap[tier], id: id })
+        });
+      }
+      
+      // 4. Hapus dari sold_{username} jika ada
+      await fetch(`${API_URL}/delete-sold-id`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: currentUser.username, id: id })
+      });
+      
+      // 5. Hapus dari sold_ids global jika ada
+      await fetch(`${API_URL}/delete-sold-global`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id })
+      });
+      
+      deletedCount++;
+    } catch(e) {
+      console.error(`Failed to delete ${id}:`, e);
+      failedCount++;
+    }
+  }
+  
+  // Update total & soldTotal di local user
+  const stillAvailable = availableIdsData.filter(item => !deleteIds.includes(item.id));
+  const stillSold = soldIdsData.filter(item => !deleteIds.includes(item.id));
+  
+  currentUser.total = stillAvailable.length;
+  currentUser.soldTotal = stillSold.length;
+  localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+  
+  showProgress(false);
+  
+  if (failedCount === 0) {
+    showNotification('success', 'Berhasil!', `${deletedCount} ID berhasil dihapus permanen.`);
+    document.getElementById('deleteIdList').value = '';
+    await loadMyIdsData();
+  } else {
+    showNotification('error', 'Gagal', `${deletedCount} ID terhapus, ${failedCount} ID gagal dihapus.`);
+  }
+}
+
+// ==================== TAMBAH ID (MAX 25 ID) ====================
 function previewAutoDetect() {
   const raw = document.getElementById('addIdList')?.value;
   if (!raw || !raw.trim()) {
@@ -1174,7 +1246,6 @@ function previewAutoDetect() {
     return;
   }
   
-  // Filter hanya angka untuk preview
   const cleanRaw = raw.replace(/[^0-9\n]/g, '');
   const ids = cleanRaw.split('\n').map(l => l.trim()).filter(Boolean);
   
@@ -1190,18 +1261,23 @@ function previewAutoDetect() {
   }
   const resultDiv = document.getElementById('autoDetectResult');
   if (resultDiv) {
+    let warningHtml = '';
+    if (ids.length > 25) {
+      warningHtml = '<div class="tier-row" style="color:var(--red); margin-bottom:8px">⚠️ Maksimal 25 ID dalam satu kali tambah! Kelebihan ID akan diabaikan.</div>';
+    }
     resultDiv.innerHTML = `
       <div class="title">📊 Hasil Deteksi:</div>
+      ${warningHtml}
       <div class="tier-row low">🔵 LOW: ${tierGroups.low} ID</div>
       <div class="tier-row medium">🟢 MEDIUM: ${tierGroups.medium} ID</div>
       <div class="tier-row high">🟠 HIGH: ${tierGroups.high} ID</div>
       <div class="tier-row legend">🟣 LEGEND: ${tierGroups.legend} ID</div>
+      <div class="tier-row" style="margin-top:6px;color:var(--muted2)">📊 Total: ${ids.length} ID ${ids.length > 25 ? '(Max 25)' : ''}</div>
     `;
     resultDiv.style.display = 'block';
   }
 }
 
-// Filter input hanya angka
 function filterNumbersOnly() {
   const textarea = document.getElementById('addIdList');
   if (textarea) {
@@ -1218,7 +1294,6 @@ function filterNumbersOnly() {
 async function submitAddIDs() {
   let raw = document.getElementById('addIdList').value;
   
-  // Filter hanya angka
   const filteredRaw = raw.replace(/[^0-9\n]/g, '');
   if (raw !== filteredRaw) {
     document.getElementById('addIdList').value = filteredRaw;
@@ -1234,16 +1309,25 @@ async function submitAddIDs() {
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newIDs.length === 0) return;
   
-  // Validasi setiap ID hanya angka
-  const invalidIDs = newIDs.filter(id => !/^\d+$/.test(id));
+  const MAX_IDS = 25;
+  let idsToProcess = newIDs;
+  let skippedCount = 0;
+  
+  if (newIDs.length > MAX_IDS) {
+    idsToProcess = newIDs.slice(0, MAX_IDS);
+    skippedCount = newIDs.length - MAX_IDS;
+    showNotification('warning', 'Perhatian', `Maksimal ${MAX_IDS} ID per submit. ${skippedCount} ID tidak diproses.`);
+  }
+  
+  const invalidIDs = idsToProcess.filter(id => !/^\d+$/.test(id));
   if (invalidIDs.length > 0) {
     showNotification('error', 'Gagal', `ID tidak valid: ${invalidIDs.slice(0,3).join(', ')}`);
     return;
   }
   
-  showProgress(true, 'Memproses ID...');
+  showProgress(true, `Memproses ${idsToProcess.length} ID...`);
   const idsByTier = { low: [], medium: [], high: [], legend: [] };
-  for (const id of newIDs) {
+  for (const id of idsToProcess) {
     const tier = detectTierFromID(id);
     idsByTier[tier].push(id);
   }
@@ -1260,13 +1344,17 @@ async function submitAddIDs() {
   showProgress(false);
   
   if (allSuccess && totalAdded > 0) {
-    currentUser.total = (currentUser.total || 0) + newIDs.length;
+    currentUser.total = (currentUser.total || 0) + totalAdded;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    showNotification('success', 'Berhasil!', `${totalAdded} ID berhasil ditambahkan!`);
+    
+    let message = `✅ ${totalAdded} ID berhasil ditambahkan!`;
+    if (skippedCount > 0) message += ` (${skippedCount} ID diabaikan)`;
+    
+    showNotification('success', 'Berhasil!', message);
     document.getElementById('addIdList').value = '';
     document.getElementById('autoDetectResult').innerHTML = '';
     document.getElementById('autoDetectResult').style.display = 'none';
-    if (currentPage === 'myids') await loadMyIdsData();
+    await loadMyIdsData();
   } else if (totalAdded === 0) {
     showNotification('error', 'Gagal', 'Tidak ada ID yang berhasil ditambahkan');
   } else {
@@ -1350,9 +1438,9 @@ async function renderPage(page) {
       break;
     case 'addid':
       contentDiv.innerHTML = renderAddIdPage();
-      const textarea = document.getElementById('addIdList');
-      if (textarea) {
-        textarea.addEventListener('input', filterNumbersOnly);
+      const addTextarea = document.getElementById('addIdList');
+      if (addTextarea) {
+        addTextarea.addEventListener('input', filterNumbersOnly);
       }
       break;
     case 'myids':
@@ -1394,7 +1482,6 @@ function initNavigation() {
   
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
-  // Mobile menu toggle
   const menuToggle = document.getElementById('menuToggle');
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebarOverlay');
