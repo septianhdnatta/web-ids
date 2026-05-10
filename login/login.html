@@ -40,7 +40,7 @@ h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purp
 .field input:focus{border-color:var(--purple)}
 .btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
-.btn-primary:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn-primary:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 4px 12px rgba(168,85,247,.3)}
 .auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
 .auth-switch a{color:var(--purple);text-decoration:none}
 .back-link{margin-top:16px;text-align:center}
@@ -208,7 +208,6 @@ function showNotification(type, title, message) {
   const msgDiv = document.getElementById('notificationMessage');
   const progressBar = document.getElementById('notificationProgress');
   
-  // Set icon based on type
   if (type === 'success') {
     iconDiv.className = 'notification-icon success';
     iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
@@ -225,23 +224,13 @@ function showNotification(type, title, message) {
   
   titleDiv.textContent = title;
   msgDiv.textContent = message;
-  
-  // Reset progress bar width
   progressBar.style.width = '100%';
-  
-  // Show notification
   notification.classList.add('show');
   
-  // Animate progress bar
-  setTimeout(() => {
-    progressBar.style.width = '0%';
-  }, 50);
+  setTimeout(() => { progressBar.style.width = '0%'; }, 50);
   
-  // Auto hide after 3 seconds
   if (notificationTimer) clearTimeout(notificationTimer);
-  notificationTimer = setTimeout(() => {
-    hideNotification();
-  }, 3000);
+  notificationTimer = setTimeout(() => { hideNotification(); }, 3000);
 }
 
 function hideNotification() {
@@ -256,7 +245,6 @@ function showProgress(show) {
   else el.classList.remove('show');
 }
 
-// Enter key support
 document.getElementById('loginPassword').addEventListener('keypress', (e) => {
   if (e.key === 'Enter') doLogin();
 });
