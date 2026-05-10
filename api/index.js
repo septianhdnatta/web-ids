@@ -27,6 +27,7 @@ export default async function handler(req, res) {
   if (pathname === '/api/sold-ids' && req.method === 'GET') return handleGetSoldIds(req, res);
   if (pathname === '/api/update-total' && req.method === 'POST') return handleUpdateTotal(req, res);
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
+  if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
@@ -139,7 +140,7 @@ async function handleUpdateUserStatus(req, res) {
   return res.status(200).json({ success: true, message: `User ${active ? 'unblocked' : 'blocked'}` });
 }
 
-// ==================== DELETE USER ====================
+// ==================== DELETE USER (LENGKAP DENGAN SEMUA ID) ====================
 async function handleDeleteUser(req, res) {
   const { username } = req.body;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -147,13 +148,43 @@ async function handleDeleteUser(req, res) {
   const client = await clientPromise;
   const db = client.db('idglitxh');
 
-  const result = await db.collection('contributors').deleteOne({ username });
-  if (result.deletedCount === 0) return res.status(404).json({ success: false, error: 'User not found' });
+  try {
+    // 1. Ambil semua ID milik user ini dari ids_username
+    const userIdsCollection = db.collection(`ids_${username}`);
+    const userIDs = await userIdsCollection.find({}).toArray();
+    const idValues = userIDs.map(doc => doc.id);
 
-  try { await db.collection(`ids_${username}`).drop(); } catch(e) {}
-  try { await db.collection(`sold_${username}`).drop(); } catch(e) {}
+    // 2. Hapus ID dari semua tier collections
+    const tierCollections = ['ids_low', 'ids_medium', 'ids_high', 'ids_legend'];
+    for (const tierCol of tierCollections) {
+      const collection = db.collection(tierCol);
+      for (const id of idValues) {
+        await collection.deleteOne({ id: id });
+      }
+    }
 
-  return res.status(200).json({ success: true, message: 'User deleted successfully' });
+    // 3. Hapus dari sold_ids global
+    const soldGlobal = db.collection('sold_ids');
+    for (const id of idValues) {
+      await soldGlobal.deleteOne({ id: id });
+    }
+
+    // 4. Hapus collection ids_username dan sold_username
+    try { await db.collection(`ids_${username}`).drop(); } catch(e) {}
+    try { await db.collection(`sold_${username}`).drop(); } catch(e) {}
+
+    // 5. Hapus contributor dari contributors
+    const result = await db.collection('contributors').deleteOne({ username });
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    return res.status(200).json({ success: true, message: `User ${username} and all their IDs deleted successfully` });
+  } catch (error) {
+    console.error('Error in delete user:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 }
 
 // ==================== ADMIN SETUP ====================
@@ -328,4 +359,56 @@ async function handleUpdateProfile(req, res) {
   await db.collection('contributors').updateOne({ username }, { $set: updateData });
 
   return res.status(200).json({ success: true, message: 'Profile updated' });
+}
+
+// ==================== RESET ALL IDS (SEMUA CONTRIBUTOR) ====================
+async function handleResetAllIds(req, res) {
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+
+  try {
+    let deletedCount = 0;
+
+    // 1. Kosongkan semua tier collections
+    const tierCollections = ['ids_low', 'ids_medium', 'ids_high', 'ids_legend'];
+    for (const collectionName of tierCollections) {
+      const result = await db.collection(collectionName).deleteMany({});
+      deletedCount += result.deletedCount;
+    }
+
+    // 2. Kosongkan sold_ids global
+    const soldResult = await db.collection('sold_ids').deleteMany({});
+    deletedCount += soldResult.deletedCount;
+
+    // 3. Dapatkan semua contributor
+    const contributors = await db.collection('contributors').find({}).toArray();
+
+    // 4. Untuk setiap contributor, kosongkan collection ids_username dan sold_username
+    for (const con of contributors) {
+      try {
+        const idsResult = await db.collection(`ids_${con.username}`).deleteMany({});
+        deletedCount += idsResult.deletedCount;
+        
+        const soldResult2 = await db.collection(`sold_${con.username}`).deleteMany({});
+        deletedCount += soldResult2.deletedCount;
+      } catch(e) {
+        // Collection mungkin tidak ada, skip
+      }
+    }
+
+    // 5. Reset total dan soldTotal semua contributor ke 0
+    await db.collection('contributors').updateMany(
+      {},
+      { $set: { total: 0, soldTotal: 0 } }
+    );
+
+    return res.status(200).json({ 
+      success: true, 
+      message: 'All IDs have been reset', 
+      deletedCount: deletedCount 
+    });
+  } catch (error) {
+    console.error('Error resetting all IDs:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 }
