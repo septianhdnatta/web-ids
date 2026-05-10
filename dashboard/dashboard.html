@@ -46,7 +46,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content}
 .tab{font-size:.75rem;font-weight:500;padding:.4rem 1rem;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--muted2);display:flex;align-items:center;gap:6px}
 .tab svg{width:12px;height:12px}
-.tab.active{background:var(--white);color:#000}
+.tab.active{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
 .tab:not(.active):hover{color:var(--white)}
 .tab-content{display:none}
 .tab-content.active{display:block}
@@ -69,7 +69,7 @@ input,textarea,select{
   padding:.58rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;
   outline:none;transition:border-color .2s;
 }
-input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2)}
+input:focus,textarea:focus,select:focus{border-color:var(--purple)}
 textarea{resize:vertical;min-height:100px}
 
 /* SEARCH BAR */
@@ -77,17 +77,17 @@ textarea{resize:vertical;min-height:100px}
 .search-bar input{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.6rem .9rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none}
 .search-bar input:focus{border-color:var(--purple)}
 .search-bar button{background:linear-gradient(135deg,var(--purple),var(--pink));border:none;border-radius:10px;padding:0 16px;cursor:pointer;color:#fff;font-weight:600}
-.search-bar button:hover{filter:brightness(1.05)}
+.search-bar button:hover{filter:brightness(1.05);transform:translateY(-1px)}
 
 /* INFO BOX */
-.info-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
-.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0}
+.info-box{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.info-box svg{width:14px;height:14px;stroke:var(--purple);flex-shrink:0}
 .info-box span{font-size:.7rem;color:var(--muted2);font-family:var(--mono);line-height:1.6}
 
 /* BUTTON */
 .btn{width:100%;padding:11px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
-.btn-white{background:var(--white);color:#000}
-.btn-white:hover{background:#e8e8e8;transform:translateY(-1px)}
+.btn-white{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(168,85,247,.4);filter:brightness(1.05)}
 
 /* ID GRID */
 .id-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
@@ -98,7 +98,7 @@ textarea{resize:vertical;min-height:100px}
 .status-sold{background:rgba(239,68,68,.1);color:#ef4444}
 .id-actions{display:flex;gap:6px;margin-top:6px}
 .id-btn{background:var(--card);border:1px solid var(--border2);border-radius:6px;padding:.3rem .6rem;font-size:.65rem;cursor:pointer;transition:all .15s;color:var(--muted2);font-weight:500}
-.id-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+.id-btn:hover{color:var(--white);border-color:var(--purple)}
 
 /* SECTION HEADER */
 .section-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
@@ -117,8 +117,8 @@ textarea{resize:vertical;min-height:100px}
 /* PAGINATION */
 .pagination{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
 .page-btn{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--card);font-size:.7rem;font-family:var(--mono);cursor:pointer;transition:all .15s;color:var(--muted);padding:0 8px}
-.page-btn:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
-.page-btn.active{background:var(--white);border-color:var(--white);color:#000;font-weight:700}
+.page-btn:hover{border-color:var(--purple);color:var(--white)}
+.page-btn.active{background:linear-gradient(135deg,var(--purple),var(--pink));border-color:transparent;color:#fff;font-weight:700}
 .page-dots{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);font-family:var(--mono)}
 
 /* PROFILE MODAL */
@@ -162,7 +162,7 @@ textarea{resize:vertical;min-height:100px}
 .progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
 .progress-overlay.show{display:flex}
 .progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
-.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
+.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--purple);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
@@ -210,16 +210,16 @@ textarea{resize:vertical;min-height:100px}
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg></div>
-        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Auto detect tier berdasarkan jumlah digit sama berurutan</div></div>
+        <div><div class="ph-title">Tambah ID Baru</div><div class="ph-sub">Auto detect tier berdasarkan kombinasi angka berulang</div></div>
       </div>
       <div class="panel-body">
         <div class="info-box">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>⚠️ Hanya ANGKA yang diperbolehkan. ID akan otomatis dideteksi tier-nya berdasarkan jumlah digit berulang.</span>
+          <span>⚡ DETECTION RULES:<br/>• LOW: Minimal 2 angka sama berurutan<br/>• MEDIUM: 5+ angka sama ATAU 2 kelompok 4+ angka sama (contoh: 5555+8888)<br/>• HIGH: 6+ angka sama + 4+ angka sama lainnya<br/>• LEGEND: 9+ angka sama berurutan</span>
         </div>
         <div class="field">
           <label>Daftar ID (satu per baris) - Hanya Angka</label>
-          <textarea id="addIdList" rows="6" placeholder="15666663891&#10;15666664102&#10;15666664387"></textarea>
+          <textarea id="addIdList" rows="6" placeholder="15655558888&#10;156555558888&#10;156666668888&#10;1566666668888"></textarea>
         </div>
         <div id="autoDetectResult" class="auto-detect-result" style="display:none"></div>
         <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID (Auto Detect)</button>
@@ -227,7 +227,7 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: MY IDs (dengan pencarian, available di atas, sold di bawah) -->
+  <!-- TAB: MY IDs -->
   <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
@@ -235,46 +235,35 @@ textarea{resize:vertical;min-height:100px}
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
       <div class="panel-body">
-        <!-- Search Bar -->
         <div class="search-bar">
-          <input type="text" id="searchIdInput" placeholder="Cari ID... (misal: 15666663891)" autocomplete="off">
+          <input type="text" id="searchIdInput" placeholder="Cari ID..." autocomplete="off">
           <button onclick="searchMyIds()">🔍 Cari</button>
         </div>
         
-        <!-- Available IDs Section -->
         <div id="availableSection" style="display:none">
           <div class="section-header">
             <h3>📦 Available IDs</h3>
             <span id="availableCount">0 ID</span>
           </div>
-          <div id="availableContainer">
-            <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
-          </div>
+          <div id="availableContainer"><div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div></div>
         </div>
         
-        <!-- Sold IDs Section -->
         <div id="soldSection" style="display:none">
           <div class="section-header">
             <h3>✅ Sold IDs</h3>
             <span id="soldCount">0 ID</span>
           </div>
-          <div id="soldContainer">
-            <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
-          </div>
+          <div id="soldContainer"><div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div></div>
         </div>
         
-        <!-- Pagination untuk Available IDs -->
         <div id="availablePagination" class="pagination"></div>
-        
-        <div id="noResultMessage" style="display:none;text-align:center;padding:40px;color:var(--muted)">
-          🔍 Tidak ada ID yang cocok dengan pencarian.
-        </div>
+        <div id="noResultMessage" style="display:none;text-align:center;padding:40px;color:var(--muted)">🔍 Tidak ada ID yang cocok.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- PROFILE MODAL (tanpa upload foto) -->
+<!-- PROFILE MODAL -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <div class="modal-header">
@@ -284,7 +273,7 @@ textarea{resize:vertical;min-height:100px}
     <div class="modal-body">
       <div class="profile-preview">
         <img id="modalProfilePreview" src="" alt="">
-        <div class="photo-hint">💡 Gunakan URL gambar dari hosting lain (Imgur, Catbox, dll)</div>
+        <div class="photo-hint">💡 Gunakan URL gambar dari hosting lain</div>
         <div class="url-hint">Tempel link foto di bawah</div>
       </div>
       <div class="field">
@@ -340,6 +329,60 @@ let availableCurrentPage = 1;
 let searchQuery = '';
 const ITEMS_PER_PAGE = 10;
 let notificationTimer = null;
+
+// ==================== DETEKSI TIER OTOMATIS (ADVANCED) ====================
+function detectTierFromID(id) {
+  const idStr = String(id);
+  
+  // Cari semua kelompok angka berulang beserta panjangnya
+  let sequences = [];
+  let currentChar = idStr[0];
+  let currentLength = 1;
+  
+  for (let i = 1; i < idStr.length; i++) {
+    if (idStr[i] === currentChar) {
+      currentLength++;
+    } else {
+      if (currentLength >= 2) {
+        sequences.push(currentLength);
+      }
+      currentChar = idStr[i];
+      currentLength = 1;
+    }
+  }
+  if (currentLength >= 2) {
+    sequences.push(currentLength);
+  }
+  
+  // Urutkan dari terbesar ke terkecil
+  sequences.sort((a, b) => b - a);
+  
+  if (sequences.length === 0) return 'low';
+  
+  const maxLen = sequences[0];
+  
+  // LEGEND: 9+ angka sama
+  if (maxLen >= 9) return 'legend';
+  
+  // HIGH: 6+ angka sama DAN minimal 4 angka sama lainnya
+  if (maxLen >= 6) {
+    const hasSecondBig = sequences.slice(1).some(len => len >= 4);
+    if (hasSecondBig) return 'high';
+    return 'medium';
+  }
+  
+  // MEDIUM: 5+ angka sama ATAU minimal 2 kelompok dengan panjang >= 4
+  if (maxLen >= 5) return 'medium';
+  
+  const countLen4OrMore = sequences.filter(len => len >= 4).length;
+  if (countLen4OrMore >= 2) return 'medium';
+  
+  const countLen3OrMore = sequences.filter(len => len >= 3).length;
+  if (countLen3OrMore >= 3) return 'medium';
+  
+  // LOW
+  return 'low';
+}
 
 // ==================== NOTIFICATION ====================
 function showNotification(type, title, message) {
@@ -418,28 +461,6 @@ function showProgress(title, sub, show) {
   }
 }
 
-// ==================== DETEKSI TIER OTOMATIS ====================
-function detectTierFromID(id) {
-  const idStr = String(id);
-  let maxConsecutive = 1;
-  let currentCount = 1;
-  
-  for (let i = 1; i < idStr.length; i++) {
-    if (idStr[i] === idStr[i-1]) {
-      currentCount++;
-      maxConsecutive = Math.max(maxConsecutive, currentCount);
-    } else {
-      currentCount = 1;
-    }
-  }
-  
-  if (maxConsecutive >= 9) return 'legend';
-  if (maxConsecutive >= 7) return 'high';
-  if (maxConsecutive >= 5) return 'medium';
-  if (maxConsecutive >= 2) return 'low';
-  return 'low';
-}
-
 // ==================== PREVIEW AUTO DETECT ====================
 function previewAutoDetect() {
   const raw = document.getElementById('addIdList').value;
@@ -450,10 +471,29 @@ function previewAutoDetect() {
   
   const ids = raw.split('\n').map(l => l.trim()).filter(Boolean);
   const tierGroups = { low: [], medium: [], high: [], legend: [] };
+  const details = [];
   
   for (const id of ids) {
     const tier = detectTierFromID(id);
     tierGroups[tier].push(id);
+    
+    // Hitung pattern untuk detail
+    const idStr = String(id);
+    let sequences = [];
+    let currentChar = idStr[0];
+    let currentLength = 1;
+    for (let i = 1; i < idStr.length; i++) {
+      if (idStr[i] === currentChar) {
+        currentLength++;
+      } else {
+        if (currentLength >= 2) sequences.push(currentLength);
+        currentChar = idStr[i];
+        currentLength = 1;
+      }
+    }
+    if (currentLength >= 2) sequences.push(currentLength);
+    sequences.sort((a, b) => b - a);
+    details.push({ id, tier, pattern: sequences.join('+') || 'none' });
   }
   
   const resultDiv = document.getElementById('autoDetectResult');
@@ -466,6 +506,19 @@ function previewAutoDetect() {
   for (const [tier, idsList] of Object.entries(tierGroups)) {
     if (idsList.length > 0) {
       resultHtml += `<div class="tier-row ${tierClass[tier]}">${tierIcons[tier]} ${tierNames[tier]}: ${idsList.length} ID</div>`;
+    }
+  }
+  
+  // Detail untuk preview
+  if (details.length > 0 && details.length <= 10) {
+    resultHtml += '<div class="title" style="margin-top:12px">📋 Detail:</div>';
+    for (let i = 0; i < Math.min(5, details.length); i++) {
+      const d = details[i];
+      const icon = tierIcons[d.tier];
+      resultHtml += `<div class="tier-row ${tierClass[d.tier]}" style="font-size:.6rem">${icon} ${d.id} → ${d.tier.toUpperCase()} (${d.pattern})</div>`;
+    }
+    if (details.length > 5) {
+      resultHtml += `<div class="tier-row" style="font-size:.6rem;color:var(--muted)">+ ${details.length - 5} ID lainnya</div>`;
     }
   }
   
@@ -486,12 +539,10 @@ async function loadMyIds() {
     }
     
     allMyIdsData = result.data;
-    // Pisahkan available dan sold
     availableIdsData = allMyIdsData.filter(item => !item.isSold);
     soldIdsData = allMyIdsData.filter(item => item.isSold === true);
     
     document.getElementById('myIdsCount').textContent = `${allMyIdsData.length} ID (${soldIdsData.length} sold)`;
-    
     updateMyIdsDisplay();
   } catch (error) {
     console.error('Load my IDs error:', error);
@@ -507,10 +558,8 @@ function searchMyIds() {
   availableCurrentPage = 1;
   
   if (searchQuery === '') {
-    // Tampilkan semua
     updateMyIdsDisplay();
   } else {
-    // Filter available IDs
     const filteredAvailable = availableIdsData.filter(item => 
       item.id.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -536,7 +585,6 @@ function searchMyIds() {
 
 function updateMyIdsDisplay() {
   if (searchQuery !== '') {
-    // Reset search
     document.getElementById('searchIdInput').value = '';
     searchQuery = '';
   }
@@ -642,13 +690,12 @@ function goToAvailablePage(page) {
   document.getElementById('availableSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ==================== MARK AS SOLD (Otomatis detect tier) ====================
+// ==================== MARK AS SOLD ====================
 async function markAsSold(id, detectedTier) {
   if (!confirm(`Tandai ID ${id} sebagai sold?`)) return;
   
   showProgress('Processing...', `Menandai ${id} sebagai sold`, true);
   
-  // Gunakan tier yang sudah dideteksi
   const result = await callAPI('sold', 'POST', { 
     username: currentUser.username, 
     soldIds: [id], 
@@ -866,7 +913,6 @@ addIdTextarea.addEventListener('input', function(e) {
   previewAutoDetect();
 });
 
-// Enter key search
 document.getElementById('searchIdInput').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') searchMyIds();
 });
