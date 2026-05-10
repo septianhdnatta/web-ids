@@ -10,8 +10,9 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const url = req.url;
-  const { pathname, query } = parseUrl(req.url);
+  // Parse URL manually
+  const urlParts = req.url.split('?');
+  const pathname = urlParts[0];
   
   // ROUTING
   if (pathname === '/api/register' && req.method === 'POST') return handleRegister(req, res);
@@ -28,21 +29,8 @@ export default async function handler(req, res) {
   if (pathname === '/api/update-total' && req.method === 'POST') return handleUpdateTotal(req, res);
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
-  if (pathname === '/api/upload-photo' && req.method === 'POST') return handleUploadPhoto(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
-}
-
-function parseUrl(url) {
-  const [pathname, queryString] = url.split('?');
-  const query = {};
-  if (queryString) {
-    queryString.split('&').forEach(pair => {
-      const [key, value] = pair.split('=');
-      query[key] = decodeURIComponent(value || '');
-    });
-  }
-  return { pathname, query };
 }
 
 // ==================== REGISTER ====================
@@ -327,6 +315,7 @@ async function handleSold(req, res) {
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
+
 // ==================== GET SOLD IDS (GLOBAL) ====================
 async function handleGetSoldIds(req, res) {
   const client = await clientPromise;
@@ -406,58 +395,5 @@ async function handleResetAllIds(req, res) {
     return res.status(200).json({ success: true, message: 'All IDs reset', deletedCount });
   } catch (error) {
     return res.status(500).json({ success: false, error: 'Internal server error' });
-  }
-}
-
-// ==================== UPLOAD PHOTO ====================
-import { Catbox } from 'node-catbox';
-import formidable from 'formidable';
-import fs from 'fs';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-async function handleUploadPhoto(req, res) {
-  const catbox = new Catbox();
-  
-  const form = formidable({ 
-    uploadDir: '/tmp',
-    keepExtensions: true,
-    maxFileSize: 10 * 1024 * 1024
-  });
-
-  try {
-    const [fields, files] = await form.parse(req);
-    const file = files.file?.[0];
-    const username = fields.username?.[0];
-
-    if (!file || !username) {
-      return res.status(400).json({ success: false, error: 'No file or username provided' });
-    }
-
-    const response = await catbox.uploadFile({
-      path: file.filepath
-    });
-
-    fs.unlinkSync(file.filepath);
-
-    const client = await clientPromise;
-    const db = client.db('idglitxh');
-    await db.collection('contributors').updateOne(
-      { username: username },
-      { $set: { photo: response } }
-    );
-
-    return res.status(200).json({ 
-      success: true, 
-      url: response,
-      message: 'Photo uploaded successfully!'
-    });
-  } catch (error) {
-    console.error('Upload error:', error);
-    return res.status(500).json({ success: false, error: error.message });
   }
 }
