@@ -497,9 +497,13 @@ function escapeHtml(str) {
 // ==================== AMBIL SOLD IDS ====================
 async function fetchSoldIDs(username) {
   try {
+    // Ambil langsung dari API my-ids yang sudah mengembalikan isSold
     const res = await callAPI(`my-ids?username=${username}`);
+    console.log('API my-ids response:', res);
+    
     if (res.success && res.data) {
-      const soldIds = res.data.filter(item => item.isSold).map(item => ({ id: item.id, tier: item.tier }));
+      const soldIds = res.data.filter(item => item.isSold === true).map(item => ({ id: item.id, tier: item.tier }));
+      console.log('Filtered sold IDs:', soldIds);
       return { soldList: soldIds, soldCount: soldIds.length };
     }
     return { soldList: [], soldCount: 0 };
@@ -615,7 +619,7 @@ async function renderProfile(con) {
   // STATS
   document.getElementById('statTotal').textContent = (con.total || 0).toLocaleString('id-ID');
   document.getElementById('statJoined').textContent = formatDate(con.joined);
-
+  
   // FETCH SOLD IDS
   const { soldList, soldCount } = await fetchSoldIDs(con.username);
   currentSoldIDs = soldList;
