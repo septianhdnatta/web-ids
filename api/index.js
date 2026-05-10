@@ -244,12 +244,21 @@ async function handleMyIds(req, res) {
   const db = client.db('idglitxh');
   
   try {
+    // Ambil semua ID dari collection ids_username
     const userCollection = db.collection(`ids_${username}`);
     const ids = await userCollection.find({}).toArray();
     
+    // Ambil sold IDs dari collection sold_username
     const soldCollection = db.collection(`sold_${username}`);
     const soldDocs = await soldCollection.find({}).toArray();
-    const soldSet = new Set(soldDocs.map(d => d.id));
+    
+    // Buat Set untuk sold IDs
+    const soldSet = new Set();
+    for (const doc of soldDocs) {
+      soldSet.add(doc.id);
+    }
+    
+    console.log(`[my-ids] User: ${username}, Total IDs: ${ids.length}, Sold IDs: ${soldDocs.length}, Sold Set:`, Array.from(soldSet));
     
     const result = ids.map(doc => ({
       id: doc.id,
