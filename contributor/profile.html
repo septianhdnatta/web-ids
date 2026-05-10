@@ -121,7 +121,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 /* AVATAR BLOCKED OVERLAY */
 .avatar-blocked-overlay{position:absolute;bottom:-2px;right:-2px;background:var(--red);border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:white;border:2px solid var(--card);z-index:4}
 
-/* NAME ROW (tanpa role badge) */
+/* NAME ROW */
 .name-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;margin-bottom:4px;flex-wrap:wrap}
 .profile-name{font-size:1.5rem;font-weight:800;color:var(--white);letter-spacing:-.5px}
 
@@ -173,7 +173,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 /* BIO */
 .bio{font-size:.78rem;color:var(--muted2);margin-bottom:20px;line-height:1.6}
 
-/* STAT ROW - Total ID | Bergabung | ID Sold */
+/* STAT ROW */
 .stat-row{display:flex;justify-content:center;gap:0;margin-bottom:20px}
 .stat-pill{flex:1;padding:10px 6px;text-align:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);transition:background .2s;cursor:pointer}
 .stat-pill:first-child{border-radius:10px 0 0 10px}
@@ -188,7 +188,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .id-section-title{font-size:.68rem;font-weight:600;color:var(--muted2);font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .id-section-title::before{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
 .id-section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-.id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;padding:2px}
+.id-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow-y:auto;scrollbar-width:thin;padding:2px}
 .id-tags-wrap::-webkit-scrollbar{width:3px}
 .id-tags-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .id-tag-item{font-family:var(--mono);font-size:.68rem;color:var(--text);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);padding:.2rem .6rem;border-radius:8px;transition:all .15s;cursor:default}
@@ -376,15 +376,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
           <div id="avatarBlockedOverlay" class="avatar-blocked-overlay" style="display:none" title="Account Blocked">⛔</div>
         </div>
 
-        <!-- NAME ONLY (tanpa role badge) -->
         <div class="name-row">
           <span class="profile-name" id="profileName">—</span>
         </div>
 
-        <!-- BLOCKED BADGE -->
         <div id="blockedBadge" class="blocked-large" style="display:none">⛔ AKUN DIBLOKIR</div>
 
-        <!-- USN + VERIFIED -->
         <div class="usn-row">
           <span class="profile-usn" id="profileUsn">@—</span>
           <div class="verified-badge" id="verifiedBadgeUsn" style="display:none">
@@ -392,7 +389,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
           </div>
         </div>
 
-        <!-- RANK BADGE -->
         <div class="rank-wrapper" id="rankWrapper" style="display:none">
           <div class="rank-badge-leader" id="rankBadgeLeader"></div>
         </div>
@@ -401,7 +397,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
         <div class="bio" id="profileBio">Premium ID Contributor.</div>
 
-        <!-- STAT ROW: Total ID | Bergabung | ID Sold -->
         <div class="stat-row">
           <div class="stat-pill">
             <div class="sp-n" id="statTotal">—</div>
@@ -417,7 +412,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
           </div>
         </div>
 
-        <!-- ID LIST -->
         <div class="id-section" id="idSection" style="display:none">
           <div class="id-section-title">ID Contributed</div>
           <div id="idTierGroups"></div>
@@ -473,7 +467,6 @@ const TIER_CONFIG = {
 
 let allContributors = [];
 let currentSoldIDs = [];
-let currentSoldTiers = {};
 
 // ==================== FUNGSI API ====================
 async function callAPI(endpoint) {
@@ -504,7 +497,6 @@ function escapeHtml(str) {
 // ==================== AMBIL SOLD IDS ====================
 async function fetchSoldIDs(username) {
   try {
-    // Ambil langsung dari API my-ids yang sudah mengembalikan isSold
     const res = await callAPI(`my-ids?username=${username}`);
     if (res.success && res.data) {
       const soldIds = res.data.filter(item => item.isSold).map(item => ({ id: item.id, tier: item.tier }));
@@ -569,7 +561,7 @@ async function renderProfile(con) {
     imgEl.style.marginTop = '-48px';
   }
 
-  // BLOCKED OVERLAY ON AVATAR
+  // BLOCKED OVERLAY
   if (isBlocked) {
     document.getElementById('avatarBlockedOverlay').style.display = 'flex';
     document.getElementById('blockedBadge').style.display = 'inline-block';
@@ -578,7 +570,7 @@ async function renderProfile(con) {
     document.getElementById('blockedBadge').style.display = 'none';
   }
 
-  // NAME (tanpa role badge)
+  // NAME
   document.getElementById('profileName').textContent = con.name;
 
   // USN
@@ -632,11 +624,9 @@ async function renderProfile(con) {
   // Fetch ID list (aktif, belum sold)
   const idsResult = await callAPI(`my-ids?username=${con.username}`);
   if (idsResult.success && idsResult.data && idsResult.data.length > 0 && !isBlocked) {
-    // Filter hanya ID yang belum sold
     const activeIds = idsResult.data.filter(item => !item.isSold);
     
     if (activeIds.length > 0) {
-      // Fetch tier data
       const tierURLs = {
         low: 'ids?tier=low',
         medium: 'ids?tier=medium',
@@ -650,7 +640,6 @@ async function renderProfile(con) {
         tierSets[tier] = new Set(res.success && Array.isArray(res.data) ? res.data : []);
       }));
 
-      // Group IDs by tier
       const grouped = { low: [], medium: [], high: [], legend: [], other: [] };
       activeIds.forEach(item => {
         const sid = String(item.id);
@@ -711,7 +700,6 @@ async function renderProfile(con) {
     }
   }
 
-  // Show profile
   document.getElementById('loadingState').style.display = 'none';
   document.getElementById('profileSection').style.display = '';
   document.getElementById('backLink').style.display = '';
