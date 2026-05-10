@@ -45,7 +45,7 @@ function parseUrl(url) {
 
 // ==================== REGISTER ====================
 async function handleRegister(req, res) {
-  const { username, name, photo, bio, wa, password } = req.body;
+  const { username, name, wa, password } = req.body;
   
   if (!username || !name || !wa || !password) {
     return res.status(400).json({ success: false, error: 'Missing required fields' });
@@ -63,10 +63,10 @@ async function handleRegister(req, res) {
   const newContributor = {
     username: username.toLowerCase(),
     name: name,
-    photo: photo || '',
+    photo: '',
     cover: '',
     qris: '',
-    bio: bio || '',
+    bio: '',
     wa: wa,
     pass: password,
     role: 'CB',
@@ -203,7 +203,7 @@ async function handleAddIds(req, res) {
   return res.status(200).json({ success: true, message: `Added ${ids.length} IDs` });
 }
 
-// ==================== GET USER'S IDS (DENGAN SOLD STATUS) ====================
+// ==================== GET USER'S IDS ====================
 async function handleMyIds(req, res) {
   const { username } = req.query;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -212,16 +212,13 @@ async function handleMyIds(req, res) {
   const db = client.db('idglitxh');
   
   try {
-    // Ambil semua ID dari collection ids_username
     const userCollection = db.collection(`ids_${username}`);
     const ids = await userCollection.find({}).toArray();
     
-    // Ambil sold IDs dari collection sold_username
     const soldCollection = db.collection(`sold_${username}`);
     const soldDocs = await soldCollection.find({}).toArray();
     const soldSet = new Set(soldDocs.map(d => d.id));
     
-    // Gabungkan hasil
     const result = ids.map(doc => ({
       id: doc.id,
       tier: doc.tier || 'unknown',
@@ -286,6 +283,7 @@ async function handleSold(req, res) {
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
+
 // ==================== GET SOLD IDS (GLOBAL) ====================
 async function handleGetSoldIds(req, res) {
   const client = await clientPromise;
