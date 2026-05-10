@@ -497,13 +497,13 @@ function escapeHtml(str) {
 // ==================== AMBIL SOLD IDS ====================
 async function fetchSoldIDs(username) {
   try {
-    // Ambil langsung dari API my-ids yang sudah mengembalikan isSold
     const res = await callAPI(`my-ids?username=${username}`);
     console.log('API my-ids response:', res);
     
     if (res.success && res.data) {
+      // Langsung ambil yang isSold === true
       const soldIds = res.data.filter(item => item.isSold === true).map(item => ({ id: item.id, tier: item.tier }));
-      console.log('Filtered sold IDs:', soldIds);
+      console.log('Sold IDs:', soldIds);
       return { soldList: soldIds, soldCount: soldIds.length };
     }
     return { soldList: [], soldCount: 0 };
