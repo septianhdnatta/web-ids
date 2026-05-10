@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
 <title>Dashboard — IDglitxh</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -26,7 +26,7 @@
   --font:'Inter',sans-serif;
   --mono:'IBM Plex Mono',monospace;
 }
-html{scroll-behavior:smooth}
+html, body{height:100%}
 body{
   background:var(--bg);
   color:var(--text);
@@ -36,7 +36,7 @@ body{
   display:flex;
 }
 
-/* ==================== SIDEBAR STYLE (VERCEL LIKE) ==================== */
+/* ==================== SIDEBAR ==================== */
 .sidebar{
   position:fixed;
   left:0;
@@ -113,7 +113,7 @@ body{
   color:#fff;
 }
 .nav-item.logout{
-  margin-top:auto;
+  margin-top:20px;
   color:var(--red);
 }
 .nav-item.logout:hover{
@@ -253,15 +253,6 @@ textarea{resize:vertical;min-height:100px}
   box-shadow:0 8px 24px rgba(168,85,247,.4);
   filter:brightness(1.05);
 }
-.btn-secondary{
-  background:var(--card2);
-  border:1px solid var(--border2);
-  color:var(--white);
-}
-.btn-secondary:hover{
-  background:var(--card);
-  border-color:var(--purple);
-}
 
 /* PRICE GRID */
 .price-grid{
@@ -393,10 +384,6 @@ textarea{resize:vertical;min-height:100px}
   color:#fff;
   font-weight:600;
 }
-.search-bar button:hover{
-  filter:brightness(1.05);
-  transform:translateY(-1px);
-}
 
 /* AUTO DETECT RESULT */
 .auto-detect-result{
@@ -468,6 +455,23 @@ textarea{resize:vertical;min-height:100px}
   display:flex;
   justify-content:center;
   margin-bottom:16px;
+}
+
+/* STAT CARD */
+.stat-card{
+  background:var(--card2);
+  border-radius:12px;
+  padding:16px;
+  text-align:center;
+}
+.stat-number{
+  font-size:1.5rem;
+  font-weight:700;
+  color:var(--white);
+}
+.stat-label{
+  font-size:.65rem;
+  color:var(--muted);
 }
 
 /* NOTIFICATION */
@@ -568,29 +572,54 @@ textarea{resize:vertical;min-height:100px}
   margin:16px 0;
 }
 
-/* RESPONSIVE */
+/* ==================== RESPONSIVE (MOBILE) ==================== */
+.menu-toggle{
+  display:none;
+  position:fixed;
+  top:16px;
+  left:16px;
+  z-index:201;
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:10px;
+  cursor:pointer;
+}
+
+/* Overlay untuk sidebar di mobile */
+.sidebar-overlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,.7);
+  z-index:98;
+}
+
 @media(max-width:768px){
   .sidebar{
     transform:translateX(-100%);
+    width:80%;
+    max-width:280px;
+    z-index:99;
   }
   .sidebar.open{
     transform:translateX(0);
   }
+  .sidebar-overlay.show{
+    display:block;
+  }
   .main-content{
     margin-left:0;
-    padding:20px 16px;
+    padding:70px 16px 20px;
   }
   .menu-toggle{
     display:block;
-    position:fixed;
-    top:16px;
-    left:16px;
-    z-index:201;
-    background:var(--card);
-    border:1px solid var(--border2);
-    border-radius:8px;
-    padding:8px;
-    cursor:pointer;
+  }
+  .welcome-header h1{
+    font-size:1.4rem;
   }
   .price-grid{
     grid-template-columns:1fr;
@@ -598,10 +627,9 @@ textarea{resize:vertical;min-height:100px}
   .notification{
     width:300px;
   }
-}
-
-.menu-toggle{
-  display:none;
+  .id-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 </style>
 </head>
@@ -610,10 +638,10 @@ textarea{resize:vertical;min-height:100px}
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <a href="#" class="sidebar-logo">
+    <div class="sidebar-logo">
       <div class="sidebar-logo-icon">ID</div>
       <span>IDglitxh</span>
-    </a>
+    </div>
   </div>
   <div class="sidebar-nav">
     <button class="nav-item" data-page="dashboard">
@@ -629,7 +657,7 @@ textarea{resize:vertical;min-height:100px}
       My IDs
     </button>
     <button class="nav-item" data-page="harga">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 22v-4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
       Harga
     </button>
     <button class="nav-item" data-page="profile">
@@ -643,6 +671,9 @@ textarea{resize:vertical;min-height:100px}
   </div>
 </div>
 
+<!-- OVERLAY untuk mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <!-- MENU TOGGLE (mobile) -->
 <div class="menu-toggle" id="menuToggle">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -650,7 +681,6 @@ textarea{resize:vertical;min-height:100px}
 
 <!-- MAIN CONTENT -->
 <div class="main-content" id="mainContent">
-  <!-- Konten akan di-load di sini -->
   <div class="welcome-header">
     <h1>Hello, <span id="welcomeName">---</span></h1>
     <p id="userBio">Selamat datang di dashboard Anda</p>
@@ -785,7 +815,7 @@ function detectTierFromID(id) {
   return 'low';
 }
 
-// ==================== PAGE: DASHBOARD (HOME) ====================
+// ==================== PAGE: DASHBOARD ====================
 function renderDashboardPage() {
   return `
     <div class="panel">
@@ -799,13 +829,13 @@ function renderDashboardPage() {
           <span>Selamat datang di dashboard contributor! Gunakan menu di samping untuk mengelola ID, mengatur harga, atau mengedit profil.</span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
-          <div style="background:var(--card2);border-radius:12px;padding:16px;text-align:center">
-            <div style="font-size:1.5rem;font-weight:700;color:var(--white)">${(currentUser.total || 0).toLocaleString()}</div>
-            <div style="font-size:.65rem;color:var(--muted)">Total ID</div>
+          <div class="stat-card">
+            <div class="stat-number">${(currentUser.total || 0).toLocaleString()}</div>
+            <div class="stat-label">Total ID</div>
           </div>
-          <div style="background:var(--card2);border-radius:12px;padding:16px;text-align:center">
-            <div style="font-size:1.5rem;font-weight:700;color:var(--white)">${(currentUser.soldTotal || 0).toLocaleString()}</div>
-            <div style="font-size:.65rem;color:var(--muted)">ID Sold</div>
+          <div class="stat-card">
+            <div class="stat-number">${(currentUser.soldTotal || 0).toLocaleString()}</div>
+            <div class="stat-label">ID Sold</div>
           </div>
         </div>
       </div>
@@ -823,7 +853,7 @@ function renderAddIdPage() {
       </div>
       <div class="panel-body">
         <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
           <span>⚡ RULES:<br/>• LOW (2+ angka sama)<br/>• MEDIUM (5+ angka sama ATAU 2 kelompok 4+ angka)<br/>• HIGH (6+ angka + 4+ angka)<br/>• LEGEND (9+ angka)</span>
         </div>
         <div class="field">
@@ -842,7 +872,7 @@ function renderMyIdsPage() {
   return `
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12} y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
       <div class="panel-body">
@@ -876,7 +906,7 @@ function renderHargaPage() {
       </div>
       <div class="panel-body">
         <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
           <span>Harga akan berlaku untuk semua ID dengan tier terkait. Buyer akan melihat harga ini saat checkout.</span>
         </div>
         <div class="price-grid">
@@ -917,7 +947,7 @@ function renderProfilePage() {
         </div>
         <div class="field">
           <label>URL Foto</label>
-          <input type="url" id="editPhoto" placeholder="https://..." value="${currentUser.photo || ''}">
+          <input type="url" id="editPhoto" placeholder="https://..." value="${escapeHtml(currentUser.photo || '')}">
         </div>
         <div class="field">
           <label>Nama Tampil</label>
@@ -937,25 +967,49 @@ function renderProfilePage() {
   `;
 }
 
-// ==================== FUNGSI SUPPORT ====================
+// ==================== FUNGSI SUPPORT MY IDS ====================
 async function loadMyIdsData() {
   try {
+    showProgress(true, 'Memuat ID...');
     const result = await callAPI(`my-ids?username=${currentUser.username}`, 'GET');
+    showProgress(false);
+    
     if (result.success && result.data) {
       allMyIdsData = result.data;
       availableIdsData = allMyIdsData.filter(item => !item.isSold);
       soldIdsData = allMyIdsData.filter(item => item.isSold === true);
-      document.getElementById('myIdsCount').textContent = `${allMyIdsData.length} ID (${soldIdsData.length} sold)`;
+      
+      const countSpan = document.getElementById('myIdsCount');
+      if (countSpan) countSpan.textContent = `${allMyIdsData.length} ID (${soldIdsData.length} sold)`;
+      
+      updateMyIdsDisplay();
+    } else {
+      console.log('No data from API');
+      availableIdsData = [];
+      soldIdsData = [];
       updateMyIdsDisplay();
     }
-  } catch(e) { console.error(e); }
+  } catch(e) {
+    showProgress(false);
+    console.error('Load my IDs error:', e);
+    availableIdsData = [];
+    soldIdsData = [];
+    updateMyIdsDisplay();
+  }
 }
 
 function updateMyIdsDisplay() {
-  const availableCount = document.getElementById('availableCount');
-  const soldCount = document.getElementById('soldCount');
-  if (availableCount) availableCount.textContent = `${availableIdsData.length} ID`;
-  if (soldCount) soldCount.textContent = `${soldIdsData.length} ID`;
+  const availableSection = document.getElementById('availableSection');
+  const soldSection = document.getElementById('soldSection');
+  const availableCountSpan = document.getElementById('availableCount');
+  const soldCountSpan = document.getElementById('soldCount');
+  
+  if (availableCountSpan) availableCountSpan.textContent = `${availableIdsData.length} ID`;
+  if (soldCountSpan) soldCountSpan.textContent = `${soldIdsData.length} ID`;
+  
+  if (availableSection) availableSection.style.display = availableIdsData.length > 0 ? 'block' : 'none';
+  if (soldSection) soldSection.style.display = soldIdsData.length > 0 ? 'block' : 'none';
+  
   renderAvailableIds(availableIdsData);
   renderSoldIds(soldIdsData);
   renderAvailablePagination();
@@ -964,20 +1018,23 @@ function updateMyIdsDisplay() {
 function renderAvailableIds(ids) {
   const container = document.getElementById('availableContainer');
   if (!container) return;
+  
   const start = (availableCurrentPage - 1) * ITEMS_PER_PAGE;
   const pageIds = ids.slice(start, start + ITEMS_PER_PAGE);
+  
   if (pageIds.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Tidak ada ID available</div>';
     return;
   }
+  
   container.innerHTML = `
     <div class="id-grid">
-      ${pageIds.map(id => `
+      ${pageIds.map(item => `
         <div class="id-card">
-          <div class="id-code">${escapeHtml(id.id)}</div>
+          <div class="id-code">${escapeHtml(item.id)}</div>
           <div class="id-status status-available">AVAILABLE</div>
           <div class="id-actions">
-            <button class="id-btn" onclick="markAsSold('${escapeHtml(id.id)}', '${id.tier || detectTierFromID(id.id)}')">📦 Mark Sold</button>
+            <button class="id-btn" onclick="markAsSold('${escapeHtml(item.id)}', '${item.tier || detectTierFromID(item.id)}')">📦 Mark Sold</button>
           </div>
         </div>
       `).join('')}
@@ -988,18 +1045,20 @@ function renderAvailableIds(ids) {
 function renderSoldIds(ids) {
   const container = document.getElementById('soldContainer');
   if (!container) return;
+  
   if (ids.length === 0) {
     container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID sold</div>';
     return;
   }
+  
   container.innerHTML = `
     <div class="id-grid">
-      ${ids.map(id => `
+      ${ids.map(item => `
         <div class="id-card">
-          <div class="id-code">${escapeHtml(id.id)}</div>
+          <div class="id-code">${escapeHtml(item.id)}</div>
           <div class="id-status status-sold">SOLD</div>
           <div class="id-actions">
-            <span style="font-size:.6rem;color:var(--muted);padding:4px 0;display:block">Tier: ${(id.tier || 'unknown').toUpperCase()}</span>
+            <span style="font-size:.6rem;color:var(--muted);padding:4px 0;display:block">Tier: ${(item.tier || 'unknown').toUpperCase()}</span>
           </div>
         </div>
       `).join('')}
@@ -1010,8 +1069,13 @@ function renderSoldIds(ids) {
 function renderAvailablePagination() {
   const container = document.getElementById('availablePagination');
   if (!container) return;
+  
   const totalPages = Math.ceil(availableIdsData.length / ITEMS_PER_PAGE);
-  if (totalPages <= 1) { container.innerHTML = ''; return; }
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+  
   let html = '';
   for (let i = 1; i <= Math.min(totalPages, 5); i++) {
     html += `<div class="page-btn ${i === availableCurrentPage ? 'active' : ''}" onclick="goToAvailablePage(${i})">${i}</div>`;
@@ -1023,21 +1087,6 @@ function goToAvailablePage(page) {
   availableCurrentPage = page;
   renderAvailableIds(availableIdsData);
   renderAvailablePagination();
-}
-
-async function markAsSold(id, tier) {
-  if (!confirm(`Tandai ID ${id} sebagai sold?`)) return;
-  showProgress(true, 'Memproses...');
-  const result = await callAPI('sold', 'POST', { username: currentUser.username, soldIds: [id], tier: tier });
-  if (result.success) {
-    currentUser.soldTotal = (currentUser.soldTotal || 0) + 1;
-    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    showNotification('success', 'Berhasil!', `${id} ditandai sold`);
-    await loadMyIdsData();
-  } else {
-    showNotification('error', 'Gagal', 'Gagal menandai sold');
-  }
-  showProgress(false);
 }
 
 function searchMyIds() {
@@ -1052,87 +1101,23 @@ function searchMyIds() {
   renderSoldIds(filteredSold);
 }
 
-async function submitAddIDs() {
-  const raw = document.getElementById('addIdList').value;
-  if (!raw.trim()) { showNotification('error', 'Gagal', 'Daftar ID kosong'); return; }
-  const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newIDs.length === 0) return;
-  
-  showProgress(true, 'Mengecek duplikat...');
-  const idsByTier = { low: [], medium: [], high: [], legend: [] };
-  for (const id of newIDs) {
-    const tier = detectTierFromID(id);
-    idsByTier[tier].push(id);
-  }
-  
-  let allSuccess = true;
-  for (const [tier, ids] of Object.entries(idsByTier)) {
-    if (ids.length === 0) continue;
-    const result = await callAPI('ids', 'POST', { username: currentUser.username, tier: tier, ids: ids });
-    if (!result.success) allSuccess = false;
-  }
-  
-  if (allSuccess) {
-    currentUser.total = (currentUser.total || 0) + newIDs.length;
-    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    showNotification('success', 'Berhasil!', `${newIDs.length} ID berhasil ditambahkan!`);
-    document.getElementById('addIdList').value = '';
-    document.getElementById('autoDetectResult').innerHTML = '';
-    if (currentPage === 'myids') await loadMyIdsData();
-  } else {
-    showNotification('error', 'Gagal', 'Gagal menambahkan ID');
-  }
-  showProgress(false);
-}
-
-async function saveHarga() {
-  const low = parseInt(document.getElementById('priceLow').value) || 500;
-  const medium = parseInt(document.getElementById('priceMedium').value) || 10000;
-  const high = parseInt(document.getElementById('priceHigh').value) || 15000;
-  const legend = parseInt(document.getElementById('priceLegend').value) || 30000;
-  
-  showProgress(true, 'Menyimpan harga...');
-  const result = await callAPI('update-price', 'POST', {
-    username: currentUser.username,
-    prices: { low, medium, high, legend }
-  });
+async function markAsSold(id, tier) {
+  if (!confirm(`Tandai ID ${id} sebagai sold?`)) return;
+  showProgress(true, 'Memproses...');
+  const result = await callAPI('sold', 'POST', { username: currentUser.username, soldIds: [id], tier: tier });
   showProgress(false);
   
   if (result.success) {
-    currentUser.price = { low, medium, high, legend };
+    currentUser.soldTotal = (currentUser.soldTotal || 0) + 1;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    showNotification('success', 'Berhasil!', 'Harga berhasil diupdate!');
+    showNotification('success', 'Berhasil!', `${id} ditandai sold`);
+    await loadMyIdsData();
   } else {
-    showNotification('error', 'Gagal', 'Gagal update harga');
+    showNotification('error', 'Gagal', 'Gagal menandai sold');
   }
 }
 
-async function saveProfile() {
-  const photo = document.getElementById('editPhoto').value.trim();
-  const name = document.getElementById('editName').value.trim();
-  const bio = document.getElementById('editBio').value.trim();
-  const wa = document.getElementById('editWhatsapp').value.trim();
-  
-  if (!name) { showNotification('error', 'Gagal', 'Nama tidak boleh kosong'); return; }
-  
-  showProgress(true, 'Menyimpan profile...');
-  const result = await callAPI('profile', 'POST', { username: currentUser.username, name, photo, bio, wa });
-  showProgress(false);
-  
-  if (result.success) {
-    currentUser.name = name;
-    currentUser.photo = photo;
-    currentUser.bio = bio;
-    currentUser.wa = wa;
-    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    document.getElementById('welcomeName').textContent = name;
-    showNotification('success', 'Berhasil!', 'Profile berhasil diupdate!');
-    if (currentPage === 'profile') renderPage('profile');
-  } else {
-    showNotification('error', 'Gagal', 'Gagal update profile');
-  }
-}
-
+// ==================== TAMBAH ID ====================
 function previewAutoDetect() {
   const raw = document.getElementById('addIdList')?.value;
   if (!raw || !raw.trim()) {
@@ -1159,6 +1144,92 @@ function previewAutoDetect() {
   }
 }
 
+async function submitAddIDs() {
+  const raw = document.getElementById('addIdList').value;
+  if (!raw.trim()) { showNotification('error', 'Gagal', 'Daftar ID kosong'); return; }
+  const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
+  if (newIDs.length === 0) return;
+  
+  showProgress(true, 'Memproses ID...');
+  const idsByTier = { low: [], medium: [], high: [], legend: [] };
+  for (const id of newIDs) {
+    const tier = detectTierFromID(id);
+    idsByTier[tier].push(id);
+  }
+  
+  let allSuccess = true;
+  for (const [tier, ids] of Object.entries(idsByTier)) {
+    if (ids.length === 0) continue;
+    const result = await callAPI('ids', 'POST', { username: currentUser.username, tier: tier, ids: ids });
+    if (!result.success) allSuccess = false;
+  }
+  
+  showProgress(false);
+  
+  if (allSuccess) {
+    currentUser.total = (currentUser.total || 0) + newIDs.length;
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+    showNotification('success', 'Berhasil!', `${newIDs.length} ID berhasil ditambahkan!`);
+    document.getElementById('addIdList').value = '';
+    document.getElementById('autoDetectResult').innerHTML = '';
+    if (currentPage === 'myids') await loadMyIdsData();
+  } else {
+    showNotification('error', 'Gagal', 'Gagal menambahkan ID');
+  }
+}
+
+// ==================== HARGA ====================
+async function saveHarga() {
+  const low = parseInt(document.getElementById('priceLow').value) || 500;
+  const medium = parseInt(document.getElementById('priceMedium').value) || 10000;
+  const high = parseInt(document.getElementById('priceHigh').value) || 15000;
+  const legend = parseInt(document.getElementById('priceLegend').value) || 30000;
+  
+  showProgress(true, 'Menyimpan harga...');
+  const result = await callAPI('update-price', 'POST', {
+    username: currentUser.username,
+    prices: { low, medium, high, legend }
+  });
+  showProgress(false);
+  
+  if (result.success) {
+    currentUser.price = { low, medium, high, legend };
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+    showNotification('success', 'Berhasil!', 'Harga berhasil diupdate!');
+  } else {
+    showNotification('error', 'Gagal', 'Gagal update harga');
+  }
+}
+
+// ==================== PROFILE ====================
+async function saveProfile() {
+  const photo = document.getElementById('editPhoto').value.trim();
+  const name = document.getElementById('editName').value.trim();
+  const bio = document.getElementById('editBio').value.trim();
+  const wa = document.getElementById('editWhatsapp').value.trim();
+  
+  if (!name) { showNotification('error', 'Gagal', 'Nama tidak boleh kosong'); return; }
+  
+  showProgress(true, 'Menyimpan profile...');
+  const result = await callAPI('profile', 'POST', { username: currentUser.username, name, photo, bio, wa });
+  showProgress(false);
+  
+  if (result.success) {
+    currentUser.name = name;
+    currentUser.photo = photo;
+    currentUser.bio = bio;
+    currentUser.wa = wa;
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+    document.getElementById('welcomeName').textContent = name;
+    showNotification('success', 'Berhasil!', 'Profile berhasil diupdate!');
+    if (currentPage === 'profile') {
+      document.getElementById('profileAvatar').src = photo;
+    }
+  } else {
+    showNotification('error', 'Gagal', 'Gagal update profile');
+  }
+}
+
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
@@ -1168,7 +1239,7 @@ function escapeHtml(str) {
 async function renderPage(page) {
   currentPage = page;
   const contentDiv = document.getElementById('pageContent');
-  const navItems = document.querySelectorAll('.nav-item');
+  const navItems = document.querySelectorAll('.nav-item[data-page]');
   navItems.forEach(item => {
     if (item.getAttribute('data-page') === page) {
       item.classList.add('active');
@@ -1220,17 +1291,29 @@ function initNavigation() {
       renderPage(page);
       if (window.innerWidth <= 768) {
         document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('show');
       }
     });
   });
+  
   document.getElementById('logoutBtn').addEventListener('click', logout);
   
   // Mobile menu toggle
   const menuToggle = document.getElementById('menuToggle');
   const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  
   if (menuToggle) {
     menuToggle.addEventListener('click', () => {
       sidebar.classList.toggle('open');
+      overlay.classList.toggle('show');
+    });
+  }
+  
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('show');
     });
   }
 }
