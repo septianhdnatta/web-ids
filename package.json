@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'No build step required'",
-    "start": "vercel dev",
-    "vercel-build": "node process-html.mjs"
+    "start": "vercel dev"
   },
   "keywords": [
     "id-store",
@@ -22,8 +21,6 @@
     "mongodb": "^6.5.0"
   },
   "devDependencies": {
-    "vercel": "^34.0.0",
-    "globby": "^14.0.0",
-    "html-minifier": "^4.0.0"
+    "vercel": "^34.0.0"
   }
 }
