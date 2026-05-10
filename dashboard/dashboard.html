@@ -611,7 +611,7 @@ async function submitAddIDs() {
   }
 }
 
-// ==================== SOLD ID ====================
+// ==================== SOLD ID (DENGAN UPDATE soldTotal) ====================
 async function submitSoldIDs() {
   let raw = document.getElementById('soldIdList').value;
   
@@ -643,9 +643,12 @@ async function submitSoldIDs() {
     tier: tier || undefined 
   });
   
-  showProgress('', '', false);
-  
   if (result.success) {
+    // Update soldTotal di localStorage
+    const newSoldTotal = (currentUser.soldTotal || 0) + newSold.length;
+    currentUser.soldTotal = newSoldTotal;
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+    
     showToast(`✅ ${newSold.length} ID ditandai sold!`, 'ok');
     document.getElementById('soldIdList').value = '';
     myIdsCurrentPage = 1;
@@ -653,6 +656,8 @@ async function submitSoldIDs() {
   } else {
     showToast('❌ Gagal menyimpan sold', 'err');
   }
+  
+  showProgress('', '', false);
 }
 
 async function markSingleSold(id) {
@@ -664,14 +669,19 @@ async function markSingleSold(id) {
     tier: '' 
   });
   
-  showProgress('', '', false);
-  
   if (result.success) {
+    // Update soldTotal di localStorage
+    const newSoldTotal = (currentUser.soldTotal || 0) + 1;
+    currentUser.soldTotal = newSoldTotal;
+    localStorage.setItem('contributor_user', JSON.stringify(currentUser));
+    
     showToast(`✅ ${id} ditandai sold`, 'ok');
     await loadMyIds();
   } else {
     showToast('❌ Gagal menandai sold', 'err');
   }
+  
+  showProgress('', '', false);
 }
 
 // ==================== UPLOAD FOTO ====================
