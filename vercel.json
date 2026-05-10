@@ -1,26 +1,87 @@
 {
-  "name": "idglitxh",
-  "version": "1.0.0",
-  "description": "IDglitxh — Premium ID Store Platform with MongoDB",
-  "main": "index.html",
-  "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'No build step required'",
-    "start": "vercel dev"
-  },
-  "keywords": [
-    "id-store",
-    "premium-id",
-    "idglitxh",
-    "mongodb",
-    "vercel"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    }
   ],
-  "author": "IDglitxh Team",
-  "license": "MIT",
-  "dependencies": {
-    "mongodb": "^6.5.0"
-  },
-  "devDependencies": {
-    "vercel": "^34.0.0"
-  }
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/contributor/profile",
+      "dest": "/contributor/profile.html"
+    },
+    {
+      "src": "/contributor/leaderboard",
+      "dest": "/contributor/leaderboard.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/login/login.html"
+    },
+    {
+      "src": "/register",
+      "dest": "/register/register.html"
+    },
+    {
+      "src": "/dashboard",
+      "dest": "/dashboard/dashboard.html"
+    },
+    {
+      "src": "/dashboard-admin",
+      "dest": "/dashboard/dashboard-admin.html"
+    },
+    {
+      "src": "/ID",
+      "dest": "/ID/id.html"
+    },
+    {
+      "src": "/payment",
+      "dest": "/payment/payment.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ]
 }
