@@ -10,11 +10,11 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Manual parsing URL (TIDAK menggunakan parseUrl)
+  // Manual parsing URL
   const urlParts = req.url.split('?');
   const pathname = urlParts[0];
   
-  // ROUTING (Semua endpoint kamu ada di sini)
+  // ROUTING
   if (pathname === '/api/register' && req.method === 'POST') return handleRegister(req, res);
   if (pathname === '/api/login' && req.method === 'POST') return handleLogin(req, res);
   if (pathname === '/api/contributors' && req.method === 'GET') return handleGetContributors(req, res);
@@ -29,14 +29,10 @@ export default async function handler(req, res) {
   if (pathname === '/api/update-total' && req.method === 'POST') return handleUpdateTotal(req, res);
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
+  if (pathname === '/api/update-price' && req.method === 'POST') return handleUpdatePrice(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
-
-// ==================== SEMUA HANDLER FUNGSI DI SINI ====================
-// (Masukkan semua fungsi handleRegister, handleLogin, handleGetContributors, 
-//  handleMyIds, handleSold, dll. yang sudah kita buat sebelumnya di sini.)
-// ... kode handler functions selengkapnya ...
 
 // ==================== REGISTER ====================
 async function handleRegister(req, res) {
@@ -70,7 +66,8 @@ async function handleRegister(req, res) {
     soldTotal: 0,
     active: true,
     joined: new Date().toISOString().split('T')[0],
-    createdAt: new Date()
+    createdAt: new Date(),
+    price: { low: 500, medium: 10000, high: 15000, legend: 30000 } // default harga
   };
 
   await contributors.insertOne(newContributor);
@@ -79,6 +76,31 @@ async function handleRegister(req, res) {
 
   delete newContributor.pass;
   return res.status(200).json({ success: true, data: newContributor, message: 'Registration successful!' });
+}
+
+// ==================== UPDATE PRICE ====================
+async function handleUpdatePrice(req, res) {
+  const { username, prices } = req.body;
+  
+  if (!username || !prices) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  
+  const updateData = {};
+  if (prices.low !== undefined) updateData['price.low'] = prices.low;
+  if (prices.medium !== undefined) updateData['price.medium'] = prices.medium;
+  if (prices.high !== undefined) updateData['price.high'] = prices.high;
+  if (prices.legend !== undefined) updateData['price.legend'] = prices.legend;
+  
+  await db.collection('contributors').updateOne(
+    { username },
+    { $set: updateData }
+  );
+  
+  return res.status(200).json({ success: true, message: 'Price updated successfully' });
 }
 
 // ==================== LOGIN ====================
@@ -134,7 +156,7 @@ async function handleUpdateUserStatus(req, res) {
   return res.status(200).json({ success: true, message: `User ${active ? 'unblocked' : 'blocked'}` });
 }
 
-// ==================== DELETE USER (LENGKAP DENGAN SEMUA ID) ====================
+// ==================== DELETE USER ====================
 async function handleDeleteUser(req, res) {
   const { username } = req.body;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -143,12 +165,10 @@ async function handleDeleteUser(req, res) {
   const db = client.db('idglitxh');
 
   try {
-    // 1. Ambil semua ID milik user ini dari ids_username
     const userIdsCollection = db.collection(`ids_${username}`);
     const userIDs = await userIdsCollection.find({}).toArray();
     const idValues = userIDs.map(doc => doc.id);
 
-    // 2. Hapus ID dari semua tier collections
     const tierCollections = ['ids_low', 'ids_medium', 'ids_high', 'ids_legend'];
     for (const tierCol of tierCollections) {
       const collection = db.collection(tierCol);
@@ -157,17 +177,14 @@ async function handleDeleteUser(req, res) {
       }
     }
 
-    // 3. Hapus dari sold_ids global
     const soldGlobal = db.collection('sold_ids');
     for (const id of idValues) {
       await soldGlobal.deleteOne({ id: id });
     }
 
-    // 4. Hapus collection ids_username dan sold_username
     try { await db.collection(`ids_${username}`).drop(); } catch(e) {}
     try { await db.collection(`sold_${username}`).drop(); } catch(e) {}
 
-    // 5. Hapus contributor dari contributors
     const result = await db.collection('contributors').deleteOne({ username });
     
     if (result.deletedCount === 0) {
@@ -228,7 +245,7 @@ async function handleAddIds(req, res) {
   return res.status(200).json({ success: true, message: `Added ${ids.length} IDs` });
 }
 
-// ==================== GET USER'S IDS (DARI ids_username DAN sold_username) ====================
+// ==================== GET USER'S IDS ====================
 async function handleMyIds(req, res) {
   const { username } = req.query;
   if (!username) return res.status(400).json({ success: false, error: 'Username required' });
@@ -237,15 +254,12 @@ async function handleMyIds(req, res) {
   const db = client.db('idglitxh');
   
   try {
-    // Ambil ID aktif dari ids_username
     const userCollection = db.collection(`ids_${username}`);
     const activeIds = await userCollection.find({}).toArray();
     
-    // Ambil ID sold dari sold_username
     const soldCollection = db.collection(`sold_${username}`);
     const soldIds = await soldCollection.find({}).toArray();
     
-    // Gabungkan: ID aktif (isSold: false) + ID sold (isSold: true)
     const result = [
       ...activeIds.map(doc => ({
         id: doc.id,
@@ -259,7 +273,6 @@ async function handleMyIds(req, res) {
       }))
     ];
     
-    // Urutkan berdasarkan ID (opsional)
     result.sort((a, b) => a.id.localeCompare(b.id));
     
     console.log(`[my-ids] User: ${username}, Active: ${activeIds.length}, Sold: ${soldIds.length}, Total: ${result.length}`);
@@ -281,25 +294,21 @@ async function handleSold(req, res) {
 
   try {
     for (const id of soldIds) {
-      // 1. Simpan ke sold_ids global
       await db.collection('sold_ids').updateOne(
         { id: id },
         { $set: { id: id, seller: username, soldAt: new Date(), tier: tier } },
         { upsert: true }
       );
       
-      // 2. Simpan ke collection sold_username
       await db.collection(`sold_${username}`).updateOne(
         { id: id },
         { $set: { id: id, tier: tier, soldAt: new Date() } },
         { upsert: true }
       );
       
-      // 3. HAPUS dari collection ids_username (pindahkan ke sold)
       await db.collection(`ids_${username}`).deleteOne({ id: id });
     }
 
-    // 4. Hapus dari tier collection jika tier ditentukan
     if (tier && tier !== '') {
       const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
       const tierCollection = db.collection(tierMap[tier]);
@@ -308,7 +317,6 @@ async function handleSold(req, res) {
       }
     }
 
-    // 5. Update soldTotal contributor
     await db.collection('contributors').updateOne(
       { username: username },
       { $inc: { soldTotal: soldIds.length } }
