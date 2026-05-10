@@ -11,6 +11,7 @@
   --bg:#0d0d0d;--card:#161616;--card2:#1a1a1a;--border:#232323;--border2:#2a2a2a;
   --text:#f0f0f0;--muted:#666;--muted2:#888;--white:#fff;
   --green:#10b981;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;
+  --purple:#a855f7;--pink:#ec4899;
   --font:'Inter',sans-serif;--mono:'IBM Plex Mono',monospace;
 }
 html{scroll-behavior:smooth}
@@ -26,36 +27,53 @@ body{
   position:relative;
   overflow-x:hidden;
 }
-.hero-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 65%);pointer-events:none;z-index:0}
+.hero-glow{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.1) 0%,transparent 65%);pointer-events:none;z-index:0}
 .login-container{position:relative;z-index:1;width:100%;max-width:400px}
 .login-card{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:36px;text-align:center;backdrop-filter:blur(10px)}
-.logo-icon{width:48px;height:48px;background:var(--white);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
-.logo-icon svg{width:24px;height:24px;color:#000}
-h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
+.logo-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.logo-icon svg{width:24px;height:24px;stroke:#fff}
+h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
 .sub{font-size:.72rem;color:var(--muted);margin-bottom:24px}
 .field{margin-bottom:16px;text-align:left}
 .field label{font-size:.68rem;color:var(--muted2);display:block;margin-bottom:6px;font-family:var(--mono)}
 .field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none;transition:border-color .2s}
-.field input:focus{border-color:rgba(255,255,255,.2)}
-.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px}
-.btn-primary{background:var(--white);color:#000}
-.btn-primary:hover{background:#e8e8e8;transform:translateY(-1px)}
+.field input:focus{border-color:var(--purple)}
+.btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
+.btn-primary:hover{transform:translateY(-1px);filter:brightness(1.05)}
 .auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
-.auth-switch a{color:var(--white);text-decoration:none;cursor:pointer}
-.auth-switch a:hover{text-decoration:underline}
+.auth-switch a{color:var(--purple);text-decoration:none}
 .back-link{margin-top:16px;text-align:center}
 .back-link a{color:var(--muted);font-size:.72rem;text-decoration:none}
 .back-link a:hover{color:var(--white)}
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.ok .toast-dot{background:var(--green)}
-.toast.err .toast-dot{background:var(--red)}
-.toast.warn .toast-dot{background:var(--yellow)}
-.toast-dot{width:7px;height:7px;border-radius:50%}
+
+/* NOTIFICATION POPUP */
+.notification{position:fixed;bottom:24px;right:24px;background:var(--card2);border-radius:16px;padding:0;width:360px;max-width:calc(100vw - 48px);box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);transform:translateX(420px);transition:transform .4s cubic-bezier(.2,.9,.4,1.1);z-index:10000;overflow:hidden}
+.notification.show{transform:translateX(0)}
+.notification-content{display:flex;align-items:center;gap:14px;padding:14px 18px}
+.notification-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notification-icon.success{background:rgba(16,185,129,.15)}
+.notification-icon.error{background:rgba(239,68,68,.15)}
+.notification-icon.warning{background:rgba(245,158,11,.15)}
+.notification-icon svg{width:22px;height:22px}
+.notification-icon.success svg{stroke:var(--green)}
+.notification-icon.error svg{stroke:var(--red)}
+.notification-icon.warning svg{stroke:var(--yellow)}
+.notification-text{flex:1}
+.notification-title{font-size:.85rem;font-weight:600;color:var(--white);margin-bottom:2px}
+.notification-message{font-size:.7rem;color:var(--muted2);line-height:1.4}
+.notification-progress{height:3px;width:100%;background:rgba(255,255,255,.05)}
+.notification-progress-bar{height:100%;width:100%;background:linear-gradient(90deg,var(--green),#34d399);transition:width 3s linear}
+.notification-progress-bar.error{background:linear-gradient(90deg,var(--red),#f87171)}
+.notification-progress-bar.warning{background:linear-gradient(90deg,var(--yellow),#fbbf24)}
+.notification-close{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.notification-close:hover{background:rgba(255,255,255,.1)}
+.notification-close svg{width:14px;height:14px;stroke:var(--muted2)}
+
 .progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
 .progress-overlay.show{display:flex}
 .progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
-.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
+.progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--purple);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -96,26 +114,44 @@ h1{font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:6px}
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
+<!-- NOTIFICATION POPUP -->
+<div class="notification" id="notification">
+  <div class="notification-content">
+    <div class="notification-icon" id="notificationIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="notification-text">
+      <div class="notification-title" id="notificationTitle">Success!</div>
+      <div class="notification-message" id="notificationMessage">Operation completed successfully</div>
+    </div>
+    <div class="notification-close" onclick="hideNotification()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+  <div class="notification-progress">
+    <div class="notification-progress-bar" id="notificationProgress"></div>
+  </div>
+</div>
 
 <!-- PROGRESS -->
 <div class="progress-overlay" id="progressOverlay">
   <div class="progress-card">
     <div class="progress-spinner"></div>
-    <div class="progress-title" style="color:var(--white);margin-bottom:6px">Login...</div>
+    <div class="progress-title">Login...</div>
   </div>
 </div>
 
 <script>
 const API_URL = '/api';
+let notificationTimer = null;
+let redirectTimer = null;
 
 async function doLogin() {
   const username = document.getElementById('loginUsername').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   
   if (!username || !password) {
-    showToast('Username dan password wajib diisi', 'err');
+    showNotification('error', 'Gagal', 'Username dan password wajib diisi');
     return;
   }
   
@@ -133,42 +169,85 @@ async function doLogin() {
     
     if (!data.success) {
       if (data.error && data.error.includes('diblokir')) {
-        showToast('⚠️ Akun Anda telah diblokir oleh admin. Hubungi admin untuk informasi lebih lanjut.', 'warn');
+        showNotification('error', 'Akun Diblokir', 'Akun Anda telah diblokir oleh admin. Hubungi admin untuk informasi lebih lanjut.');
       } else {
-        showToast(data.error || 'Login gagal', 'err');
+        showNotification('error', 'Login Gagal', data.error || 'Username atau password salah');
       }
       return;
     }
     
-    // Login sukses - simpan data user
+    // Login sukses
     localStorage.setItem('contributor_user', JSON.stringify(data.data));
+    
+    // Tampilkan notifikasi sukses
+    showNotification('success', 'Login Berhasil!', `Selamat datang kembali, ${data.data.name}! Mengarahkan...`);
     
     // Redirect berdasarkan role
     if (data.role === 'DV') {
-      // Developer (role DV) → dashboard admin
-      showToast('✅ Login sebagai Developer! Mengarahkan ke Admin Panel...', 'ok');
-      setTimeout(() => {
+      if (redirectTimer) clearTimeout(redirectTimer);
+      redirectTimer = setTimeout(() => {
         window.location.href = '../dashboard/dashboard-admin.html';
-      }, 1000);
+      }, 2000);
     } else {
-      // Contributor biasa (role CB) → dashboard biasa
-      showToast('✅ Login berhasil! Mengarahkan ke dashboard...', 'ok');
-      setTimeout(() => {
+      if (redirectTimer) clearTimeout(redirectTimer);
+      redirectTimer = setTimeout(() => {
         window.location.href = '../dashboard/dashboard.html';
-      }, 1000);
+      }, 2000);
     }
   } catch (error) {
     showProgress(false);
     console.error('Login error:', error);
-    showToast('❌ Gagal terhubung ke server', 'err');
+    showNotification('error', 'Koneksi Gagal', 'Tidak dapat terhubung ke server');
   }
 }
 
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 4000);
+function showNotification(type, title, message) {
+  const notification = document.getElementById('notification');
+  const iconDiv = document.getElementById('notificationIcon');
+  const titleDiv = document.getElementById('notificationTitle');
+  const msgDiv = document.getElementById('notificationMessage');
+  const progressBar = document.getElementById('notificationProgress');
+  
+  // Set icon based on type
+  if (type === 'success') {
+    iconDiv.className = 'notification-icon success';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+    progressBar.className = 'notification-progress-bar';
+  } else if (type === 'error') {
+    iconDiv.className = 'notification-icon error';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    progressBar.className = 'notification-progress-bar error';
+  } else {
+    iconDiv.className = 'notification-icon warning';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    progressBar.className = 'notification-progress-bar warning';
+  }
+  
+  titleDiv.textContent = title;
+  msgDiv.textContent = message;
+  
+  // Reset progress bar width
+  progressBar.style.width = '100%';
+  
+  // Show notification
+  notification.classList.add('show');
+  
+  // Animate progress bar
+  setTimeout(() => {
+    progressBar.style.width = '0%';
+  }, 50);
+  
+  // Auto hide after 3 seconds
+  if (notificationTimer) clearTimeout(notificationTimer);
+  notificationTimer = setTimeout(() => {
+    hideNotification();
+  }, 3000);
+}
+
+function hideNotification() {
+  const notification = document.getElementById('notification');
+  notification.classList.remove('show');
+  if (notificationTimer) clearTimeout(notificationTimer);
 }
 
 function showProgress(show) {
