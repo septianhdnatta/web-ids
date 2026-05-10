@@ -30,6 +30,11 @@ export default async function handler(req, res) {
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
   if (pathname === '/api/update-price' && req.method === 'POST') return handleUpdatePrice(req, res);
+  // ============ ENDPOINT HAPUS ID ============
+  if (pathname === '/api/delete-user-id' && req.method === 'POST') return handleDeleteUserId(req, res);
+  if (pathname === '/api/delete-global-id' && req.method === 'POST') return handleDeleteGlobalId(req, res);
+  if (pathname === '/api/delete-sold-id' && req.method === 'POST') return handleDeleteSoldId(req, res);
+  if (pathname === '/api/delete-sold-global' && req.method === 'POST') return handleDeleteSoldGlobal(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
@@ -67,7 +72,7 @@ async function handleRegister(req, res) {
     active: true,
     joined: new Date().toISOString().split('T')[0],
     createdAt: new Date(),
-    price: { low: 500, medium: 10000, high: 15000, legend: 30000 } // default harga
+    price: { low: 500, medium: 10000, high: 15000, legend: 30000 }
   };
 
   await contributors.insertOne(newContributor);
@@ -76,31 +81,6 @@ async function handleRegister(req, res) {
 
   delete newContributor.pass;
   return res.status(200).json({ success: true, data: newContributor, message: 'Registration successful!' });
-}
-
-// ==================== UPDATE PRICE ====================
-async function handleUpdatePrice(req, res) {
-  const { username, prices } = req.body;
-  
-  if (!username || !prices) {
-    return res.status(400).json({ success: false, error: 'Missing required fields' });
-  }
-
-  const client = await clientPromise;
-  const db = client.db('idglitxh');
-  
-  const updateData = {};
-  if (prices.low !== undefined) updateData['price.low'] = prices.low;
-  if (prices.medium !== undefined) updateData['price.medium'] = prices.medium;
-  if (prices.high !== undefined) updateData['price.high'] = prices.high;
-  if (prices.legend !== undefined) updateData['price.legend'] = prices.legend;
-  
-  await db.collection('contributors').updateOne(
-    { username },
-    { $set: updateData }
-  );
-  
-  return res.status(200).json({ success: true, message: 'Price updated successfully' });
 }
 
 // ==================== LOGIN ====================
@@ -275,8 +255,6 @@ async function handleMyIds(req, res) {
     
     result.sort((a, b) => a.id.localeCompare(b.id));
     
-    console.log(`[my-ids] User: ${username}, Active: ${activeIds.length}, Sold: ${soldIds.length}, Total: ${result.length}`);
-    
     return res.status(200).json({ success: true, data: result });
   } catch (error) {
     console.error('Error in handleMyIds:', error);
@@ -319,7 +297,7 @@ async function handleSold(req, res) {
 
     await db.collection('contributors').updateOne(
       { username: username },
-      { $inc: { soldTotal: soldIds.length } }
+      { $inc: { soldTotal: soldIds.length, total: -soldIds.length } }
     );
 
     return res.status(200).json({ success: true, message: `Marked ${soldIds.length} IDs as sold` });
@@ -407,6 +385,115 @@ async function handleResetAllIds(req, res) {
 
     return res.status(200).json({ success: true, message: 'All IDs reset', deletedCount });
   } catch (error) {
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
+// ==================== UPDATE PRICE ====================
+async function handleUpdatePrice(req, res) {
+  const { username, prices } = req.body;
+  
+  if (!username || !prices) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  
+  const updateData = {};
+  if (prices.low !== undefined) updateData['price.low'] = prices.low;
+  if (prices.medium !== undefined) updateData['price.medium'] = prices.medium;
+  if (prices.high !== undefined) updateData['price.high'] = prices.high;
+  if (prices.legend !== undefined) updateData['price.legend'] = prices.legend;
+  
+  await db.collection('contributors').updateOne(
+    { username },
+    { $set: updateData }
+  );
+  
+  return res.status(200).json({ success: true, message: 'Price updated successfully' });
+}
+
+// ==================== DELETE ID FROM USER COLLECTION ====================
+async function handleDeleteUserId(req, res) {
+  const { username, id, tier } = req.body;
+  if (!username || !id) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+
+  try {
+    // Hapus dari ids_{username}
+    await db.collection(`ids_${username}`).deleteOne({ id: id });
+    
+    // Update total contributor
+    await db.collection('contributors').updateOne(
+      { username },
+      { $inc: { total: -1 } }
+    );
+    
+    return res.status(200).json({ success: true, message: `ID ${id} deleted from user collection` });
+  } catch (error) {
+    console.error('Error in handleDeleteUserId:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
+// ==================== DELETE ID FROM GLOBAL TIER COLLECTION ====================
+async function handleDeleteGlobalId(req, res) {
+  const { collection, id } = req.body;
+  if (!collection || !id) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+
+  try {
+    await db.collection(collection).deleteOne({ id: id });
+    return res.status(200).json({ success: true, message: `ID ${id} deleted from ${collection}` });
+  } catch (error) {
+    console.error('Error in handleDeleteGlobalId:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
+// ==================== DELETE ID FROM SOLD USER COLLECTION ====================
+async function handleDeleteSoldId(req, res) {
+  const { username, id } = req.body;
+  if (!username || !id) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+
+  try {
+    await db.collection(`sold_${username}`).deleteOne({ id: id });
+    return res.status(200).json({ success: true, message: `ID ${id} deleted from sold_${username}` });
+  } catch (error) {
+    console.error('Error in handleDeleteSoldId:', error);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
+// ==================== DELETE ID FROM GLOBAL SOLD COLLECTION ====================
+async function handleDeleteSoldGlobal(req, res) {
+  const { id } = req.body;
+  if (!id) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+
+  try {
+    await db.collection('sold_ids').deleteOne({ id: id });
+    return res.status(200).json({ success: true, message: `ID ${id} deleted from sold_ids` });
+  } catch (error) {
+    console.error('Error in handleDeleteSoldGlobal:', error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
