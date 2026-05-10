@@ -132,8 +132,8 @@ textarea{resize:vertical;min-height:100px}
 .modal-body{padding:20px}
 .profile-preview{display:flex;flex-direction:column;align-items:center;margin-bottom:16px}
 .profile-preview img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);margin-bottom:10px}
-.photo-upload-btn{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:.3rem .8rem;font-size:.65rem;color:var(--muted2);cursor:pointer;transition:all .2s}
-.photo-upload-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
+.photo-hint{font-size:.6rem;color:var(--muted);margin-top:6px}
+.url-hint{font-size:.6rem;color:var(--muted);margin-top:4px;text-align:center}
 
 /* NOTIFICATION POPUP */
 .notification{position:fixed;bottom:24px;right:24px;background:var(--card2);border-radius:16px;padding:0;width:360px;max-width:calc(100vw - 48px);box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);transform:translateX(420px);transition:transform .4s cubic-bezier(.2,.9,.4,1.1);z-index:10000;overflow:hidden}
@@ -157,14 +157,6 @@ textarea{resize:vertical;min-height:100px}
 .notification-close{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
 .notification-close:hover{background:rgba(255,255,255,.1)}
 .notification-close svg{width:14px;height:14px;stroke:var(--muted2)}
-
-/* TOAST (fallback) */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
-.toast.show{opacity:1;transform:translateY(0)}
-.toast.ok .toast-dot{background:var(--green)}
-.toast.err .toast-dot{background:var(--red)}
-.toast.warn .toast-dot{background:var(--yellow)}
-.toast-dot{width:7px;height:7px;border-radius:50%}
 
 /* PROGRESS */
 .progress-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;display:none}
@@ -282,7 +274,7 @@ textarea{resize:vertical;min-height:100px}
   </div>
 </div>
 
-<!-- PROFILE MODAL -->
+<!-- PROFILE MODAL (tanpa upload foto) -->
 <div class="modal-overlay" id="profileModal">
   <div class="modal">
     <div class="modal-header">
@@ -292,12 +284,11 @@ textarea{resize:vertical;min-height:100px}
     <div class="modal-body">
       <div class="profile-preview">
         <img id="modalProfilePreview" src="" alt="">
-        <div class="photo-upload-btn" onclick="document.getElementById('editPhotoFile').click()">📷 Upload Foto Baru</div>
-        <input type="file" id="editPhotoFile" accept="image/*" style="display:none">
-        <div style="font-size:.6rem;color:var(--muted);margin-top:6px">Mendukung JPG, PNG, GIF (max 10MB)</div>
+        <div class="photo-hint">💡 Gunakan URL gambar dari hosting lain (Imgur, Catbox, dll)</div>
+        <div class="url-hint">Tempel link foto di bawah</div>
       </div>
       <div class="field">
-        <label>URL Foto (atau upload otomatis)</label>
+        <label>URL Foto</label>
         <input type="url" id="editPhoto" placeholder="https://...">
       </div>
       <div class="field">
@@ -336,7 +327,6 @@ textarea{resize:vertical;min-height:100px}
   </div>
 </div>
 
-<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg"></div></div>
 <div class="progress-overlay" id="progressOverlay"><div class="progress-card"><div class="progress-spinner"></div><div class="progress-title" id="progressTitle">Menyimpan...</div><div class="progress-sub" id="progressSub">Mengirim ke server...</div></div></div>
 
 <script>
@@ -365,11 +355,11 @@ function showNotification(type, title, message) {
     progressBar.className = 'notification-progress-bar';
   } else if (type === 'error') {
     iconDiv.className = 'notification-icon error';
-    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>`;
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
     progressBar.className = 'notification-progress-bar error';
   } else {
     iconDiv.className = 'notification-icon warning';
-    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12} y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>`;
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
     progressBar.className = 'notification-progress-bar warning';
   }
   
@@ -792,19 +782,6 @@ async function submitAddIDs() {
   }
 }
 
-// ==================== UPLOAD FOTO ====================
-async function uploadPhoto(file, username) {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('username', username);
-  
-  const response = await fetch('/api/upload-photo', {
-    method: 'POST',
-    body: formData
-  });
-  return await response.json();
-}
-
 // ==================== PROFILE ====================
 function openProfileModal() {
   if (!currentUser) return;
@@ -819,38 +796,6 @@ function openProfileModal() {
 function closeProfileModal() {
   document.getElementById('profileModal').classList.remove('show');
 }
-
-document.getElementById('editPhotoFile').addEventListener('change', async function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  
-  if (!file.type.startsWith('image/')) {
-    showNotification('error', 'Gagal', 'Hanya file gambar yang diizinkan');
-    return;
-  }
-  
-  if (file.size > 10 * 1024 * 1024) {
-    showNotification('error', 'Gagal', 'Ukuran file maksimal 10MB');
-    return;
-  }
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('modalProfilePreview').src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-  
-  showProgress('Uploading...', 'Mengupload ke Catbox', true);
-  const result = await uploadPhoto(file, currentUser.username);
-  showProgress('', '', false);
-  
-  if (result.success) {
-    document.getElementById('editPhoto').value = result.url;
-    showNotification('success', 'Berhasil!', 'Foto berhasil diupload!');
-  } else {
-    showNotification('error', 'Gagal', 'Gagal upload foto: ' + (result.error || 'unknown error'));
-  }
-});
 
 async function saveProfile() {
   const newPhoto = document.getElementById('editPhoto').value.trim();
