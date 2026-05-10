@@ -70,6 +70,8 @@ input,textarea,select{
 }
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2)}
 textarea{resize:vertical;min-height:80px}
+.row-2{display:flex;gap:12px}
+.row-2 .field{flex:1}
 
 /* USER LIST */
 .user-list{display:flex;flex-direction:column;gap:12px}
@@ -107,7 +109,30 @@ textarea{resize:vertical;min-height:80px}
 .modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer}
 .modal-body{padding:20px}
 
-/* TOAST */
+/* NOTIFICATION POPUP */
+.notification{position:fixed;bottom:24px;right:24px;background:var(--card2);border-radius:16px;padding:0;width:360px;max-width:calc(100vw - 48px);box-shadow:0 20px 40px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.05);transform:translateX(420px);transition:transform .4s cubic-bezier(.2,.9,.4,1.1);z-index:10000;overflow:hidden}
+.notification.show{transform:translateX(0)}
+.notification-content{display:flex;align-items:center;gap:14px;padding:14px 18px}
+.notification-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.notification-icon.success{background:rgba(16,185,129,.15)}
+.notification-icon.error{background:rgba(239,68,68,.15)}
+.notification-icon.warning{background:rgba(245,158,11,.15)}
+.notification-icon svg{width:22px;height:22px}
+.notification-icon.success svg{stroke:var(--green)}
+.notification-icon.error svg{stroke:var(--red)}
+.notification-icon.warning svg{stroke:var(--yellow)}
+.notification-text{flex:1}
+.notification-title{font-size:.85rem;font-weight:600;color:var(--white);margin-bottom:2px}
+.notification-message{font-size:.7rem;color:var(--muted2);line-height:1.4}
+.notification-progress{height:3px;width:100%;background:rgba(255,255,255,.05)}
+.notification-progress-bar{height:100%;width:100%;background:linear-gradient(90deg,var(--green),#34d399);transition:width 3s linear}
+.notification-progress-bar.error{background:linear-gradient(90deg,var(--red),#f87171)}
+.notification-progress-bar.warning{background:linear-gradient(90deg,var(--yellow),#fbbf24)}
+.notification-close{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0}
+.notification-close:hover{background:rgba(255,255,255,.1)}
+.notification-close svg{width:14px;height:14px;stroke:var(--muted2)}
+
+/* TOAST (fallback) */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
@@ -122,6 +147,12 @@ textarea{resize:vertical;min-height:80px}
 .progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+  .wrap{padding:76px 16px 40px}
+  .modal{width:95%}
+  .notification{width:300px}
+}
 </style>
 </head>
 <body>
@@ -236,12 +267,87 @@ textarea{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- NOTIFICATION POPUP -->
+<div class="notification" id="notification">
+  <div class="notification-content">
+    <div class="notification-icon" id="notificationIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="notification-text">
+      <div class="notification-title" id="notificationTitle">Success!</div>
+      <div class="notification-message" id="notificationMessage">Operation completed successfully</div>
+    </div>
+    <div class="notification-close" onclick="hideNotification()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+  </div>
+  <div class="notification-progress">
+    <div class="notification-progress-bar" id="notificationProgress"></div>
+  </div>
+</div>
+
+<!-- TOAST (fallback) -->
 <div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg"></div></div>
-<div class="progress-overlay" id="progressOverlay"><div class="progress-card"><div class="progress-spinner"></div><div class="progress-title">Memproses...</div></div></div>
+
+<!-- PROGRESS -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-card">
+    <div class="progress-spinner"></div>
+    <div class="progress-title">Memproses...</div>
+    <div class="progress-sub">Mengirim ke server...</div>
+  </div>
+</div>
 
 <script>
 const API_URL = '/api';
 let currentUser = null;
+let notificationTimer = null;
+
+// ==================== NOTIFICATION ====================
+function showNotification(type, title, message) {
+  const notification = document.getElementById('notification');
+  const iconDiv = document.getElementById('notificationIcon');
+  const titleDiv = document.getElementById('notificationTitle');
+  const msgDiv = document.getElementById('notificationMessage');
+  const progressBar = document.getElementById('notificationProgress');
+  
+  if (type === 'success') {
+    iconDiv.className = 'notification-icon success';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+    progressBar.className = 'notification-progress-bar';
+  } else if (type === 'error') {
+    iconDiv.className = 'notification-icon error';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    progressBar.className = 'notification-progress-bar error';
+  } else {
+    iconDiv.className = 'notification-icon warning';
+    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    progressBar.className = 'notification-progress-bar warning';
+  }
+  
+  titleDiv.textContent = title;
+  msgDiv.textContent = message;
+  progressBar.style.width = '100%';
+  notification.classList.add('show');
+  
+  setTimeout(() => { progressBar.style.width = '0%'; }, 50);
+  
+  if (notificationTimer) clearTimeout(notificationTimer);
+  notificationTimer = setTimeout(() => { hideNotification(); }, 3000);
+}
+
+function hideNotification() {
+  const notification = document.getElementById('notification');
+  notification.classList.remove('show');
+  if (notificationTimer) clearTimeout(notificationTimer);
+}
+
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 
 // ==================== AUTH CHECK ====================
 function checkAuth() {
@@ -271,13 +377,6 @@ async function callAPI(endpoint, method, body = null) {
   if (body) options.body = JSON.stringify(body);
   const res = await fetch(`${API_URL}/${endpoint}`, options);
   return await res.json();
-}
-
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function showProgress(show) {
@@ -330,40 +429,38 @@ async function toggleUserBlock(username, unblock) {
   const result = await callAPI('update-user-status', 'POST', { username, active: unblock });
   showProgress(false);
   if (result.success) {
-    showToast(`User @${username} ${unblock ? 'unblocked' : 'blocked'}`, 'ok');
+    showNotification('success', 'Berhasil!', `User @${username} ${unblock ? 'unblocked' : 'blocked'}`);
     loadUsers();
   } else {
-    showToast(result.error || 'Gagal', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal');
   }
 }
 
-// ==================== DELETE USER (LENGKAP DENGAN SEMUA ID TERKAIT) ====================
+// ==================== DELETE USER ====================
 async function deleteUser(username) {
-  if (!confirm(`⚠️ PERINGATAN!\n\nHapus user @${username}?\n\nSemua ID milik user ini akan ikut terhapus dari:\n- ID tier (low/medium/high/legend)\n- Collection ids_${username}\n- Collection sold_${username}\n- sold_ids global\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
+  if (!confirm(`⚠️ PERINGATAN!\n\nHapus user @${username}?\n\nSemua ID milik user ini akan ikut terhapus!\n\nTindakan ini TIDAK BISA dibatalkan!`)) return;
   
   showProgress(true);
   const result = await callAPI('delete-user', 'POST', { username });
   showProgress(false);
   
   if (result.success) {
-    showToast(`User @${username} dan semua ID-nya berhasil dihapus!`, 'ok');
+    showNotification('success', 'Berhasil!', `User @${username} dan semua ID-nya berhasil dihapus!`);
     loadUsers();
     loadContributorDropdown();
   } else {
-    showToast(result.error || 'Gagal menghapus user', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal menghapus user');
   }
 }
 
-// ==================== RESET ALL IDS (SEMUA CONTRIBUTOR) ====================
+// ==================== RESET ALL IDS ====================
 async function resetAllIDs() {
-  if (!confirm(`⚠️ PERINGATAN BERAT!\n\nReset ALL IDs akan menghapus SEMUA ID dari ALL contributor!\n\nTermasuk ID milik:\n- Semua Contributor (CB)\n- Developer (DV)\n- ID Anda sendiri\n\nSemua data ID akan hilang permanen dan TIDAK BISA dikembalikan!\n\nApakah Anda YAKIN?`)) return;
+  if (!confirm(`⚠️ PERINGATAN BERAT!\n\nReset ALL IDs akan menghapus SEMUA ID dari ALL contributor!\n\nApakah Anda YAKIN?`)) return;
   
-  if (!confirm(`KONFIRMASI TERAKHIR!\n\nKetik "RESET" untuk mengkonfirmasi.`)) {
-    const input = prompt(`Ketik "RESET" untuk mengkonfirmasi penghapusan semua ID:`);
-    if (input !== 'RESET') {
-      showToast('Reset dibatalkan', 'warn');
-      return;
-    }
+  const input = prompt(`Ketik "RESET" untuk mengkonfirmasi penghapusan semua ID:`);
+  if (input !== 'RESET') {
+    showNotification('warning', 'Dibatalkan', 'Reset all IDs dibatalkan');
+    return;
   }
   
   showProgress(true);
@@ -371,10 +468,10 @@ async function resetAllIDs() {
   showProgress(false);
   
   if (result.success) {
-    showToast(`✅ Semua ID berhasil dihapus! ${result.deletedCount} ID terhapus.`, 'ok');
+    showNotification('success', 'Berhasil!', `✅ Semua ID berhasil dihapus! ${result.deletedCount} ID terhapus.`);
     loadUsers();
   } else {
-    showToast(result.error || 'Gagal reset ID', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal reset ID');
   }
 }
 
@@ -410,7 +507,7 @@ async function saveEditProfile() {
   const bio = document.getElementById('editBio').value.trim();
   const wa = document.getElementById('editWa').value.trim();
   
-  if (!name) { showToast('Nama tidak boleh kosong', 'err'); return; }
+  if (!name) { showNotification('error', 'Gagal', 'Nama tidak boleh kosong'); return; }
   
   showProgress(true);
   const result = await callAPI('profile', 'POST', {
@@ -421,11 +518,11 @@ async function saveEditProfile() {
   showProgress(false);
   
   if (result.success) {
-    showToast(`Profile @${editUsername} berhasil diupdate`, 'ok');
+    showNotification('success', 'Berhasil!', `Profile @${editUsername} berhasil diupdate`);
     closeEditModal();
     loadUsers();
   } else {
-    showToast(result.error || 'Gagal', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal update profile');
   }
 }
 
@@ -447,21 +544,21 @@ async function submitIDs() {
   const tier = document.getElementById('idTier').value;
   const raw = document.getElementById('idList').value.trim();
   
-  if (!conUser) { showToast('Pilih contributor', 'err'); return; }
-  if (!raw) { showToast('Daftar ID kosong', 'err'); return; }
+  if (!conUser) { showNotification('error', 'Gagal', 'Pilih contributor'); return; }
+  if (!raw) { showNotification('error', 'Gagal', 'Daftar ID kosong'); return; }
   
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newIDs.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
+  if (newIDs.length === 0) { showNotification('error', 'Gagal', 'Tidak ada ID valid'); return; }
   
   showProgress(true);
   const result = await callAPI('ids', 'POST', { username: conUser, tier, ids: newIDs });
   showProgress(false);
   
   if (result.success) {
-    showToast(`${newIDs.length} ID berhasil ditambahkan!`, 'ok');
+    showNotification('success', 'Berhasil!', `${newIDs.length} ID berhasil ditambahkan!`);
     document.getElementById('idList').value = '';
   } else {
-    showToast(result.error || 'Gagal', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal menambah ID');
   }
 }
 
@@ -471,21 +568,21 @@ async function submitSoldIDs() {
   const raw = document.getElementById('soldIdList').value.trim();
   const tier = document.getElementById('soldTierSelect').value;
   
-  if (!conUser) { showToast('Pilih contributor', 'err'); return; }
-  if (!raw) { showToast('Daftar ID sold kosong', 'err'); return; }
+  if (!conUser) { showNotification('error', 'Gagal', 'Pilih contributor'); return; }
+  if (!raw) { showNotification('error', 'Gagal', 'Daftar ID sold kosong'); return; }
   
   const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
-  if (newSold.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
+  if (newSold.length === 0) { showNotification('error', 'Gagal', 'Tidak ada ID valid'); return; }
   
   showProgress(true);
   const result = await callAPI('sold', 'POST', { username: conUser, soldIds: newSold, tier: tier || undefined });
   showProgress(false);
   
   if (result.success) {
-    showToast(`${newSold.length} ID ditandai sold!`, 'ok');
+    showNotification('success', 'Berhasil!', `${newSold.length} ID ditandai sold!`);
     document.getElementById('soldIdList').value = '';
   } else {
-    showToast(result.error || 'Gagal', 'err');
+    showNotification('error', 'Gagal', result.error || 'Gagal menandai sold');
   }
 }
 
@@ -496,6 +593,8 @@ function switchTab(name) {
   document.querySelector(`.tab[onclick="switchTab('${name}')"]`).classList.add('active');
   document.getElementById(`tab-${name}`).classList.add('active');
   if (name === 'users') loadUsers();
+  if (name === 'addids') loadContributorDropdown();
+  if (name === 'sold') loadContributorDropdown();
 }
 
 function escapeHtml(str) {
@@ -508,7 +607,7 @@ function escapeHtml(str) {
   if (!checkAuth()) return;
   await loadUsers();
   await loadContributorDropdown();
-  document.getElementById('navUserBtn').onclick = () => alert('Edit profile di sini');
+  document.getElementById('navUserBtn').onclick = () => showNotification('info', 'Info', 'Edit profile di halaman dashboard biasa');
 })();
 </script>
 </body>
