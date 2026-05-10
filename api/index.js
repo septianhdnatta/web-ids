@@ -274,7 +274,7 @@ async function handleSold(req, res) {
       await db.collection(`ids_${username}`).deleteOne({ id: id });
     }
 
-    // Update soldTotal contributor
+    // UPDATE soldTotal contributor
     await db.collection('contributors').updateOne(
       { username: username },
       { $inc: { soldTotal: soldIds.length } }
@@ -286,7 +286,6 @@ async function handleSold(req, res) {
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
-
 // ==================== GET SOLD IDS (GLOBAL) ====================
 async function handleGetSoldIds(req, res) {
   const client = await clientPromise;
