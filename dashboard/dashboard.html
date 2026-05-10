@@ -474,7 +474,7 @@ textarea{resize:vertical;min-height:100px}
   color:var(--muted);
 }
 
-/* NOTIFICATION */
+/* NOTIFICATION - FIXED */
 .notification{
   position:fixed;
   bottom:24px;
@@ -485,12 +485,18 @@ textarea{resize:vertical;min-height:100px}
   width:360px;
   max-width:calc(100vw - 48px);
   box-shadow:0 20px 40px rgba(0,0,0,.4);
-  transform:translateX(420px);
-  transition:transform .4s;
+  transform:translateY(100px);
+  opacity:0;
+  transition:all .3s ease;
   z-index:1000;
   overflow:hidden;
+  pointer-events:none;
 }
-.notification.show{transform:translateX(0)}
+.notification.show{
+  transform:translateY(0);
+  opacity:1;
+  pointer-events:auto;
+}
 .notification-content{
   display:flex;
   align-items:center;
@@ -508,9 +514,11 @@ textarea{resize:vertical;min-height:100px}
 }
 .notification-icon.success{background:rgba(16,185,129,.15)}
 .notification-icon.error{background:rgba(239,68,68,.15)}
+.notification-icon.warning{background:rgba(245,158,11,.15)}
 .notification-icon svg{width:22px;height:22px}
 .notification-icon.success svg{stroke:var(--green)}
 .notification-icon.error svg{stroke:var(--red)}
+.notification-icon.warning svg{stroke:var(--yellow)}
 .notification-text{flex:1}
 .notification-title{
   font-size:.85rem;
@@ -531,9 +539,24 @@ textarea{resize:vertical;min-height:100px}
 .notification-progress-bar{
   height:100%;
   width:100%;
-  background:linear-gradient(90deg,var(--green),#34d399);
   transition:width 3s linear;
 }
+.notification-progress-bar.success{background:linear-gradient(90deg,var(--green),#34d399)}
+.notification-progress-bar.error{background:linear-gradient(90deg,var(--red),#f87171)}
+.notification-progress-bar.warning{background:linear-gradient(90deg,var(--yellow),#fbbf24)}
+.notification-close{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:all .2s;
+  flex-shrink:0;
+}
+.notification-close:hover{background:rgba(255,255,255,.1)}
+.notification-close svg{width:14px;height:14px;stroke:var(--muted2)}
 
 .progress-overlay{
   position:fixed;
@@ -572,7 +595,7 @@ textarea{resize:vertical;min-height:100px}
   margin:16px 0;
 }
 
-/* ==================== RESPONSIVE (MOBILE) ==================== */
+/* RESPONSIVE */
 .menu-toggle{
   display:none;
   position:fixed;
@@ -585,8 +608,6 @@ textarea{resize:vertical;min-height:100px}
   padding:10px;
   cursor:pointer;
 }
-
-/* Overlay untuk sidebar di mobile */
 .sidebar-overlay{
   display:none;
   position:fixed;
@@ -626,6 +647,8 @@ textarea{resize:vertical;min-height:100px}
   }
   .notification{
     width:300px;
+    right:16px;
+    bottom:16px;
   }
   .id-grid{
     grid-template-columns:repeat(2,1fr);
@@ -688,7 +711,7 @@ textarea{resize:vertical;min-height:100px}
   <div id="pageContent"></div>
 </div>
 
-<!-- NOTIFICATION -->
+<!-- NOTIFICATION (FIXED) -->
 <div class="notification" id="notification">
   <div class="notification-content">
     <div class="notification-icon" id="notificationIcon">
@@ -697,6 +720,9 @@ textarea{resize:vertical;min-height:100px}
     <div class="notification-text">
       <div class="notification-title" id="notificationTitle">Success!</div>
       <div class="notification-message" id="notificationMessage">Operation completed</div>
+    </div>
+    <div class="notification-close" onclick="hideNotification()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </div>
   </div>
   <div class="notification-progress">
@@ -724,7 +750,7 @@ let searchQuery = '';
 const ITEMS_PER_PAGE = 10;
 let notificationTimer = null;
 
-// ==================== NOTIFICATION ====================
+// ==================== NOTIFICATION (FIXED) ====================
 function showNotification(type, title, message) {
   const notification = document.getElementById('notification');
   const iconDiv = document.getElementById('notificationIcon');
@@ -732,24 +758,47 @@ function showNotification(type, title, message) {
   const msgDiv = document.getElementById('notificationMessage');
   const progressBar = document.getElementById('notificationProgress');
   
-  if (type === 'success') {
-    iconDiv.className = 'notification-icon success';
-    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>`;
-    progressBar.className = 'notification-progress-bar';
-  } else {
-    iconDiv.className = 'notification-icon error';
-    iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-    progressBar.className = 'notification-progress-bar error';
-  }
-  
-  titleDiv.textContent = title;
-  msgDiv.textContent = message;
-  progressBar.style.width = '100%';
-  notification.classList.add('show');
-  
-  setTimeout(() => { progressBar.style.width = '0%'; }, 50);
+  // Clear previous timer
   if (notificationTimer) clearTimeout(notificationTimer);
-  notificationTimer = setTimeout(() => { notification.classList.remove('show'); }, 3500);
+  
+  // Hide notification first if showing
+  notification.classList.remove('show');
+  
+  // Small delay to reset animation
+  setTimeout(() => {
+    if (type === 'success') {
+      iconDiv.className = 'notification-icon success';
+      iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg>`;
+      progressBar.className = 'notification-progress-bar success';
+    } else if (type === 'error') {
+      iconDiv.className = 'notification-icon error';
+      iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+      progressBar.className = 'notification-progress-bar error';
+    } else {
+      iconDiv.className = 'notification-icon warning';
+      iconDiv.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+      progressBar.className = 'notification-progress-bar warning';
+    }
+    
+    titleDiv.textContent = title;
+    msgDiv.textContent = message;
+    progressBar.style.width = '100%';
+    notification.classList.add('show');
+    
+    // Animate progress bar
+    setTimeout(() => { progressBar.style.width = '0%'; }, 100);
+    
+    // Auto hide after 3 seconds
+    notificationTimer = setTimeout(() => {
+      hideNotification();
+    }, 3500);
+  }, 50);
+}
+
+function hideNotification() {
+  const notification = document.getElementById('notification');
+  notification.classList.remove('show');
+  if (notificationTimer) clearTimeout(notificationTimer);
 }
 
 // ==================== AUTH ====================
@@ -843,7 +892,7 @@ function renderDashboardPage() {
   `;
 }
 
-// ==================== PAGE: TAMBAH ID ====================
+// ==================== PAGE: TAMBAH ID (HANYA ANGKA) ====================
 function renderAddIdPage() {
   return `
     <div class="panel">
@@ -853,7 +902,7 @@ function renderAddIdPage() {
       </div>
       <div class="panel-body">
         <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
           <span>⚡ RULES:<br/>• LOW (2+ angka sama)<br/>• MEDIUM (5+ angka sama ATAU 2 kelompok 4+ angka)<br/>• HIGH (6+ angka + 4+ angka)<br/>• LEGEND (9+ angka)</span>
         </div>
         <div class="field">
@@ -872,7 +921,7 @@ function renderMyIdsPage() {
   return `
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12} y2="22"/></svg></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
       <div class="panel-body">
@@ -906,7 +955,7 @@ function renderHargaPage() {
       </div>
       <div class="panel-body">
         <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12} y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01} y2="16"/></svg>
           <span>Harga akan berlaku untuk semua ID dengan tier terkait. Buyer akan melihat harga ini saat checkout.</span>
         </div>
         <div class="price-grid">
@@ -984,7 +1033,6 @@ async function loadMyIdsData() {
       
       updateMyIdsDisplay();
     } else {
-      console.log('No data from API');
       availableIdsData = [];
       soldIdsData = [];
       updateMyIdsDisplay();
@@ -1117,7 +1165,7 @@ async function markAsSold(id, tier) {
   }
 }
 
-// ==================== TAMBAH ID ====================
+// ==================== TAMBAH ID (FIXED - HANYA ANGKA) ====================
 function previewAutoDetect() {
   const raw = document.getElementById('addIdList')?.value;
   if (!raw || !raw.trim()) {
@@ -1125,7 +1173,16 @@ function previewAutoDetect() {
     if (resultDiv) resultDiv.style.display = 'none';
     return;
   }
-  const ids = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  
+  // Filter hanya angka untuk preview
+  const cleanRaw = raw.replace(/[^0-9\n]/g, '');
+  const ids = cleanRaw.split('\n').map(l => l.trim()).filter(Boolean);
+  
+  if (ids.length === 0) {
+    document.getElementById('autoDetectResult').style.display = 'none';
+    return;
+  }
+  
   const tierGroups = { low: 0, medium: 0, high: 0, legend: 0 };
   for (const id of ids) {
     const tier = detectTierFromID(id);
@@ -1144,11 +1201,45 @@ function previewAutoDetect() {
   }
 }
 
+// Filter input hanya angka
+function filterNumbersOnly() {
+  const textarea = document.getElementById('addIdList');
+  if (textarea) {
+    const raw = textarea.value;
+    const filtered = raw.replace(/[^0-9\n]/g, '');
+    if (raw !== filtered) {
+      textarea.value = filtered;
+      showNotification('warning', 'Perhatian', 'Hanya angka yang diperbolehkan!');
+    }
+    previewAutoDetect();
+  }
+}
+
 async function submitAddIDs() {
-  const raw = document.getElementById('addIdList').value;
-  if (!raw.trim()) { showNotification('error', 'Gagal', 'Daftar ID kosong'); return; }
+  let raw = document.getElementById('addIdList').value;
+  
+  // Filter hanya angka
+  const filteredRaw = raw.replace(/[^0-9\n]/g, '');
+  if (raw !== filteredRaw) {
+    document.getElementById('addIdList').value = filteredRaw;
+    raw = filteredRaw;
+    showNotification('warning', 'Perhatian', 'Hanya angka yang diperbolehkan!');
+  }
+  
+  if (!raw.trim()) { 
+    showNotification('error', 'Gagal', 'Daftar ID kosong'); 
+    return; 
+  }
+  
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newIDs.length === 0) return;
+  
+  // Validasi setiap ID hanya angka
+  const invalidIDs = newIDs.filter(id => !/^\d+$/.test(id));
+  if (invalidIDs.length > 0) {
+    showNotification('error', 'Gagal', `ID tidak valid: ${invalidIDs.slice(0,3).join(', ')}`);
+    return;
+  }
   
   showProgress(true, 'Memproses ID...');
   const idsByTier = { low: [], medium: [], high: [], legend: [] };
@@ -1158,23 +1249,28 @@ async function submitAddIDs() {
   }
   
   let allSuccess = true;
+  let totalAdded = 0;
   for (const [tier, ids] of Object.entries(idsByTier)) {
     if (ids.length === 0) continue;
     const result = await callAPI('ids', 'POST', { username: currentUser.username, tier: tier, ids: ids });
     if (!result.success) allSuccess = false;
+    else totalAdded += ids.length;
   }
   
   showProgress(false);
   
-  if (allSuccess) {
+  if (allSuccess && totalAdded > 0) {
     currentUser.total = (currentUser.total || 0) + newIDs.length;
     localStorage.setItem('contributor_user', JSON.stringify(currentUser));
-    showNotification('success', 'Berhasil!', `${newIDs.length} ID berhasil ditambahkan!`);
+    showNotification('success', 'Berhasil!', `${totalAdded} ID berhasil ditambahkan!`);
     document.getElementById('addIdList').value = '';
     document.getElementById('autoDetectResult').innerHTML = '';
+    document.getElementById('autoDetectResult').style.display = 'none';
     if (currentPage === 'myids') await loadMyIdsData();
+  } else if (totalAdded === 0) {
+    showNotification('error', 'Gagal', 'Tidak ada ID yang berhasil ditambahkan');
   } else {
-    showNotification('error', 'Gagal', 'Gagal menambahkan ID');
+    showNotification('error', 'Gagal', 'Sebagian ID gagal ditambahkan');
   }
 }
 
@@ -1256,7 +1352,7 @@ async function renderPage(page) {
       contentDiv.innerHTML = renderAddIdPage();
       const textarea = document.getElementById('addIdList');
       if (textarea) {
-        textarea.addEventListener('input', previewAutoDetect);
+        textarea.addEventListener('input', filterNumbersOnly);
       }
       break;
     case 'myids':
