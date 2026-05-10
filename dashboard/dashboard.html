@@ -26,7 +26,7 @@ body{
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(13,13,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-logo{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;color:var(--white)}
-.nav-logo-icon{width:22px;height:22px;background:var(--white);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#000;font-weight:900}
+.nav-logo-icon{width:22px;height:22px;background:linear-gradient(135deg,var(--purple),var(--pink));border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff;font-weight:900}
 .nav-right{display:flex;align-items:center;gap:12px}
 .nav-user{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border2);border-radius:30px;padding:.2rem .2rem .2rem 12px;cursor:pointer;transition:all .2s}
 .nav-user:hover{background:var(--card2);border-color:rgba(255,255,255,.15)}
@@ -74,7 +74,7 @@ textarea{resize:vertical;min-height:100px}
 
 /* INFO BOX */
 .info-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
-.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0;margin-top:1px}
+.info-box svg{width:14px;height:14px;stroke:var(--yellow);flex-shrink:0}
 .info-box span{font-size:.7rem;color:var(--muted2);font-family:var(--mono);line-height:1.6}
 
 /* BUTTON */
@@ -105,14 +105,16 @@ textarea{resize:vertical;min-height:100px}
 /* PROFILE MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all .2s}
 .modal-overlay.show{visibility:visible;opacity:1}
-.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;max-width:400px;width:90%;animation:fadeUp .3s ease}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:24px;max-width:450px;width:90%;max-height:85vh;overflow-y:auto;animation:fadeUp .3s ease}
 .modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .modal-title{font-size:.95rem;font-weight:700;color:var(--white)}
 .modal-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;transition:color .2s}
 .modal-close:hover{color:var(--white)}
 .modal-body{padding:20px}
-.profile-preview{display:flex;justify-content:center;margin-bottom:16px}
-.profile-preview img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)}
+.profile-preview{display:flex;flex-direction:column;align-items:center;margin-bottom:16px}
+.profile-preview img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--border2);margin-bottom:10px}
+.photo-upload-btn{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:.3rem .8rem;font-size:.65rem;color:var(--muted2);cursor:pointer;transition:all .2s}
+.photo-upload-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
@@ -129,6 +131,11 @@ textarea{resize:vertical;min-height:100px}
 .progress-spinner{width:36px;height:36px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--white);animation:spin .7s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:768px){
+  .wrap{padding:76px 16px 40px}
+  .modal{width:95%}
+}
 </style>
 </head>
 <body>
@@ -166,7 +173,7 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: ADD ID (DENGAN AUTO DETECT) -->
+  <!-- TAB: ADD ID (DENGAN VALIDASI ANGKA) -->
   <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
@@ -175,12 +182,12 @@ textarea{resize:vertical;min-height:100px}
       </div>
       <div class="panel-body">
         <div class="info-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12} y2="12"/><line x1="12} y1="16" x2="12.01" y2="16"/></svg>
-          <span>Aturan Auto Detect: 2-4 digit sama → LOW | 5-6 digit sama → MEDIUM | 7-8 digit sama → HIGH | 9-10 digit sama → LEGEND</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>⚠️ Hanya ANGKA yang diperbolehkan. ID akan otomatis dideteksi tier-nya berdasarkan jumlah digit berulang.</span>
         </div>
         <div class="field">
-          <label>Daftar ID (satu per baris)</label>
-          <textarea id="addIdList" rows="6" placeholder="ID001&#10;ID002&#10;ID003"></textarea>
+          <label>Daftar ID (satu per baris) - Hanya Angka</label>
+          <textarea id="addIdList" rows="6" placeholder="15666663891&#10;15666664102&#10;15666664387"></textarea>
         </div>
         <div id="autoDetectResult" class="auto-detect-result" style="display:none"></div>
         <button class="btn btn-white" onclick="submitAddIDs()">➕ Tambah ID (Auto Detect)</button>
@@ -193,12 +200,12 @@ textarea{resize:vertical;min-height:100px}
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
-        <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Pilih ID milikmu yang sudah terjual</div></div>
+        <div><div class="ph-title">Tandai ID Sold</div><div class="ph-sub">Pilih ID milikmu yang sudah terjual (pisahkan dengan enter)</div></div>
       </div>
       <div class="panel-body">
         <div class="field">
-          <label>ID yang Terjual (satu per baris)</label>
-          <textarea id="soldIdList" rows="5" placeholder="ID001&#10;ID002"></textarea>
+          <label>ID yang Terjual (satu per baris) - Hanya Angka</label>
+          <textarea id="soldIdList" rows="5" placeholder="15666663891&#10;15666664102"></textarea>
         </div>
         <div class="field">
           <label>Pilih Tier Asal ID (opsional)</label>
@@ -219,7 +226,7 @@ textarea{resize:vertical;min-height:100px}
   <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
-        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12} y2="22"/></svg></div>
+        <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
       <div class="panel-body" id="myIdsContainer">
@@ -239,9 +246,12 @@ textarea{resize:vertical;min-height:100px}
     <div class="modal-body">
       <div class="profile-preview">
         <img id="modalProfilePreview" src="" alt="">
+        <div class="photo-upload-btn" onclick="document.getElementById('editPhotoFile').click()">📷 Upload Foto Baru</div>
+        <input type="file" id="editPhotoFile" accept="image/*" style="display:none">
+        <div style="font-size:.6rem;color:var(--muted);margin-top:6px">Mendukung JPG, PNG, GIF (max 10MB)</div>
       </div>
       <div class="field">
-        <label>URL Foto Profil</label>
+        <label>URL Foto (atau upload otomatis)</label>
         <input type="url" id="editPhoto" placeholder="https://...">
       </div>
       <div class="field">
@@ -262,7 +272,7 @@ textarea{resize:vertical;min-height:100px}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg" id="toastMsg"></div></div>
+<div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg"></div></div>
 
 <!-- PROGRESS -->
 <div class="progress-overlay" id="progressOverlay">
@@ -318,9 +328,15 @@ function showProgress(title, sub, show) {
 
 function showToast(msg, type = 'ok') {
   const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toast-msg').textContent = msg;
   t.className = `toast ${type} show`;
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ==================== VALIDASI ANGKA ====================
+function validateNumericOnly(text) {
+  // Hanya izinkan angka, newline, dan spasi
+  return text.replace(/[^0-9\n]/g, '');
 }
 
 // ==================== DETEKSI TIER OTOMATIS ====================
@@ -347,8 +363,8 @@ function detectTierFromID(id) {
 
 // ==================== PREVIEW AUTO DETECT ====================
 function previewAutoDetect() {
-  const raw = document.getElementById('addIdList').value.trim();
-  if (!raw) {
+  const raw = document.getElementById('addIdList').value;
+  if (!raw.trim()) {
     document.getElementById('autoDetectResult').style.display = 'none';
     return;
   }
@@ -410,7 +426,7 @@ async function loadMyIds() {
   }
 }
 
-// ==================== TAMBAH ID (DENGAN DETEKSI OTOMATIS & CEK DUPLIKAT) ====================
+// ==================== CEK DUPLIKAT ====================
 async function checkDuplicateIDsAcrossTiers(newIDs) {
   const allExistingIDs = new Set();
   const tiers = ['low', 'medium', 'high', 'legend'];
@@ -437,13 +453,29 @@ async function checkDuplicateIDsAcrossTiers(newIDs) {
   return { duplicates, uniqueNew };
 }
 
+// ==================== TAMBAH ID (DENGAN VALIDASI ANGKA) ====================
 async function submitAddIDs() {
-  const raw = document.getElementById('addIdList').value.trim();
+  let raw = document.getElementById('addIdList').value;
   
-  if (!raw) { showToast('Daftar ID kosong', 'err'); return; }
+  // Validasi hanya angka
+  const validatedRaw = validateNumericOnly(raw);
+  if (raw !== validatedRaw) {
+    document.getElementById('addIdList').value = validatedRaw;
+    raw = validatedRaw;
+    showToast('⚠️ Hanya angka yang diperbolehkan! Karakter lain dihapus.', 'warn');
+  }
+  
+  if (!raw.trim()) { showToast('Daftar ID kosong', 'err'); return; }
   
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newIDs.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
+  
+  // Validasi setiap ID harus angka
+  const invalidIDs = newIDs.filter(id => !/^\d+$/.test(id));
+  if (invalidIDs.length > 0) {
+    showToast(`ID tidak valid (hanya angka): ${invalidIDs.slice(0,3).join(', ')}`, 'err');
+    return;
+  }
   
   showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`, true);
   
@@ -456,14 +488,13 @@ async function submitAddIDs() {
     if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) return;
   }
   
-  // Grup ID berdasarkan tier hasil deteksi otomatis
+  // Grup ID berdasarkan tier
   const idsByTier = { low: [], medium: [], high: [], legend: [] };
   for (const id of uniqueNew) {
     const detectedTier = detectTierFromID(id);
     idsByTier[detectedTier].push(id);
   }
   
-  // Tampilkan ringkasan sebelum simpan
   let summary = '';
   if (idsByTier.low.length > 0) summary += `\n🔵 Low: ${idsByTier.low.length} ID`;
   if (idsByTier.medium.length > 0) summary += `\n🟢 Medium: ${idsByTier.medium.length} ID`;
@@ -480,12 +511,6 @@ async function submitAddIDs() {
   let allSuccess = true;
   let totalAdded = 0;
   
-  // Update file contributor (gabung semua ID baru)
-  const myIdFile = `my-ids?username=${currentUser.username}`;
-  const { data: myIds } = await callAPI(myIdFile, 'GET');
-  const mergedMy = [...new Set([...(myIds || []), ...uniqueNew])];
-  
-  // Update masing-masing tier file
   for (const [tier, ids] of Object.entries(idsByTier)) {
     if (ids.length === 0) continue;
     
@@ -498,7 +523,7 @@ async function submitAddIDs() {
     else totalAdded += ids.length;
   }
   
-  // Update total contributor
+  // Update total di localStorage
   const updatedTotal = (currentUser.total || 0) + uniqueNew.length;
   await callAPI('update-total', 'POST', { username: currentUser.username, total: updatedTotal });
   currentUser.total = updatedTotal;
@@ -518,15 +543,31 @@ async function submitAddIDs() {
   }
 }
 
-// ==================== SOLD ID ====================
+// ==================== SOLD ID (DENGAN VALIDASI ANGKA) ====================
 async function submitSoldIDs() {
-  const raw = document.getElementById('soldIdList').value.trim();
+  let raw = document.getElementById('soldIdList').value;
+  
+  // Validasi hanya angka
+  const validatedRaw = validateNumericOnly(raw);
+  if (raw !== validatedRaw) {
+    document.getElementById('soldIdList').value = validatedRaw;
+    raw = validatedRaw;
+    showToast('⚠️ Hanya angka yang diperbolehkan!', 'warn');
+  }
+  
   const tier = document.getElementById('soldTierSelect').value;
   
-  if (!raw) { showToast('Daftar ID sold kosong', 'err'); return; }
+  if (!raw.trim()) { showToast('Daftar ID sold kosong', 'err'); return; }
   
   const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newSold.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
+  
+  // Validasi setiap ID harus angka
+  const invalidIDs = newSold.filter(id => !/^\d+$/.test(id));
+  if (invalidIDs.length > 0) {
+    showToast(`ID tidak valid (hanya angka): ${invalidIDs.slice(0,3).join(', ')}`, 'err');
+    return;
+  }
   
   showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`, true);
   
@@ -566,6 +607,19 @@ async function markSingleSold(id) {
   }
 }
 
+// ==================== UPLOAD FOTO KE CATBOX ====================
+async function uploadPhoto(file, username) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('username', username);
+  
+  const response = await fetch('/api/upload-photo', {
+    method: 'POST',
+    body: formData
+  });
+  return await response.json();
+}
+
 // ==================== PROFILE ====================
 function openProfileModal() {
   if (!currentUser) return;
@@ -580,6 +634,40 @@ function openProfileModal() {
 function closeProfileModal() {
   document.getElementById('profileModal').classList.remove('show');
 }
+
+// Event listener untuk upload foto
+document.getElementById('editPhotoFile').addEventListener('change', async function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    showToast('Hanya file gambar yang diizinkan', 'err');
+    return;
+  }
+  
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('Ukuran file maksimal 10MB', 'err');
+    return;
+  }
+  
+  // Preview
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('modalProfilePreview').src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  
+  showProgress('Uploading...', 'Mengupload ke Catbox', true);
+  const result = await uploadPhoto(file, currentUser.username);
+  showProgress('', '', false);
+  
+  if (result.success) {
+    document.getElementById('editPhoto').value = result.url;
+    showToast('✅ Foto berhasil diupload!', 'ok');
+  } else {
+    showToast('Gagal upload foto: ' + (result.error || 'unknown error'), 'err');
+  }
+});
 
 async function saveProfile() {
   const newPhoto = document.getElementById('editPhoto').value.trim();
@@ -630,13 +718,29 @@ function switchTab(name) {
   const tabs = ['add', 'sold', 'myids'];
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === name));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${name}`));
-  
   if (name === 'myids') loadMyIds();
 }
 
 // ==================== EVENT LISTENER ====================
-document.getElementById('addIdList').addEventListener('input', function() {
+const addIdTextarea = document.getElementById('addIdList');
+addIdTextarea.addEventListener('input', function(e) {
+  const raw = e.target.value;
+  const filtered = validateNumericOnly(raw);
+  if (raw !== filtered) {
+    e.target.value = filtered;
+    showToast('⚠️ Hanya angka yang diperbolehkan!', 'warn');
+  }
   previewAutoDetect();
+});
+
+const soldIdTextarea = document.getElementById('soldIdList');
+soldIdTextarea.addEventListener('input', function(e) {
+  const raw = e.target.value;
+  const filtered = validateNumericOnly(raw);
+  if (raw !== filtered) {
+    e.target.value = filtered;
+    showToast('⚠️ Hanya angka yang diperbolehkan!', 'warn');
+  }
 });
 
 // ==================== INIT ====================
