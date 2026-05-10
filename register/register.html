@@ -52,6 +52,12 @@ h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purp
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
 .toast-dot{width:7px;height:7px}
+.modal-notif{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card);border:2px solid var(--green);border-radius:20px;padding:24px 32px;text-align:center;z-index:10000;display:none;flex-direction:column;align-items:center;gap:12px;box-shadow:0 0 40px rgba(0,0,0,.5)}
+.modal-notif.show{display:flex}
+.modal-notif svg{width:48px;height:48px;stroke:var(--green)}
+.modal-notif h3{color:var(--white);font-size:1.2rem}
+.modal-notif p{color:var(--muted2);font-size:.8rem}
+.modal-notif button{background:var(--green);color:#fff;border:none;padding:8px 24px;border-radius:8px;cursor:pointer;font-weight:600}
 .progress-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;display:none}
 .progress-overlay.show{display:flex}
 .progress-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:32px;text-align:center}
@@ -104,11 +110,28 @@ h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purp
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot"></div><div class="toast-msg"></div></div>
-<div class="progress-overlay" id="progressOverlay"><div class="progress-card"><div class="progress-spinner"></div><div class="progress-title">Mendaftar...</div></div></div>
+
+<!-- MODAL NOTIF SUKSES -->
+<div class="modal-notif" id="successModal">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+  <h3>✅ Pendaftaran Berhasil!</h3>
+  <p>Akun Anda telah dibuat. Mengarahkan ke dashboard...</p>
+  <button onclick="redirectToDashboard()">OK</button>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-card">
+    <div class="progress-spinner"></div>
+    <div class="progress-title">Mendaftar...</div>
+  </div>
+</div>
 
 <script>
 const API_URL = '/api';
+let redirectTimer = null;
 
 async function doRegister() {
   const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '-');
@@ -116,7 +139,6 @@ async function doRegister() {
   const wa = document.getElementById('regWa').value.trim();
   const password = document.getElementById('regPassword').value;
 
-  // Validasi
   if (!username || !name || !wa || !password) {
     showToast('Semua field wajib diisi', 'err');
     return;
@@ -134,16 +156,20 @@ async function doRegister() {
     const data = await response.json();
 
     if (data.success) {
-      // Simpan data user
+      // Simpan ke localStorage
       localStorage.setItem('contributor_user', JSON.stringify(data.data));
       
-      // Tampilkan toast sukses
-      showToast('✅ Pendaftaran berhasil!', 'ok');
+      // Sembunyikan progress
+      showProgress(false);
       
-      // Redirect setelah toast
-      setTimeout(() => {
-        window.location.href = '../dashboard/dashboard.html';
-      }, 1000);
+      // Tampilkan modal sukses
+      showSuccessModal();
+      
+      // Set timer redirect
+      if (redirectTimer) clearTimeout(redirectTimer);
+      redirectTimer = setTimeout(() => {
+        redirectToDashboard();
+      }, 3000);
     } else {
       showProgress(false);
       showToast(data.error || 'Gagal mendaftar', 'err');
@@ -155,16 +181,20 @@ async function doRegister() {
   }
 }
 
+function showSuccessModal() {
+  const modal = document.getElementById('successModal');
+  modal.classList.add('show');
+}
+
+function redirectToDashboard() {
+  if (redirectTimer) clearTimeout(redirectTimer);
+  window.location.href = '../dashboard/dashboard.html';
+}
+
 function showToast(msg, type = 'ok') {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
   t.className = `toast ${type} show`;
-  
-  // Sembunyikan progress overlay saat toast muncul
-  if (type === 'ok') {
-    showProgress(false);
-  }
-  
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
@@ -173,6 +203,9 @@ function showProgress(show) {
   if (show) el.classList.add('show');
   else el.classList.remove('show');
 }
+
+// Close modal when clicking OK button
+document.getElementById('successModal').querySelector('button').onclick = redirectToDashboard;
 
 // Enter key support
 document.querySelectorAll('input').forEach(input => {
