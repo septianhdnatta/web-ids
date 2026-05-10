@@ -30,11 +30,19 @@ export default async function handler(req, res) {
   if (pathname === '/api/profile' && req.method === 'POST') return handleUpdateProfile(req, res);
   if (pathname === '/api/reset-all-ids' && req.method === 'POST') return handleResetAllIds(req, res);
   if (pathname === '/api/update-price' && req.method === 'POST') return handleUpdatePrice(req, res);
-  // ============ ENDPOINT HAPUS ID ============
+  
+  // ENDPOINT DELETE ID
   if (pathname === '/api/delete-user-id' && req.method === 'POST') return handleDeleteUserId(req, res);
   if (pathname === '/api/delete-global-id' && req.method === 'POST') return handleDeleteGlobalId(req, res);
   if (pathname === '/api/delete-sold-id' && req.method === 'POST') return handleDeleteSoldId(req, res);
   if (pathname === '/api/delete-sold-global' && req.method === 'POST') return handleDeleteSoldGlobal(req, res);
+  
+  // ENDPOINT DISKON
+  if (pathname === '/api/create-discount' && req.method === 'POST') return handleCreateDiscount(req, res);
+  if (pathname === '/api/get-discount' && req.method === 'POST') return handleGetDiscount(req, res);
+  if (pathname === '/api/use-discount' && req.method === 'POST') return handleUseDiscount(req, res);
+  if (pathname === '/api/my-discounts' && req.method === 'GET') return handleMyDiscounts(req, res);
+  if (pathname === '/api/delete-discount' && req.method === 'POST') return handleDeleteDiscount(req, res);
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
@@ -414,7 +422,7 @@ async function handleUpdatePrice(req, res) {
   return res.status(200).json({ success: true, message: 'Price updated successfully' });
 }
 
-// ==================== DELETE ID FROM USER COLLECTION ====================
+// ==================== DELETE ID FUNCTIONS ====================
 async function handleDeleteUserId(req, res) {
   const { username, id, tier } = req.body;
   if (!username || !id) {
@@ -425,15 +433,8 @@ async function handleDeleteUserId(req, res) {
   const db = client.db('idglitxh');
 
   try {
-    // Hapus dari ids_{username}
     await db.collection(`ids_${username}`).deleteOne({ id: id });
-    
-    // Update total contributor
-    await db.collection('contributors').updateOne(
-      { username },
-      { $inc: { total: -1 } }
-    );
-    
+    await db.collection('contributors').updateOne({ username }, { $inc: { total: -1 } });
     return res.status(200).json({ success: true, message: `ID ${id} deleted from user collection` });
   } catch (error) {
     console.error('Error in handleDeleteUserId:', error);
@@ -441,7 +442,6 @@ async function handleDeleteUserId(req, res) {
   }
 }
 
-// ==================== DELETE ID FROM GLOBAL TIER COLLECTION ====================
 async function handleDeleteGlobalId(req, res) {
   const { collection, id } = req.body;
   if (!collection || !id) {
@@ -460,7 +460,6 @@ async function handleDeleteGlobalId(req, res) {
   }
 }
 
-// ==================== DELETE ID FROM SOLD USER COLLECTION ====================
 async function handleDeleteSoldId(req, res) {
   const { username, id } = req.body;
   if (!username || !id) {
@@ -479,7 +478,6 @@ async function handleDeleteSoldId(req, res) {
   }
 }
 
-// ==================== DELETE ID FROM GLOBAL SOLD COLLECTION ====================
 async function handleDeleteSoldGlobal(req, res) {
   const { id } = req.body;
   if (!id) {
@@ -496,4 +494,175 @@ async function handleDeleteSoldGlobal(req, res) {
     console.error('Error in handleDeleteSoldGlobal:', error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
+}
+
+// ==================== DISKON FUNCTIONS ====================
+async function handleCreateDiscount(req, res) {
+  const { username, code, discountPercent, maxUses } = req.body;
+  
+  if (!username || !code || !discountPercent || !maxUses) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+  
+  if (discountPercent < 10 || discountPercent > 50) {
+    return res.status(400).json({ success: false, error: 'Diskon harus antara 10% - 50%' });
+  }
+  
+  if (maxUses < 1 || maxUses > 100) {
+    return res.status(400).json({ success: false, error: 'Maksimal penggunaan harus antara 1 - 100' });
+  }
+  
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  const discounts = db.collection('discounts');
+  
+  const existing = await discounts.findOne({ code: code.toUpperCase() });
+  if (existing) {
+    return res.status(400).json({ success: false, error: 'Kode diskon sudah ada' });
+  }
+  
+  const newDiscount = {
+    code: code.toUpperCase(),
+    createdBy: username,
+    discountPercent: parseInt(discountPercent),
+    maxUses: parseInt(maxUses),
+    usedCount: 0,
+    createdAt: new Date(),
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+  };
+  
+  await discounts.insertOne(newDiscount);
+  
+  return res.status(200).json({ 
+    success: true, 
+    data: newDiscount,
+    message: `Kode ${code.toUpperCase()} berhasil dibuat!`
+  });
+}
+
+async function handleGetDiscount(req, res) {
+  const { code, contributorUsername } = req.body;
+  
+  if (!code) {
+    return res.status(400).json({ success: false, error: 'Kode diskon required' });
+  }
+  
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  const discounts = db.collection('discounts');
+  
+  const discount = await discounts.findOne({ code: code.toUpperCase() });
+  
+  if (!discount) {
+    return res.status(404).json({ success: false, error: 'Kode diskon tidak valid' });
+  }
+  
+  // Cek apakah diskon hanya untuk contributor tertentu (opsional)
+  if (discount.createdBy !== contributorUsername && discount.createdBy !== 'admin') {
+    return res.status(403).json({ success: false, error: 'Kode diskon tidak valid untuk contributor ini' });
+  }
+  
+  // Cek apakah sudah expired
+  if (new Date() > discount.expiresAt) {
+    return res.status(400).json({ success: false, error: 'Kode diskon sudah kadaluarsa' });
+  }
+  
+  // Cek apakah sudah mencapai batas maksimal
+  if (discount.usedCount >= discount.maxUses) {
+    return res.status(400).json({ success: false, error: 'Kode diskon sudah tidak tersedia (kuota habis)' });
+  }
+  
+  return res.status(200).json({ 
+    success: true, 
+    data: {
+      code: discount.code,
+      discountPercent: discount.discountPercent,
+      remainingUses: discount.maxUses - discount.usedCount,
+      expiresAt: discount.expiresAt
+    }
+  });
+}
+
+async function handleUseDiscount(req, res) {
+  const { code, contributorUsername } = req.body;
+  
+  if (!code) {
+    return res.status(400).json({ success: false, error: 'Kode diskon required' });
+  }
+  
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  const discounts = db.collection('discounts');
+  
+  const discount = await discounts.findOne({ code: code.toUpperCase() });
+  
+  if (!discount) {
+    return res.status(404).json({ success: false, error: 'Kode diskon tidak valid' });
+  }
+  
+  if (discount.createdBy !== contributorUsername && discount.createdBy !== 'admin') {
+    return res.status(403).json({ success: false, error: 'Kode diskon tidak valid untuk contributor ini' });
+  }
+  
+  if (new Date() > discount.expiresAt) {
+    return res.status(400).json({ success: false, error: 'Kode diskon sudah kadaluarsa' });
+  }
+  
+  if (discount.usedCount >= discount.maxUses) {
+    return res.status(400).json({ success: false, error: 'Kode diskon sudah tidak tersedia (kuota habis)' });
+  }
+  
+  // Increment used count
+  await discounts.updateOne(
+    { code: code.toUpperCase() },
+    { $inc: { usedCount: 1 } }
+  );
+  
+  return res.status(200).json({ 
+    success: true, 
+    discountPercent: discount.discountPercent,
+    message: `Diskon ${discount.discountPercent}% berhasil diterapkan!`
+  });
+}
+
+async function handleMyDiscounts(req, res) {
+  const { username } = req.query;
+  
+  if (!username) {
+    return res.status(400).json({ success: false, error: 'Username required' });
+  }
+  
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  const discounts = db.collection('discounts');
+  
+  const myDiscounts = await discounts.find({ createdBy: username }).toArray();
+  
+  return res.status(200).json({ success: true, data: myDiscounts });
+}
+
+async function handleDeleteDiscount(req, res) {
+  const { code, username } = req.body;
+  
+  if (!code || !username) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+  
+  const client = await clientPromise;
+  const db = client.db('idglitxh');
+  const discounts = db.collection('discounts');
+  
+  const discount = await discounts.findOne({ code: code.toUpperCase() });
+  
+  if (!discount) {
+    return res.status(404).json({ success: false, error: 'Kode diskon tidak ditemukan' });
+  }
+  
+  if (discount.createdBy !== username) {
+    return res.status(403).json({ success: false, error: 'Anda tidak memiliki izin untuk menghapus kode ini' });
+  }
+  
+  await discounts.deleteOne({ code: code.toUpperCase() });
+  
+  return res.status(200).json({ success: true, message: 'Kode diskon berhasil dihapus' });
 }
