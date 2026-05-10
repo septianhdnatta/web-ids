@@ -102,6 +102,13 @@ textarea{resize:vertical;min-height:100px}
 .auto-detect-result .high{color:#fb923c}
 .auto-detect-result .legend{color:#fbbf24}
 
+/* PAGINATION */
+.pagination{display:flex;gap:4px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.page-btn{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid var(--border2);background:var(--card);font-size:.7rem;font-family:var(--mono);cursor:pointer;transition:all .15s;color:var(--muted);padding:0 8px}
+.page-btn:hover{border-color:rgba(255,255,255,.2);color:var(--white)}
+.page-btn.active{background:var(--white);border-color:var(--white);color:#000;font-weight:700}
+.page-dots{min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);font-family:var(--mono)}
+
 /* PROFILE MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;visibility:hidden;opacity:0;transition:all .2s}
 .modal-overlay.show{visibility:visible;opacity:1}
@@ -116,8 +123,8 @@ textarea{resize:vertical;min-height:100px}
 .photo-upload-btn{background:var(--card2);border:1px solid var(--border2);border-radius:8px;padding:.3rem .8rem;font-size:.65rem;color:var(--muted2);cursor:pointer;transition:all .2s}
 .photo-upload-btn:hover{color:var(--white);border-color:rgba(255,255,255,.2)}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none}
+/* TOAST NOTIFICATION */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:.75rem;font-family:var(--mono);display:flex;align-items:center;gap:8px;z-index:9999;transition:all .3s;opacity:0;transform:translateY(12px);pointer-events:none;max-width:320px}
 .toast.show{opacity:1;transform:translateY(0)}
 .toast.ok .toast-dot{background:var(--green)}
 .toast.err .toast-dot{background:var(--red)}
@@ -135,6 +142,7 @@ textarea{resize:vertical;min-height:100px}
 @media(max-width:768px){
   .wrap{padding:76px 16px 40px}
   .modal{width:95%}
+  .id-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -173,7 +181,7 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: ADD ID (DENGAN VALIDASI ANGKA) -->
+  <!-- TAB: ADD ID -->
   <div class="tab-content active" id="tab-add">
     <div class="panel">
       <div class="panel-header">
@@ -222,15 +230,18 @@ textarea{resize:vertical;min-height:100px}
     </div>
   </div>
 
-  <!-- TAB: MY IDs -->
+  <!-- TAB: MY IDs (DENGAN PAGINATION) -->
   <div class="tab-content" id="tab-myids">
     <div class="panel">
       <div class="panel-header">
         <div class="ph-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 7h-4.18A3 3 0 0 0 16 5.18V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v1.18A3 3 0 0 0 6.18 7H4"/><line x1="12" y1="2" x2="12" y2="22"/></svg></div>
         <div><div class="ph-title">ID Saya</div><div class="ph-sub" id="myIdsCount">Memuat...</div></div>
       </div>
-      <div class="panel-body" id="myIdsContainer">
-        <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
+      <div class="panel-body">
+        <div id="myIdsContainer">
+          <div style="text-align:center;padding:30px;color:var(--muted)">Memuat ID...</div>
+        </div>
+        <div id="myIdsPagination" class="pagination"></div>
       </div>
     </div>
   </div>
@@ -287,6 +298,9 @@ textarea{resize:vertical;min-height:100px}
 // ==================== KONFIGURASI ====================
 const API_URL = '/api';
 let currentUser = null;
+let myIdsData = [];
+let myIdsCurrentPage = 1;
+const MY_IDS_PER_PAGE = 10;
 
 // ==================== AUTH CHECK ====================
 function checkAuth() {
@@ -308,6 +322,14 @@ function logout() {
   window.location.href = '../login/login.html';
 }
 
+// ==================== TOAST NOTIFICATION ====================
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
 // ==================== API CALLS ====================
 async function callAPI(endpoint, method, body = null) {
   const options = { method, headers: { 'Content-Type': 'application/json' } };
@@ -326,20 +348,12 @@ function showProgress(title, sub, show) {
   }
 }
 
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
 // ==================== VALIDASI ANGKA ====================
 function validateNumericOnly(text) {
-  // Hanya izinkan angka, newline, dan spasi
   return text.replace(/[^0-9\n]/g, '');
 }
 
-// ==================== DETEKSI TIER OTOMATIS ====================
+// ==================== DETEKSI TIER ====================
 function detectTierFromID(id) {
   const idStr = String(id);
   let maxConsecutive = 1;
@@ -394,25 +408,43 @@ function previewAutoDetect() {
   resultDiv.style.display = 'block';
 }
 
-// ==================== MY IDs ====================
+// ==================== MY IDs (DENGAN PAGINATION) ====================
 async function loadMyIds() {
-  const container = document.getElementById('myIdsContainer');
-  const countSpan = document.getElementById('myIdsCount');
-  
   try {
     const result = await callAPI(`my-ids?username=${currentUser.username}`, 'GET');
     if (!result.success || !result.data || result.data.length === 0) {
-      countSpan.textContent = '0 ID';
-      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID yang ditambahkan</div>';
+      myIdsData = [];
+      document.getElementById('myIdsCount').textContent = '0 ID';
+      document.getElementById('myIdsContainer').innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID yang ditambahkan</div>';
+      document.getElementById('myIdsPagination').innerHTML = '';
       return;
     }
     
-    const myIds = result.data;
-    countSpan.textContent = `${myIds.length} ID (${myIds.filter(i => i.isSold).length} sold)`;
+    myIdsData = result.data;
+    const total = myIdsData.length;
+    const soldCount = myIdsData.filter(i => i.isSold).length;
+    document.getElementById('myIdsCount').textContent = `${total} ID (${soldCount} sold)`;
     
+    renderMyIdsPage();
+  } catch (error) {
+    console.error('Load my IDs error:', error);
+    document.getElementById('myIdsContainer').innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Gagal memuat ID</div>';
+  }
+}
+
+function renderMyIdsPage() {
+  const totalPages = Math.ceil(myIdsData.length / MY_IDS_PER_PAGE);
+  const start = (myIdsCurrentPage - 1) * MY_IDS_PER_PAGE;
+  const pageData = myIdsData.slice(start, start + MY_IDS_PER_PAGE);
+  
+  // Render cards
+  const container = document.getElementById('myIdsContainer');
+  if (pageData.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Belum ada ID</div>';
+  } else {
     container.innerHTML = `
       <div class="id-grid">
-        ${myIds.map(id => `
+        ${pageData.map(id => `
           <div class="id-card">
             <div class="id-code">${escapeHtml(id.id)}</div>
             <div class="id-status ${id.isSold ? 'status-sold' : 'status-available'}">${id.isSold ? 'SOLD' : 'AVAILABLE'}</div>
@@ -421,9 +453,48 @@ async function loadMyIds() {
         `).join('')}
       </div>
     `;
-  } catch (error) {
-    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">Gagal memuat ID</div>';
   }
+  
+  // Render pagination
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+  const paginationDiv = document.getElementById('myIdsPagination');
+  if (totalPages <= 1) {
+    paginationDiv.innerHTML = '';
+    return;
+  }
+  
+  let html = '';
+  const maxVisible = 5;
+  let startPage = Math.max(1, myIdsCurrentPage - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  
+  if (endPage - startPage < maxVisible - 1) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+  
+  if (startPage > 1) {
+    html += `<div class="page-btn" onclick="goToMyIdsPage(1)">1</div>`;
+    if (startPage > 2) html += `<div class="page-dots">...</div>`;
+  }
+  
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<div class="page-btn ${i === myIdsCurrentPage ? 'active' : ''}" onclick="goToMyIdsPage(${i})">${i}</div>`;
+  }
+  
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<div class="page-dots">...</div>`;
+    html += `<div class="page-btn" onclick="goToMyIdsPage(${totalPages})">${totalPages}</div>`;
+  }
+  
+  paginationDiv.innerHTML = html;
+}
+
+function goToMyIdsPage(page) {
+  myIdsCurrentPage = page;
+  renderMyIdsPage();
 }
 
 // ==================== CEK DUPLIKAT ====================
@@ -453,11 +524,10 @@ async function checkDuplicateIDsAcrossTiers(newIDs) {
   return { duplicates, uniqueNew };
 }
 
-// ==================== TAMBAH ID (DENGAN VALIDASI ANGKA) ====================
+// ==================== TAMBAH ID ====================
 async function submitAddIDs() {
   let raw = document.getElementById('addIdList').value;
   
-  // Validasi hanya angka
   const validatedRaw = validateNumericOnly(raw);
   if (raw !== validatedRaw) {
     document.getElementById('addIdList').value = validatedRaw;
@@ -470,14 +540,13 @@ async function submitAddIDs() {
   const newIDs = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newIDs.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
   
-  // Validasi setiap ID harus angka
   const invalidIDs = newIDs.filter(id => !/^\d+$/.test(id));
   if (invalidIDs.length > 0) {
     showToast(`ID tidak valid (hanya angka): ${invalidIDs.slice(0,3).join(', ')}`, 'err');
     return;
   }
   
-  showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID di semua tier`, true);
+  showProgress('Mengecek duplikat...', `Memeriksa ${newIDs.length} ID`, true);
   
   const { duplicates, uniqueNew } = await checkDuplicateIDsAcrossTiers(newIDs);
   
@@ -488,7 +557,6 @@ async function submitAddIDs() {
     if (!confirm(`${duplicates.length} ID duplikat (tidak ditambahkan).\n\nID unik yang akan ditambahkan: ${uniqueNew.length} ID.\n\nLanjutkan?`)) return;
   }
   
-  // Grup ID berdasarkan tier
   const idsByTier = { low: [], medium: [], high: [], legend: [] };
   for (const id of uniqueNew) {
     const detectedTier = detectTierFromID(id);
@@ -506,7 +574,7 @@ async function submitAddIDs() {
     return;
   }
   
-  showProgress('Menyimpan ID...', `Memproses ${uniqueNew.length} ID ke tier masing-masing`, true);
+  showProgress('Menyimpan ID...', `Memproses ${uniqueNew.length} ID`, true);
   
   let allSuccess = true;
   let totalAdded = 0;
@@ -523,7 +591,6 @@ async function submitAddIDs() {
     else totalAdded += ids.length;
   }
   
-  // Update total di localStorage
   const updatedTotal = (currentUser.total || 0) + uniqueNew.length;
   await callAPI('update-total', 'POST', { username: currentUser.username, total: updatedTotal });
   currentUser.total = updatedTotal;
@@ -532,22 +599,22 @@ async function submitAddIDs() {
   showProgress('', '', false);
   
   if (allSuccess) {
-    let msg = `${totalAdded} ID berhasil ditambahkan!`;
+    let msg = `✅ ${totalAdded} ID berhasil ditambahkan!`;
     if (duplicates.length > 0) msg += ` (${duplicates.length} ID duplikat diabaikan)`;
     showToast(msg, 'ok');
     document.getElementById('addIdList').value = '';
     document.getElementById('autoDetectResult').style.display = 'none';
+    myIdsCurrentPage = 1;
     await loadMyIds();
   } else {
-    showToast('Sebagian gagal disimpan', 'err');
+    showToast('❌ Sebagian gagal disimpan', 'err');
   }
 }
 
-// ==================== SOLD ID (DENGAN VALIDASI ANGKA) ====================
+// ==================== SOLD ID ====================
 async function submitSoldIDs() {
   let raw = document.getElementById('soldIdList').value;
   
-  // Validasi hanya angka
   const validatedRaw = validateNumericOnly(raw);
   if (raw !== validatedRaw) {
     document.getElementById('soldIdList').value = validatedRaw;
@@ -562,14 +629,13 @@ async function submitSoldIDs() {
   const newSold = [...new Set(raw.split('\n').map(l => l.trim()).filter(Boolean))];
   if (newSold.length === 0) { showToast('Tidak ada ID valid', 'err'); return; }
   
-  // Validasi setiap ID harus angka
   const invalidIDs = newSold.filter(id => !/^\d+$/.test(id));
   if (invalidIDs.length > 0) {
     showToast(`ID tidak valid (hanya angka): ${invalidIDs.slice(0,3).join(', ')}`, 'err');
     return;
   }
   
-  showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID sebagai sold`, true);
+  showProgress('Menyimpan sold...', `Menandai ${newSold.length} ID`, true);
   
   const result = await callAPI('sold', 'POST', { 
     username: currentUser.username, 
@@ -580,16 +646,17 @@ async function submitSoldIDs() {
   showProgress('', '', false);
   
   if (result.success) {
-    showToast(`${newSold.length} ID ditandai sold!`, 'ok');
+    showToast(`✅ ${newSold.length} ID ditandai sold!`, 'ok');
     document.getElementById('soldIdList').value = '';
+    myIdsCurrentPage = 1;
     await loadMyIds();
   } else {
-    showToast('Gagal menyimpan sold', 'err');
+    showToast('❌ Gagal menyimpan sold', 'err');
   }
 }
 
 async function markSingleSold(id) {
-  showProgress('Processing...', `Menandai ${id} sebagai sold`, true);
+  showProgress('Processing...', `Menandai ${id}`, true);
   
   const result = await callAPI('sold', 'POST', { 
     username: currentUser.username, 
@@ -603,11 +670,11 @@ async function markSingleSold(id) {
     showToast(`✅ ${id} ditandai sold`, 'ok');
     await loadMyIds();
   } else {
-    showToast('Gagal menandai sold', 'err');
+    showToast('❌ Gagal menandai sold', 'err');
   }
 }
 
-// ==================== UPLOAD FOTO KE CATBOX ====================
+// ==================== UPLOAD FOTO ====================
 async function uploadPhoto(file, username) {
   const formData = new FormData();
   formData.append('file', file);
@@ -635,7 +702,6 @@ function closeProfileModal() {
   document.getElementById('profileModal').classList.remove('show');
 }
 
-// Event listener untuk upload foto
 document.getElementById('editPhotoFile').addEventListener('change', async function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -650,7 +716,6 @@ document.getElementById('editPhotoFile').addEventListener('change', async functi
     return;
   }
   
-  // Preview
   const reader = new FileReader();
   reader.onload = function(e) {
     document.getElementById('modalProfilePreview').src = e.target.result;
@@ -665,7 +730,7 @@ document.getElementById('editPhotoFile').addEventListener('change', async functi
     document.getElementById('editPhoto').value = result.url;
     showToast('✅ Foto berhasil diupload!', 'ok');
   } else {
-    showToast('Gagal upload foto: ' + (result.error || 'unknown error'), 'err');
+    showToast('❌ Gagal upload foto: ' + (result.error || 'unknown error'), 'err');
   }
 });
 
@@ -701,10 +766,10 @@ async function saveProfile() {
     document.getElementById('welcomeName').textContent = newName;
     document.getElementById('userBio').textContent = newBio;
     
-    showToast('✅ Profile berhasil diupdate', 'ok');
+    showToast('✅ Profile berhasil diupdate!', 'ok');
     closeProfileModal();
   } else {
-    showToast('Gagal update profile', 'err');
+    showToast('❌ Gagal update profile', 'err');
   }
 }
 
@@ -718,7 +783,10 @@ function switchTab(name) {
   const tabs = ['add', 'sold', 'myids'];
   document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', tabs[i] === name));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${name}`));
-  if (name === 'myids') loadMyIds();
+  if (name === 'myids') {
+    myIdsCurrentPage = 1;
+    loadMyIds();
+  }
 }
 
 // ==================== EVENT LISTENER ====================
