@@ -71,7 +71,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .leader-wrap{position:relative;z-index:1;max-width:900px;width:100%;animation:fadeUp .6s .08s ease both}
 
 /* ==================== PODIUM STYLE ==================== */
-.podium-container{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-bottom:60px;padding:20px 0 40px;position:relative}
+.podium-container{display:flex;justify-content:center;align-items:flex-end;gap:24px;margin-bottom:60px;padding:20px 0 40px;position:relative}
 .podium-item{text-align:center;cursor:pointer;transition:all .3s ease;position:relative;display:flex;flex-direction:column;align-items:center}
 .podium-item:hover{transform:translateY(-5px)}
 
@@ -107,16 +107,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 @keyframes floatCrown{0%,100%{transform:translateX(-50%) translateY(0px)}50%{transform:translateX(-50%) translateY(-5px)}}
 @keyframes crownGlow{0%,100%{filter:drop-shadow(0 0 4px var(--gold)) drop-shadow(0 0 8px rgba(251,191,36,0.5))}50%{filter:drop-shadow(0 0 12px var(--gold)) drop-shadow(0 0 20px rgba(251,191,36,0.8))}}
 
-/* Podium label (peringkat) */
-.podium-rank{font-family:var(--mono);font-weight:800;font-size:1rem;margin-top:8px;padding:4px 12px;border-radius:30px;background:rgba(255,255,255,.05);display:inline-block}
-.podium-rank.gold{background:rgba(251,191,36,.15);color:var(--gold)}
-.podium-rank.silver{background:rgba(209,213,219,.1);color:var(--silver)}
-.podium-rank.bronze{background:rgba(251,146,60,.1);color:var(--bronze)}
+/* Podium label (peringkat) - angka saja */
+.podium-rank-number{font-family:var(--mono);font-weight:800;font-size:.9rem;margin-top:8px;padding:4px 10px;border-radius:30px;background:rgba(255,255,255,.05);display:inline-block}
+.podium-rank-number.gold{background:rgba(251,191,36,.15);color:var(--gold)}
+.podium-rank-number.silver{background:rgba(209,213,219,.1);color:var(--silver)}
+.podium-rank-number.bronze{background:rgba(251,146,60,.1);color:var(--bronze)}
 
-/* Nama & Username */
-.podium-name{font-size:.85rem;font-weight:600;color:var(--white);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
-.podium-usn{font-size:.65rem;color:var(--muted2);font-family:var(--mono);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:4px}
-.podium-count{font-size:.7rem;color:var(--muted);margin-top:6px}
+/* Nama di podium */
+.podium-name{font-size:.85rem;font-weight:600;color:var(--white);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+.podium-tag{font-size:.55rem;font-weight:600;padding:.12rem .45rem;border-radius:12px;font-family:var(--mono)}
+.podium-tag.dv{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
+.podium-tag.cb{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
+.podium-usn{font-size:.62rem;color:var(--muted2);font-family:var(--mono);margin-top:3px;display:flex;align-items:center;justify-content:center;gap:4px}
+.podium-count{font-size:.7rem;color:var(--muted);margin-top:4px}
+.podium-count span{color:var(--white);font-weight:700}
 
 /* BLOCKED BADGE */
 .blocked-badge{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);border-radius:20px;padding:.1rem .5rem;font-size:.55rem;font-weight:600;margin-left:6px}
@@ -125,9 +129,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 /* VERIFIED ICON */
 .verified-icon-sm{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;vertical-align:middle}
 .verified-icon-sm img{width:100%;height:100%;object-fit:contain}
-.role-badge-sm{font-size:.55rem;font-weight:600;padding:.12rem .45rem;border-radius:12px;font-family:var(--mono);margin-left:5px}
-.role-dv-sm{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
-.role-cb-sm{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
 
 /* LEADERBOARD TABLE */
 .leader-panel{background:var(--card);border:1px solid var(--border2);border-radius:20px;overflow:hidden}
@@ -149,6 +150,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .blocked-avatar-overlay{position:absolute;bottom:-4px;right:-4px;background:#ef4444;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:700;color:white;border:1px solid var(--card2)}
 .leader-name{font-weight:600;color:var(--white);font-size:.9rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .leader-usn{font-size:.67rem;color:var(--muted2);font-family:var(--mono);margin-top:2px;display:flex;align-items:center;gap:4px}
+.role-badge-sm{font-size:.55rem;font-weight:600;padding:.12rem .45rem;border-radius:12px;font-family:var(--mono);margin-left:5px}
+.role-dv-sm{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
+.role-cb-sm{background:rgba(156,163,175,.12);color:#9ca3af;border:1px solid rgba(156,163,175,.2)}
 .total-id{font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--white);text-align:right}
 .total-id-label{font-size:.58rem;color:var(--muted);margin-top:2px;text-align:right}
 .back-link{margin-top:28px;text-align:center}
@@ -159,6 +163,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .confetti-piece{position:absolute;width:8px;height:8px;background:var(--gold);opacity:0;animation:confettiFall 3s ease-out forwards}
 @keyframes confettiFall{0%{opacity:1; transform:translateY(-100vh) rotate(0deg);}100%{opacity:0; transform:translateY(100vh) rotate(720deg);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
 @media(max-width:768px){
   nav{padding:0 20px}.nav-links{display:none}
   .leader-header{grid-template-columns:60px 1fr 80px;padding:12px 16px}
@@ -168,8 +173,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
   .podium-item.rank-1 .podium-avatar-wrapper{width:75px;height:75px}
   .podium-item.rank-2 .podium-avatar-wrapper,.podium-item.rank-3 .podium-avatar-wrapper{width:60px;height:60px}
   .crown{font-size:1.5rem;top:-18px}
-  .podium-name{font-size:.7rem}
-  .podium-usn{font-size:.55rem}
+  .podium-container{gap:12px}
+  .podium-name{font-size:.65rem}
+  .podium-usn{font-size:.5rem}
+  .podium-count{font-size:.6rem}
 }
 </style>
 </head>
@@ -239,15 +246,13 @@ async function loadLeaderboard() {
   const sorted = [...result.data].sort((a, b) => (b.total || 0) - (a.total || 0));
   if(sorted[0] && (sorted[0].total || 0) > 0) setTimeout(showConfetti, 500);
   
-  // Urutan podium: rank 2, rank 1, rank 3
-  const podiumOrder = [sorted[1], sorted[0], sorted[2]].filter(p => p);
-  renderPodium(podiumOrder, sorted[0], sorted[1], sorted[2]);
+  renderPodium(sorted[0], sorted[1], sorted[2]);
   renderLeaderList(sorted);
 }
 
-function renderPodium(podiumData, rank1, rank2, rank3) {
+function renderPodium(rank1, rank2, rank3) {
   const container = document.getElementById('podiumContainer');
-  if (podiumData.length === 0 || !rank1) { container.style.display = 'none'; return; }
+  if (!rank1) { container.style.display = 'none'; return; }
   
   container.style.display = 'flex';
   
@@ -255,14 +260,15 @@ function renderPodium(podiumData, rank1, rank2, rank3) {
     if (!con) return '';
     const isBlocked = con.active === false;
     const verifiedBadge = con.verified ? `<span class="verified-icon-sm"><img src="${VERIFIED_ICON_URL}" alt="✓"/></span>` : '';
-    const roleBadge = con.role === 'DV' ? '<span class="role-badge-sm role-dv-sm">DV</span>' : '<span class="role-badge-sm role-cb-sm">CB</span>';
+    const roleClass = con.role === 'DV' ? 'dv' : 'cb';
+    const roleLabel = con.role === 'DV' ? 'DV' : 'CB';
     const blockedBadge = isBlocked ? '<span class="blocked-badge">BLOCKED</span>' : '';
     const avatarHtml = con.photo ? `<img src="${con.photo}" alt="${con.name}" onerror="this.parentElement.innerHTML='<span>${(con.username||'?').charAt(0).toUpperCase()}</span>'">` : `<span>${(con.username||'?').charAt(0).toUpperCase()}</span>`;
     
-    let rankClass = '', rankLabel = '', medalIcon = '';
-    if (rank === 1) { rankClass = 'gold'; rankLabel = '1st'; medalIcon = '🏆 '; }
-    else if (rank === 2) { rankClass = 'silver'; rankLabel = '2nd'; medalIcon = '🥈 '; }
-    else { rankClass = 'bronze'; rankLabel = '3rd'; medalIcon = '🥉 '; }
+    let rankClass = '', rankLabel = '';
+    if (rank === 1) { rankClass = 'gold'; rankLabel = '1st'; }
+    else if (rank === 2) { rankClass = 'silver'; rankLabel = '2nd'; }
+    else { rankClass = 'bronze'; rankLabel = '3rd'; }
     
     const crownHtml = (rank === 1) ? '<div class="crown">👑</div>' : '';
     
@@ -273,25 +279,25 @@ function renderPodium(podiumData, rank1, rank2, rank3) {
           <div class="podium-avatar">${avatarHtml}</div>
           ${isBlocked ? '<div class="blocked-overlay" title="Blocked">⛔</div>' : ''}
         </div>
-        <div class="podium-rank ${rankClass}">${medalIcon}${rankLabel}</div>
+        <div class="podium-rank-number ${rankClass}">${rankLabel}</div>
         <div class="podium-name">
           ${escapeHtml(con.name)}
-          ${roleBadge}
+          <span class="podium-tag ${roleClass}">${roleLabel}</span>
           ${blockedBadge}
         </div>
         <div class="podium-usn">
           @${con.username}
           ${verifiedBadge}
         </div>
-        <div class="podium-count">${(con.total || 0).toLocaleString('id-ID')} ID</div>
+        <div class="podium-count"><span>${(con.total || 0).toLocaleString('id-ID')}</span> ID</div>
       </div>
     `;
   }
   
   container.innerHTML = `
-    ${rank2 ? renderPodiumItem(rank2, 2, 'left') : ''}
+    ${rank2 ? renderPodiumItem(rank2, 2, 'left') : '<div style="width:85px"></div>'}
     ${rank1 ? renderPodiumItem(rank1, 1, 'center') : ''}
-    ${rank3 ? renderPodiumItem(rank3, 3, 'right') : ''}
+    ${rank3 ? renderPodiumItem(rank3, 3, 'right') : '<div style="width:85px"></div>'}
   `;
 }
 
