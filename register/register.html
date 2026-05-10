@@ -39,9 +39,13 @@ h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purp
 .field input{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:.62rem .85rem;color:var(--text);font-family:var(--mono);font-size:.78rem;outline:none;transition:border-color .2s}
 .field input:focus{border-color:var(--purple)}
 .field input::placeholder{color:var(--muted);font-size:.7rem}
+.char-counter{font-size:.6rem;color:var(--muted);text-align:right;margin-top:4px;font-family:var(--mono)}
+.char-counter.warning{color:var(--red)}
+.char-counter.valid{color:var(--green)}
 .btn{width:100%;padding:12px;border-radius:10px;border:none;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
 .btn-primary{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}
 .btn-primary:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:0 4px 12px rgba(168,85,247,.3)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .auth-switch{font-size:.72rem;color:var(--muted);margin-top:16px}
 .auth-switch a{color:var(--purple);text-decoration:none}
 .back-link{margin-top:16px;text-align:center}
@@ -91,23 +95,28 @@ h1{font-size:1.3rem;font-weight:700;background:linear-gradient(135deg,var(--purp
     <p class="sub">Isi data untuk bergabung</p>
     
     <div class="field">
-      <label>Username</label>
-      <input type="text" id="regUsername" placeholder="cth: natas">
+      <label>Username (max 7 karakter)</label>
+      <input type="text" id="regUsername" placeholder="cth: natas" maxlength="7">
+      <div class="char-counter" id="usernameCounter">0 / 7 karakter</div>
     </div>
+    
     <div class="field">
-      <label>Nama Lengkap</label>
-      <input type="text" id="regName" placeholder="cth: Natas">
+      <label>Nama Lengkap (max 5 karakter)</label>
+      <input type="text" id="regName" placeholder="cth: Natas" maxlength="5">
+      <div class="char-counter" id="nameCounter">0 / 5 karakter</div>
     </div>
+    
     <div class="field">
       <label>WhatsApp</label>
       <input type="tel" id="regWa" placeholder="6281234567890">
     </div>
+    
     <div class="field">
       <label>Password</label>
       <input type="password" id="regPassword" placeholder="******">
     </div>
     
-    <button class="btn btn-primary" onclick="doRegister()">
+    <button class="btn btn-primary" id="registerBtn" onclick="doRegister()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
       Daftar & Mulai
     </button>
@@ -155,14 +164,138 @@ const API_URL = '/api';
 let notificationTimer = null;
 let redirectTimer = null;
 
+// ==================== VALIDASI INPUT ====================
+function validateInputs() {
+  const username = document.getElementById('regUsername').value.trim();
+  const name = document.getElementById('regName').value.trim();
+  const wa = document.getElementById('regWa').value.trim();
+  const password = document.getElementById('regPassword').value;
+  
+  let isValid = true;
+  let errorMsg = '';
+  
+  // Validasi username: 1-7 karakter, hanya huruf/angka/dash
+  if (!username) {
+    errorMsg = 'Username wajib diisi';
+    isValid = false;
+  } else if (username.length < 1) {
+    errorMsg = 'Username minimal 1 karakter';
+    isValid = false;
+  } else if (username.length > 7) {
+    errorMsg = 'Username maksimal 7 karakter';
+    isValid = false;
+  } else if (!/^[a-zA-Z0-9-]+$/.test(username)) {
+    errorMsg = 'Username hanya boleh huruf, angka, dan dash (-)';
+    isValid = false;
+  }
+  
+  // Validasi nama: 1-5 karakter
+  else if (!name) {
+    errorMsg = 'Nama wajib diisi';
+    isValid = false;
+  } else if (name.length < 1) {
+    errorMsg = 'Nama minimal 1 karakter';
+    isValid = false;
+  } else if (name.length > 5) {
+    errorMsg = 'Nama maksimal 5 karakter';
+    isValid = false;
+  }
+  
+  // Validasi WhatsApp
+  else if (!wa) {
+    errorMsg = 'Nomor WhatsApp wajib diisi';
+    isValid = false;
+  } else if (!/^[0-9]{10,15}$/.test(wa)) {
+    errorMsg = 'Nomor WhatsApp harus 10-15 digit angka';
+    isValid = false;
+  }
+  
+  // Validasi password
+  else if (!password) {
+    errorMsg = 'Password wajib diisi';
+    isValid = false;
+  } else if (password.length < 4) {
+    errorMsg = 'Password minimal 4 karakter';
+    isValid = false;
+  }
+  
+  // Enable/disable button
+  const btn = document.getElementById('registerBtn');
+  if (isValid) {
+    btn.disabled = false;
+  } else {
+    btn.disabled = true;
+  }
+  
+  return { isValid, errorMsg };
+}
+
+// ==================== UPDATE COUNTER & VALIDASI ====================
+function updateUsernameCounter() {
+  const input = document.getElementById('regUsername');
+  const counter = document.getElementById('usernameCounter');
+  const length = input.value.length;
+  const max = 7;
+  
+  counter.textContent = `${length} / ${max} karakter`;
+  
+  if (length === max) {
+    counter.classList.add('warning');
+    counter.classList.remove('valid');
+  } else if (length > 0 && length < max) {
+    counter.classList.add('valid');
+    counter.classList.remove('warning');
+  } else {
+    counter.classList.remove('warning', 'valid');
+  }
+  
+  validateInputs();
+}
+
+function updateNameCounter() {
+  const input = document.getElementById('regName');
+  const counter = document.getElementById('nameCounter');
+  const length = input.value.length;
+  const max = 5;
+  
+  counter.textContent = `${length} / ${max} karakter`;
+  
+  if (length === max) {
+    counter.classList.add('warning');
+    counter.classList.remove('valid');
+  } else if (length > 0 && length < max) {
+    counter.classList.add('valid');
+    counter.classList.remove('warning');
+  } else {
+    counter.classList.remove('warning', 'valid');
+  }
+  
+  validateInputs();
+}
+
+// ==================== REGISTER ====================
 async function doRegister() {
+  const { isValid, errorMsg } = validateInputs();
+  
+  if (!isValid) {
+    showNotification('error', 'Gagal', errorMsg);
+    return;
+  }
+  
   const username = document.getElementById('regUsername').value.trim().toLowerCase().replace(/\s+/g, '-');
   const name = document.getElementById('regName').value.trim();
   const wa = document.getElementById('regWa').value.trim();
   const password = document.getElementById('regPassword').value;
-
-  if (!username || !name || !wa || !password) {
-    showNotification('error', 'Gagal', 'Semua field wajib diisi');
+  
+  // Re-validasi username length
+  if (username.length > 7) {
+    showNotification('error', 'Gagal', 'Username maksimal 7 karakter');
+    return;
+  }
+  
+  // Re-validasi nama length
+  if (name.length > 5) {
+    showNotification('error', 'Gagal', 'Nama maksimal 5 karakter');
     return;
   }
 
@@ -198,6 +331,7 @@ async function doRegister() {
   }
 }
 
+// ==================== NOTIFICATION ====================
 function showNotification(type, title, message) {
   const notification = document.getElementById('notification');
   const iconDiv = document.getElementById('notificationIcon');
@@ -242,11 +376,25 @@ function showProgress(show) {
   else el.classList.remove('show');
 }
 
+// ==================== EVENT LISTENER ====================
+document.getElementById('regUsername').addEventListener('input', updateUsernameCounter);
+document.getElementById('regName').addEventListener('input', updateNameCounter);
+document.getElementById('regWa').addEventListener('input', validateInputs);
+document.getElementById('regPassword').addEventListener('input', validateInputs);
+
 document.querySelectorAll('input').forEach(input => {
   input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') doRegister();
+    if (e.key === 'Enter') {
+      const { isValid } = validateInputs();
+      if (isValid) doRegister();
+    }
   });
 });
+
+// ==================== INIT ====================
+updateUsernameCounter();
+updateNameCounter();
+validateInputs();
 </script>
 </body>
 </html>
