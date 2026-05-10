@@ -504,13 +504,15 @@ function escapeHtml(str) {
 // ==================== AMBIL SOLD IDS ====================
 async function fetchSoldIDs(username) {
   try {
+    // Ambil langsung dari API my-ids yang sudah mengembalikan isSold
     const res = await callAPI(`my-ids?username=${username}`);
     if (res.success && res.data) {
       const soldIds = res.data.filter(item => item.isSold).map(item => ({ id: item.id, tier: item.tier }));
       return { soldList: soldIds, soldCount: soldIds.length };
     }
     return { soldList: [], soldCount: 0 };
-  } catch {
+  } catch (error) {
+    console.error('Error fetching sold IDs:', error);
     return { soldList: [], soldCount: 0 };
   }
 }
