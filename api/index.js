@@ -288,22 +288,25 @@ async function handleSold(req, res) {
 
   try {
     for (const id of soldIds) {
-      // Simpan ke sold_ids global
+      // 1. Simpan ke sold_ids global
       await db.collection('sold_ids').updateOne(
         { id: id },
         { $set: { id: id, seller: username, soldAt: new Date(), tier: tier } },
         { upsert: true }
       );
       
-      // Simpan ke collection sold_username
+      // 2. Simpan ke collection sold_username
       await db.collection(`sold_${username}`).updateOne(
         { id: id },
         { $set: { id: id, tier: tier, soldAt: new Date() } },
         { upsert: true }
       );
+      
+      // 3. HAPUS dari collection ids_username (pindahkan ke sold)
+      await db.collection(`ids_${username}`).deleteOne({ id: id });
     }
 
-    // Hapus dari tier collection jika tier ditentukan
+    // 4. Hapus dari tier collection jika tier ditentukan
     if (tier && tier !== '') {
       const tierMap = { low: 'ids_low', medium: 'ids_medium', high: 'ids_high', legend: 'ids_legend' };
       const tierCollection = db.collection(tierMap[tier]);
@@ -312,12 +315,7 @@ async function handleSold(req, res) {
       }
     }
 
-    // Hapus dari collection ids_username
-    for (const id of soldIds) {
-      await db.collection(`ids_${username}`).deleteOne({ id: id });
-    }
-
-    // UPDATE soldTotal contributor
+    // 5. Update soldTotal contributor
     await db.collection('contributors').updateOne(
       { username: username },
       { $inc: { soldTotal: soldIds.length } }
@@ -329,7 +327,6 @@ async function handleSold(req, res) {
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 }
-
 // ==================== GET SOLD IDS (GLOBAL) ====================
 async function handleGetSoldIds(req, res) {
   const client = await clientPromise;
