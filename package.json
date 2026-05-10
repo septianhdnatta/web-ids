@@ -1,7 +1,7 @@
 {
   "name": "idglitxh",
   "version": "1.0.0",
-  "description": "IDglitxh — Premium ID Store Platform with MongoDB",
+  "description": "IDglitxh — Premium ID Store Platform with MongoDB & Catbox Upload",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
@@ -13,12 +13,15 @@
     "premium-id",
     "idglitxh",
     "mongodb",
-    "vercel"
+    "vercel",
+    "catbox"
   ],
   "author": "IDglitxh Team",
   "license": "MIT",
   "dependencies": {
-    "mongodb": "^6.5.0"
+    "mongodb": "^6.5.0",
+    "node-catbox": "^4.2.0",
+    "formidable": "^3.5.1"
   },
   "devDependencies": {
     "vercel": "^34.0.0"
