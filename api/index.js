@@ -10,11 +10,11 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Parse URL manually
+  // Manual parsing URL (TIDAK menggunakan parseUrl)
   const urlParts = req.url.split('?');
   const pathname = urlParts[0];
   
-  // ROUTING
+  // ROUTING (Semua endpoint kamu ada di sini)
   if (pathname === '/api/register' && req.method === 'POST') return handleRegister(req, res);
   if (pathname === '/api/login' && req.method === 'POST') return handleLogin(req, res);
   if (pathname === '/api/contributors' && req.method === 'GET') return handleGetContributors(req, res);
@@ -32,6 +32,11 @@ export default async function handler(req, res) {
   
   return res.status(404).json({ success: false, error: 'Endpoint not found' });
 }
+
+// ==================== SEMUA HANDLER FUNGSI DI SINI ====================
+// (Masukkan semua fungsi handleRegister, handleLogin, handleGetContributors, 
+//  handleMyIds, handleSold, dll. yang sudah kita buat sebelumnya di sini.)
+// ... kode handler functions selengkapnya ...
 
 // ==================== REGISTER ====================
 async function handleRegister(req, res) {
